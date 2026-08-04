@@ -166,7 +166,8 @@
   .btn-ghost{ color:var(--muted); }
   .btn-ghost:hover{ background:var(--hover); }
 
-  input[type=text], input[type=date], input[type=search], select, textarea{
+  input[type=text], input[type=date], input[type=search], input[type=time],
+  input[type=number], input[type=email], input[type=tel], input[type=password], select, textarea{
     font-size:14px; border-radius:12px; border:1px solid var(--border); background:var(--input-bg); color:var(--text);
     padding:8px 12px; outline:none; width:100%;
   }
@@ -214,9 +215,11 @@
   tbody tr:last-child td{border-bottom:none;}
   tbody tr:hover{ background:var(--hover); }
   .col-hide-sm{display:none;} @media(min-width:640px){ .col-hide-sm{display:table-cell;} }
+  .only-md{display:none;} @media(min-width:640px){ .only-md{display:flex;} }
+  td .cust-name{white-space:nowrap;} td .cust-meta{white-space:nowrap;}
   .col-hide-md{display:none;} @media(min-width:768px){ .col-hide-md{display:table-cell;} }
   .col-hide-lg{display:none;} @media(min-width:1024px){ .col-hide-lg{display:table-cell;} }
-  .link-btn{color:var(--accent); font-size:14px; font-weight:500; display:inline-flex; align-items:center; gap:2px;}
+  .link-btn{color:var(--accent); font-size:14px; font-weight:500; display:inline-flex; align-items:center; gap:2px; white-space:nowrap; flex-shrink:0;}
   .link-btn:hover{ color:var(--accent-hover); }
 
   /* customer detail */
@@ -255,7 +258,8 @@
   }
   .modal-head{display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--border);}
   .modal-body{padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:16px;}
-  .modal-foot{display:flex; justify-content:flex-end; gap:8px; padding:16px 20px; border-top:1px solid var(--border);}
+  .modal-foot{display:flex; justify-content:flex-end; align-items:center; gap:8px; padding:16px 20px; border-top:1px solid var(--border); flex-wrap:wrap;}
+  .modal-foot .btn-danger-ghost{ margin-right:auto; }
   .field-label{font-size:12px; font-weight:500; color:var(--faint); display:block; margin-bottom:6px;}
   .ai-result-box{border:1px solid var(--border); border-radius:14px; padding:16px; display:flex; flex-direction:column; gap:12px;}
   .ai-result-title{font-size:12px; font-weight:600; color:var(--muted); display:flex; align-items:center; gap:6px;}
@@ -267,8 +271,10 @@
   }
   .chip:hover{ background:var(--hover); }
   .chip.active{ background:var(--accent); border-color:var(--accent); color:#fff; }
-  .reminder-row{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid var(--border);}
+  .reminder-row{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 16px; border-bottom:1px solid var(--border);}
   .reminder-row:last-child{ border-bottom:none; }
+  .reminder-row > .row-btn{ min-width:0; }
+  .reminder-row > .flex{ flex-shrink:0; }
 
   /* settings */
   .toggle{width:48px; height:28px; border-radius:999px; padding:2px; display:flex; align-items:center; background:#cbd5e1; transition:background .15s;}
@@ -310,7 +316,7 @@
   }
   .assistant-fab:hover{ transform:scale(1.06); }
   .assistant-panel{
-    position:fixed; bottom:92px; right:24px; width:340px; height:440px; border-radius:18px; z-index:40;
+    position:fixed; bottom:92px; right:24px; width:340px; height:480px; max-height:calc(100vh - 140px); border-radius:18px; z-index:40;
     border:1px solid var(--border); background:var(--bg-card); box-shadow:0 30px 60px rgba(0,0,0,.25);
     display:flex; flex-direction:column; overflow:hidden;
   }
@@ -349,6 +355,102 @@
     background:#0f172a; color:#fff; font-size:14px; font-weight:500; padding:10px 18px; border-radius:999px;
     box-shadow:0 20px 40px rgba(0,0,0,.25); display:flex; align-items:center; gap:8px;
   }
+  body.dark .toast{ background:#1e293b; border:1px solid var(--border); }
+
+  /* forms / dialogs */
+  .modal-box.lg{ max-width:640px; }
+  .form-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:520px){ .form-grid{grid-template-columns:1fr;} }
+  .form-grid .span-2{grid-column:1 / -1;}
+  .form-error{
+    font-size:13px; color:var(--rose); background:var(--badge-rose-bg); border:1px solid var(--badge-rose-border);
+    border-radius:10px; padding:8px 12px;
+  }
+  .btn-danger{ background:var(--rose); color:#fff; }
+  .btn-danger:hover{ opacity:.88; }
+  .btn-danger-ghost{ color:var(--rose); }
+  .btn-danger-ghost:hover{ background:var(--badge-rose-bg); }
+  .btn-sm{ font-size:13px; padding:7px 12px; border-radius:10px; }
+  .btn-xs{ font-size:12px; padding:5px 10px; border-radius:9px; }
+  .tag-input-wrap{
+    display:flex; flex-wrap:wrap; gap:6px; align-items:center; border:1px solid var(--border);
+    border-radius:12px; padding:8px; background:var(--input-bg); min-height:42px;
+  }
+  .tag-input-wrap input{ border:none; padding:0; flex:1; min-width:110px; background:transparent; }
+  .tag-input-wrap input:focus{ border:none; }
+  .tag-chip{
+    display:inline-flex; align-items:center; gap:4px; padding:3px 6px 3px 10px; border-radius:999px; font-size:11px;
+    background:var(--badge-indigo-bg); color:var(--badge-indigo-text); border:1px solid var(--badge-indigo-border);
+  }
+  .tag-chip button{ display:flex; color:inherit; opacity:.65; }
+  .tag-chip button:hover{ opacity:1; }
+  .checkline{display:flex; align-items:center; gap:8px; font-size:14px; cursor:pointer;}
+  .checkline input{ width:16px; height:16px; accent-color:var(--accent); }
+  .hint{font-size:12px; color:var(--faint); line-height:1.6;}
+
+  /* call overlay */
+  .call-card{
+    width:100%; max-width:340px; border-radius:22px; background:var(--bg-card); border:1px solid var(--border);
+    box-shadow:0 30px 60px rgba(0,0,0,.3); padding:28px 24px; text-align:center;
+  }
+  .call-timer{ font-size:26px; font-weight:600; font-variant-numeric:tabular-nums; margin:12px 0 4px; }
+  .call-actions{display:flex; gap:10px; justify-content:center; margin-top:22px;}
+  .call-pulse{
+    width:88px; height:88px; border-radius:999px; margin:0 auto 14px; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg,#6366f1,#7c3aed); color:#fff; animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(99,102,241,.45); } 50%{ box-shadow:0 0 0 14px rgba(99,102,241,0); } }
+
+  /* dropdown menu */
+  .menu-wrap{position:relative;}
+  .menu{
+    position:absolute; right:0; top:calc(100% + 6px); min-width:168px; z-index:35; padding:6px;
+    border-radius:14px; border:1px solid var(--border); background:var(--bg-card); box-shadow:0 20px 40px rgba(0,0,0,.18);
+  }
+  .menu-item{
+    display:flex; align-items:center; gap:8px; width:100%; text-align:left; font-size:13px;
+    padding:8px 10px; border-radius:10px; color:var(--text);
+  }
+  .menu-item:hover{ background:var(--hover); }
+  .menu-item.danger{ color:var(--rose); }
+  .menu-sep{height:1px; background:var(--border); margin:4px 0;}
+
+  /* misc */
+  .row-actions{display:flex; align-items:center; gap:6px; flex-shrink:0;}
+  .quick-chips{display:flex; gap:6px; flex-wrap:wrap; padding:0 16px 10px;}
+  .quick-chip{
+    font-size:11px; padding:5px 10px; border-radius:999px; border:1px solid var(--border); color:var(--muted);
+  }
+  .quick-chip:hover{ background:var(--hover); color:var(--text); }
+  .typing-dots{display:inline-flex; gap:3px; align-items:center; height:14px;}
+  .typing-dots span{
+    width:5px; height:5px; border-radius:999px; background:var(--faint); animation:blink 1.2s infinite ease-in-out;
+  }
+  .typing-dots span:nth-child(2){ animation-delay:.18s; }
+  .typing-dots span:nth-child(3){ animation-delay:.36s; }
+  @keyframes blink{ 0%,80%,100%{ opacity:.25; transform:translateY(0); } 40%{ opacity:1; transform:translateY(-2px); } }
+  .strike{ text-decoration:line-through; color:var(--faint); }
+  .pref-row{display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border);}
+  .pref-row:last-child{ border-bottom:none; }
+  .toggle-sm{width:40px; height:24px;}
+  .toggle-sm .toggle-dot{width:18px; height:18px;}
+  .action-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:640px){ .action-grid{grid-template-columns:1fr;} }
+  .action-tile{
+    display:flex; align-items:flex-start; gap:10px; text-align:left; padding:14px;
+    border:1px solid var(--border); border-radius:14px; transition:border-color .15s,background .15s;
+  }
+  .action-tile:hover{ border-color:var(--accent); background:var(--hover); }
+  .reason-row{display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--border);}
+  .reason-row:last-child{ border-bottom:none; }
+  .score-pill{
+    font-size:11px; font-weight:600; padding:2px 8px; border-radius:999px;
+    background:var(--badge-indigo-bg); color:var(--badge-indigo-text);
+  }
+  .filter-tag-row{display:flex; gap:6px; flex-wrap:wrap;}
+  .out-actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:14px;}
+  .out-actions .btn{ background:rgba(255,255,255,.16); color:#fff; font-size:13px; padding:8px 14px; }
+  .out-actions .btn:hover{ background:rgba(255,255,255,.28); }
 </style>
 </head>
 <body>
@@ -359,13 +461,14 @@
 /* 常數與工具函式                                                       */
 /* ================================================================== */
 
+/* 示範情境基準日：Mock 資料（到期日、生日、Follow Up）皆以此日期為中心設計 */
 const TODAY = new Date("2026-07-17T00:00:00");
 
 function daysFromToday(dateStr){
   const d = new Date(dateStr + "T00:00:00");
   return Math.round((d - TODAY) / 86400000);
 }
-function fmtMoney(n){ return `NT$ ${n.toLocaleString()} 萬`; }
+function fmtMoney(n){ return `NT$ ${Number(n).toLocaleString()} 萬`; }
 function relativeDay(d){
   if(d === 0) return "今天";
   if(d === 1) return "明天";
@@ -376,9 +479,77 @@ function esc(s){
   return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
 
+let _uidSeq = Date.now();
+function uid(){ return ++_uidSeq; }
+
+function pad2(n){ return String(n).padStart(2,"0"); }
+function toKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+function todayStr(){ return toKey(TODAY); }
+function addDaysStr(dateStr, n){
+  const d = new Date((dateStr || todayStr()) + "T00:00:00");
+  d.setDate(d.getDate() + n);
+  return toKey(d);
+}
+function isValidDateStr(s){ return /^\d{4}-\d{2}-\d{2}$/.test(s || "") && !isNaN(new Date(s + "T00:00:00").getTime()); }
+function fmtDateCN(dateStr){
+  const d = new Date(dateStr + "T00:00:00");
+  return `${d.getFullYear()} 年 ${d.getMonth()+1} 月 ${d.getDate()} 日 星期${WEEKDAYS[d.getDay()]}`;
+}
+function greetingText(){
+  const h = new Date().getHours();
+  if(h < 5) return "夜深了";
+  if(h < 11) return "早安";
+  if(h < 14) return "午安";
+  if(h < 18) return "下午好";
+  return "晚安";
+}
+function initialOf(name){ return String(name || "?").trim().slice(0,1) || "?"; }
+function download(filename, text, mime){
+  const blob = new Blob([text], { type: mime || "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function legacyCopy(text){
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed"; ta.style.top = "0"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  let ok = false;
+  try{ ok = document.execCommand("copy"); } catch { ok = false; }
+  ta.remove();
+  return ok;
+}
+/* 直接以 file:// 開啟時 Clipboard API 可能被拒絕，需退回 execCommand */
+function copyText(text){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    return navigator.clipboard.writeText(text).catch(() => {
+      if(!legacyCopy(text)) showToast("此瀏覽器不允許自動複製，請手動選取內容");
+    });
+  }
+  if(!legacyCopy(text)) showToast("此瀏覽器不允許自動複製，請手動選取內容");
+  return Promise.resolve();
+}
+
 /* ================================================================== */
 /* Mock 資料                                                            */
 /* ================================================================== */
+
+const WEEKDAYS = ["日","一","二","三","四","五","六"];
+
+/* 示範客戶的聯絡資訊（新增客戶時由表單輸入） */
+const DEMO_CONTACTS = {
+  1:{ phone:"0912-345-678", email:"ming.wang@example.com" },
+  2:{ phone:"0922-118-233", email:"sf.lin@example.com" },
+  3:{ phone:"0933-256-717", email:"ck.chen@example.com" },
+  4:{ phone:"0955-874-201", email:"mh.lee@example.com" },
+  5:{ phone:"0966-330-512", email:"ch.chang@example.com" },
+  6:{ phone:"0977-451-908", email:"yt.huang@example.com" },
+  7:{ phone:"0988-627-364", email:"cw.wu@example.com" },
+  8:{ phone:"0910-772-845", email:"ps.tsai@example.com" },
+};
 
 const INITIAL_CUSTOMERS = [
   { id:1, name:"王小明", age:45, occupation:"工程師", family:"已婚，育有 2 名子女",
@@ -529,6 +700,101 @@ function getReminders(customers, followUps, staleDays){
   };
 }
 
+/* 依客戶現況推導「今天可以聊什麼」（新客戶或資料更新後可重新產生） */
+function generateChatSuggestions(c){
+  const out = [];
+  const daysSince = -daysFromToday(c.lastContact);
+  c.products.forEach(p => {
+    if(p.maturity){
+      const d = daysFromToday(p.maturity);
+      if(d >= -30 && d <= 30){
+        out.push(d <= 0
+          ? `${p.name} 已於 ${p.maturity} 到期，需確認續作、轉換或贖回意願`
+          : `${p.name} 將於 ${d} 天後到期，可提前討論到期後的資金安排`);
+      }
+    }
+    if(p.changePct !== undefined && Math.abs(p.changePct) >= 3){
+      out.push(`${p.name} 近期${p.changePct>0?"上漲":"下跌"} ${Math.abs(p.changePct)}%，可主動分享並討論${p.changePct>0?"是否加碼或部分獲利了結":"後續因應策略"}`);
+    }
+  });
+  if(c.birthdayDate){
+    const d = daysFromToday(c.birthdayDate);
+    if(d >= 0 && d <= 14) out.push(d === 0 ? "今天是客戶生日，建議致電祝賀並趁機關心近況" : `${d} 天後是客戶生日，可安排祝賀與關心近況`);
+  }
+  state.followUps.filter(f => f.customerId === c.id && f.status === "pending").forEach(f => {
+    out.push(`Follow Up 事項「${f.content}」預定於 ${f.dueDate}，可一併確認進度`);
+  });
+  if(daysSince >= state.staleDays) out.push(`已超過 ${daysSince} 天未聯繫，建議優先關心近況，避免資產流失`);
+  if(c.age >= 50) out.push("客戶已邁入退休準備階段，可主動探詢退休金與傳承規劃需求");
+  else if(c.age <= 35) out.push("年輕客戶可探詢長期理財目標，如購屋、進修或被動收入規劃");
+  if(/子女|育有/.test(c.family || "")) out.push("客戶有子女，可延伸討論教育金與保障規劃");
+  if(c.products.length === 0) out.push("客戶目前尚無持有商品，可從風險屬性出發介紹入門部位");
+  if(c.tags.length > 0) out.push(`可延續客戶關注的主題切入：${c.tags.slice(0,2).join("、")}`);
+  return [...new Set(out)].slice(0,4);
+}
+function chatSuggestionsOf(c){
+  return (c.chatSuggestions && c.chatSuggestions.length) ? c.chatSuggestions : generateChatSuggestions(c);
+}
+function refreshChatSuggestions(id){
+  const c = findCustomer(id);
+  if(!c) return;
+  c.chatSuggestions = generateChatSuggestions(c);
+  state.menuOpen = null;
+  saveData(); render();
+  showToast("已依最新資料重新產生建議話題");
+}
+function copyChatSuggestions(id){
+  const c = findCustomer(id);
+  if(!c) return;
+  const text = `${c.name}・今天可以聊什麼\n` + chatSuggestionsOf(c).map((s,i)=>`${i+1}. ${s}`).join("\n");
+  copyText(text).then(() => showToast("已複製建議話題"));
+}
+
+/* -------------------- 提醒的忽略／延後 -------------------- */
+function reminderKey(type, customerId, extra){
+  return [type, customerId, extra || ""].join(":");
+}
+function isDismissed(key){
+  const hit = state.dismissed.find(d => d.key === key);
+  if(!hit) return false;
+  if(!hit.until) return true;                       /* 永久忽略 */
+  if(daysFromToday(hit.until) > 0) return true;     /* 延後中 */
+  state.dismissed = state.dismissed.filter(d => d.key !== key);  /* 延後到期，自動恢復 */
+  return false;
+}
+function dismissReminder(key, days){
+  state.dismissed = state.dismissed.filter(d => d.key !== key);
+  state.dismissed.push({ key, until: days ? addDaysStr(todayStr(), days) : null });
+  state.menuOpen = null;
+  saveData(); render();
+  showToast(days ? `已延後 ${days} 天再提醒` : "已忽略這則提醒");
+}
+function restoreReminder(key){
+  state.dismissed = state.dismissed.filter(d => d.key !== key);
+  saveData(); render();
+  showToast("已恢復提醒");
+}
+
+/* 套用「通知設定」與忽略清單後的提醒結果（全站統一使用） */
+function activeReminders(){
+  const r = getReminders(state.customers, state.followUps, state.staleDays);
+  const p = state.prefs;
+  const keep = (arr, type, extraFn) => arr.filter(x => !isDismissed(reminderKey(type, x.customer && x.customer.id, extraFn ? extraFn(x) : "")));
+  return {
+    birthdays:    p.birthday ? keep(r.birthdays, "birthday") : [],
+    cdMaturity:   p.maturity ? keep(r.cdMaturity, "maturity", x => x.product.id) : [],
+    fundMaturity: p.maturity ? keep(r.fundMaturity, "maturity", x => x.product.id) : [],
+    etf:          p.etf      ? keep(r.etf, "etf", x => x.product.id) : [],
+    stale:        p.stale    ? keep(r.stale, "stale") : [],
+    followUps:    p.followup ? r.followUps.filter(x => x.customer && !isDismissed(reminderKey("followup", x.customer.id, x.followUp.id))) : [],
+    raw: r,
+  };
+}
+function reminderCount(){
+  const r = activeReminders();
+  return r.followUps.length + r.cdMaturity.length + r.fundMaturity.length + r.birthdays.length + r.stale.length + r.etf.length;
+}
+
 function generateAISummary(rawText){
   const trimmed = rawText.trim();
   const summary = trimmed.length > 0 ? trimmed.slice(0,90) + (trimmed.length>90 ? "…" : "") : "（尚未輸入通話內容）";
@@ -548,9 +814,6 @@ function generateAISummary(rawText){
 /* 行事曆邏輯                                                            */
 /* ================================================================== */
 
-const WEEKDAYS = ["日","一","二","三","四","五","六"];
-function pad2(n){ return String(n).padStart(2,"0"); }
-function toKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
 function buildCalendarDays(year, month){
   const startWeekday = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month+1, 0).getDate();
@@ -577,9 +840,9 @@ function buildCalendarEvents(customers, followUps){
     c.products.forEach(p => { if(p.maturity) push(p.maturity, { type:"maturity", customerId:c.id, text:`${c.name}・${p.name} 到期` }); });
     c.callLogs.forEach(log => push(log.date, { type:"call", customerId:c.id, text:`${c.name}・通話紀錄` }));
   });
-  followUps.forEach(f => {
+  followUps.filter(f => f.status === "pending").forEach(f => {
     const c = customers.find(x => x.id === f.customerId);
-    if(c) push(f.dueDate, { type:"followup", customerId:c.id, text:`${c.name}・${f.content}` });
+    if(c) push(f.dueDate, { type:"followup", customerId:c.id, followUpId:f.id, text:`${c.name}・${f.content}` });
   });
   return map;
 }
@@ -615,6 +878,24 @@ const ICON_PATHS = {
   loader:'<path d="M12 3v3M12 18v3M4.2 4.2l2.2 2.2M17.6 17.6l2.2 2.2M3 12h3M18 12h3M4.2 19.8l2.2-2.2M17.6 6.4l2.2-2.2"/>',
   circle:'<circle cx="12" cy="12" r="9"/>',
   circleCheck:'<circle cx="12" cy="12" r="9"/><path d="M8 12.4l2.6 2.6L16 9"/>',
+  edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>',
+  trash:'<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/><path d="M10 11v5M14 11v5"/>',
+  more:'<circle cx="12" cy="5" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="12" cy="19" r="1.4"/>',
+  copy:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/>',
+  download:'<path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 21h16"/>',
+  upload:'<path d="M12 21V9"/><path d="M7 13l5-5 5 5"/><path d="M4 4h16"/>',
+  eye:'<path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.6"/>',
+  eyeOff:'<path d="M3 3l18 18"/><path d="M10.6 6.2A9.9 9.9 0 0 1 12 6c6.4 0 10 6 10 6a17 17 0 0 1-2.8 3.4M6.4 7.6A17 17 0 0 0 2 12s3.6 6 10 6c1.2 0 2.3-.2 3.3-.5"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
+  phoneOff:'<path d="M3 3l18 18"/><path d="M9.4 5.6L9 4H5a1 1 0 0 0-1 1c0 8.5 6.5 15 15 15a1 1 0 0 0 1-1v-4l-4.7-1.5-1.3 1.7"/>',
+  refresh:'<path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/>',
+  logout:'<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 17l-5-5 5-5"/><path d="M15 12H5"/>',
+  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5L12 13l8.5-6.5"/>',
+  user:'<circle cx="12" cy="8" r="3.4"/><path d="M4 20c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>',
+  undo:'<path d="M4 10h9a5 5 0 1 1 0 10H8"/><path d="M4 10l4-4M4 10l4 4"/>',
+  filter:'<path d="M4 5h16l-6.5 8v6l-3-2v-4L4 5z"/>',
+  list:'<path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/>',
+  bolt:'<path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/>',
+  target:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
 };
 function icon(name, size, extraStyle){
   size = size || 16;
@@ -624,9 +905,10 @@ function icon(name, size, extraStyle){
 const AVATAR_COLORS = ["#6366f1","#8b5cf6","#0ea5e9","#10b981","#f59e0b","#f43f5e"];
 function avatarHTML(name, size){
   size = size || "md";
-  const idx = (name.charCodeAt(0)||0) % AVATAR_COLORS.length;
+  const safe = String(name || "?");
+  const idx = (safe.charCodeAt(0)||0) % AVATAR_COLORS.length;
   const cls = size === "sm" ? "avatar-sm" : size === "lg" ? "avatar-lg" : "avatar-md";
-  return `<div class="avatar ${cls}" style="background:${AVATAR_COLORS[idx]}">${esc(name.slice(0,1))}</div>`;
+  return `<div class="avatar ${cls}" style="background:${AVATAR_COLORS[idx]}">${esc(initialOf(safe))}</div>`;
 }
 function badgeHTML(text, color){
   return `<span class="badge badge-${color||"slate"}">${text}</span>`;
@@ -638,7 +920,20 @@ function badgeHTML(text, color){
 
 /* -------------------- 模擬登入（LocalStorage，非真實驗證） -------------------- */
 const AUTH_STORAGE_KEY = "arm_demo_auth";
+const DATA_STORAGE_KEY = "arm_demo_data_v1";
 const DEMO_ACCOUNT = { email:"rm@bank.com", password:"password123", name:"陳經理", branch:"台北信義分行" };
+
+const RISK_LEVELS = ["RR1","RR2","RR3","RR4","RR5"];
+const INVEST_STYLES = ["保守型","穩健型","積極型"];
+const PRODUCT_TYPES = ["定存","基金","ETF","保險","債券","其他"];
+const REACTIONS = ["正面","中立","保留"];
+const PREF_ITEMS = [
+  { key:"followup", label:"Follow Up 到期提醒", desc:"待處理事項到期或逾期時提醒" },
+  { key:"birthday", label:"客戶生日提醒", desc:"7 天內有生日的客戶" },
+  { key:"maturity", label:"商品到期提醒", desc:"定存與基金即將到期或已到期" },
+  { key:"etf",      label:"ETF 波動提醒", desc:"持有 ETF 漲跌幅超過 5%" },
+  { key:"stale",    label:"久未聯繫提醒", desc:"依下方天數閾值判斷" },
+];
 
 function loadStoredAuth(){
   try{
@@ -647,77 +942,219 @@ function loadStoredAuth(){
   } catch { return null; }
 }
 
+const INITIAL_ASSISTANT_MSG = { role:"ai", text:"嗨，我是你的 AI 理專助理。你可以問我像是「王小明上次聊了什麼？」、「今天該聯繫誰？」或「幫我建立林淑芬的待辦」。" };
+
+/* 補齊欄位預設值，讓舊資料／新增資料都有一致結構 */
+function normalizeCustomer(c){
+  const contact = DEMO_CONTACTS[c.id] || {};
+  if(c.phone === undefined) c.phone = contact.phone || "";
+  if(c.email === undefined) c.email = contact.email || "";
+  if(!Array.isArray(c.products)) c.products = [];
+  if(!Array.isArray(c.callLogs)) c.callLogs = [];
+  if(!Array.isArray(c.tags)) c.tags = [];
+  if(!Array.isArray(c.chatSuggestions)) c.chatSuggestions = [];
+  if(c.note === undefined) c.note = "";
+  if(c.family === undefined) c.family = "";
+  return c;
+}
+function freshCustomers(){ return JSON.parse(JSON.stringify(INITIAL_CUSTOMERS)).map(normalizeCustomer); }
+
 const state = {
   dark:false,
   view:"dashboard",
   authUser: loadStoredAuth(),
   loginError:"",
   loginSubmitting:false,
+  showPassword:false,
+  profile:{ name:DEMO_ACCOUNT.name, branch:DEMO_ACCOUNT.branch, title:"理財專員" },
   selectedId:null,
   bellOpen:false,
-  modalOpen:false,
+  menuOpen:null,
+  dialog:null,
   assistantOpen:false,
+  assistantTyping:false,
   staleDays:45,
+  prefs:{ followup:true, birthday:true, maturity:true, etf:true, stale:true },
+  dismissed:[],          /* { key, until } — until 為 null 代表永久忽略 */
+  showDismissed:false,
   toastMsg:"",
   toastTimer:null,
-  customers: JSON.parse(JSON.stringify(INITIAL_CUSTOMERS)),
+  customers: freshCustomers(),
   followUps: JSON.parse(JSON.stringify(INITIAL_FOLLOWUPS)),
   todos: JSON.parse(JSON.stringify(INITIAL_TODOS)),
-  custFilter:{ q:"", risk:"全部", sort:"資產規模" },
+  custFilter:{ q:"", risk:"全部", tag:"全部", sort:"資產規模" },
   cal:{ year:2026, month:6, selectedKey:"2026-07-17" },
-  aiResult:null,
-  aiConsole:{ customerId:1, type:null, output:"" },
-  assistantMessages:[{ role:"ai", text:"嗨，我是你的 AI 理專助理。你可以問我像是「王小明上次聊了什麼？」或「這個月哪些客戶資產有成長？」" }],
+  aiConsole:{ customerId:1, type:null, output:"", title:"" },
+  assistantMessages:[ { ...INITIAL_ASSISTANT_MSG } ],
+  callSeconds:0,
+  callTimer:null,
 };
 
-function findCustomer(id){ return state.customers.find(c => c.id === id); }
+/* -------------------- 資料持久化 -------------------- */
+const PERSIST_FIELDS = ["dark","profile","staleDays","prefs","dismissed","customers","followUps","todos","assistantMessages"];
+
+let _saveTimer = null;
+function saveData(){
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(() => {
+    try{
+      const payload = {};
+      PERSIST_FIELDS.forEach(k => { payload[k] = state[k]; });
+      payload._savedAt = Date.now();
+      localStorage.setItem(DATA_STORAGE_KEY, JSON.stringify(payload));
+    } catch {}
+  }, 150);
+}
+function loadData(){
+  let saved = null;
+  try{
+    const raw = localStorage.getItem(DATA_STORAGE_KEY);
+    saved = raw ? JSON.parse(raw) : null;
+  } catch { saved = null; }
+  if(!saved) return;
+  PERSIST_FIELDS.forEach(k => {
+    if(saved[k] === undefined || saved[k] === null) return;
+    if(k === "prefs" || k === "profile") state[k] = { ...state[k], ...saved[k] };
+    else state[k] = saved[k];
+  });
+  state.customers.forEach(normalizeCustomer);
+  state.assistantMessages = state.assistantMessages.filter(m => m && m.role && m.text);
+  if(state.assistantMessages.length === 0) state.assistantMessages = [ { ...INITIAL_ASSISTANT_MSG } ];
+  const maxId = Math.max(
+    0,
+    ...state.customers.map(c => c.id),
+    ...state.followUps.map(f => f.id),
+    ...state.todos.map(t => t.id),
+    ...state.customers.flatMap(c => c.products.map(p => p.id)),
+    ...state.customers.flatMap(c => c.callLogs.map(l => l.id)),
+  );
+  if(maxId > _uidSeq) _uidSeq = maxId;
+}
+function resetDemoData(){
+  state.customers = freshCustomers();
+  state.followUps = JSON.parse(JSON.stringify(INITIAL_FOLLOWUPS));
+  state.todos = JSON.parse(JSON.stringify(INITIAL_TODOS));
+  state.dismissed = [];
+  state.staleDays = 45;
+  state.prefs = { followup:true, birthday:true, maturity:true, etf:true, stale:true };
+  state.assistantMessages = [ { ...INITIAL_ASSISTANT_MSG } ];
+  state.selectedId = null;
+  state.view = "dashboard";
+  state.dialog = null;
+  saveData();
+  render();
+  showToast("已重置為示範資料");
+}
+
+function findCustomer(id){ return state.customers.find(c => c.id === Number(id)); }
+function allTags(){
+  const set = new Set();
+  state.customers.forEach(c => c.tags.forEach(t => set.add(t)));
+  return [...set].sort();
+}
+
+function completeLogin(email, rememberMe){
+  const authPayload = {
+    email,
+    name: state.profile.name || DEMO_ACCOUNT.name,
+    branch: state.profile.branch || DEMO_ACCOUNT.branch,
+    token: "demo-mock-token-" + Date.now(),
+    rememberMe: !!rememberMe,
+    loginAt: Date.now(),
+  };
+  try{
+    if(rememberMe) localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authPayload));
+    else localStorage.removeItem(AUTH_STORAGE_KEY);
+  } catch {}
+  state.authUser = authPayload;
+  state.loginError = "";
+  state.loginSubmitting = false;
+  state.view = "dashboard";
+  render();
+  showToast(`歡迎回來，${authPayload.name}`);
+}
 
 function doLogin(e){
   e.preventDefault();
-  state.loginError = "";
+  if(state.loginSubmitting) return;
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value;
   const rememberMe = document.getElementById("loginRemember").checked;
 
-  if(email === DEMO_ACCOUNT.email && password === DEMO_ACCOUNT.password){
-    const authPayload = {
-      email, name:DEMO_ACCOUNT.name, branch:DEMO_ACCOUNT.branch,
-      token:"demo-mock-token-" + Date.now(),
-      rememberMe,
-      loginAt: Date.now(),
-    };
-    try{ localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authPayload)); } catch {}
-    state.authUser = authPayload;
-    state.view = "dashboard";
-    render();
-  } else {
-    state.loginError = "帳號或密碼錯誤，請確認後再試一次";
+  if(!email || !password){
+    state.loginError = "請輸入帳號與密碼";
     renderLoginError();
+    return;
   }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    state.loginError = "帳號格式需為 Email，例如 rm@bank.com";
+    renderLoginError();
+    return;
+  }
+
+  /* 模擬送出驗證請求 */
+  state.loginError = "";
+  state.loginSubmitting = true;
+  renderLoginError();
+  setLoginBusy(true);
+
+  setTimeout(() => {
+    if(email === DEMO_ACCOUNT.email && password === DEMO_ACCOUNT.password){
+      completeLogin(email, rememberMe);
+    } else {
+      state.loginSubmitting = false;
+      state.loginError = "帳號或密碼錯誤，請確認後再試一次";
+      setLoginBusy(false);
+      renderLoginError();
+    }
+  }, 650);
+}
+function setLoginBusy(busy){
+  const btn = document.getElementById("loginSubmit");
+  if(!btn) return;
+  btn.disabled = busy;
+  btn.innerHTML = busy ? icon("loader",16) + "登入中…" : "登入";
 }
 function renderLoginError(){
   const el = document.getElementById("loginErrorWrap");
   if(el) el.innerHTML = state.loginError
-    ? `<p role="alert" style="font-size:13px;color:var(--rose);background:var(--badge-rose-bg);border-radius:10px;padding:8px 12px;">${esc(state.loginError)}</p>` : "";
+    ? `<p role="alert" class="form-error">${esc(state.loginError)}</p>` : "";
+}
+function toggleLoginPassword(){
+  const input = document.getElementById("loginPassword");
+  if(!input) return;
+  state.showPassword = !state.showPassword;
+  input.type = state.showPassword ? "text" : "password";
+  const btn = document.getElementById("pwToggle");
+  if(btn) btn.innerHTML = icon(state.showPassword ? "eyeOff" : "eye", 16);
 }
 function quickLogin(){
-  const authPayload = {
-    email:DEMO_ACCOUNT.email, name:DEMO_ACCOUNT.name, branch:DEMO_ACCOUNT.branch,
-    token:"demo-mock-token-" + Date.now(),
-    rememberMe:true,
-    loginAt: Date.now(),
-  };
-  try{ localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authPayload)); } catch {}
-  state.authUser = authPayload;
-  state.view = "dashboard";
-  render();
+  completeLogin(DEMO_ACCOUNT.email, true);
 }
 function logout(){
+  if(state.dialog) closeDialog();
   try{ localStorage.removeItem(AUTH_STORAGE_KEY); } catch {}
   state.authUser = null;
   state.view = "dashboard";
+  state.selectedId = null;
+  state.bellOpen = false;
+  state.assistantOpen = false;
   showToast("已登出");
   render();
+}
+function submitForgotPassword(e){
+  e.preventDefault();
+  const email = document.getElementById("forgotEmail").value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    setDialogError("請輸入正確的 Email 格式");
+    return;
+  }
+  const btn = document.getElementById("forgotSubmit");
+  if(btn){ btn.disabled = true; btn.innerHTML = icon("loader",16) + "傳送中…"; }
+  setTimeout(() => {
+    closeDialog();
+    showToast(`重設密碼連結已寄送至 ${email}`);
+  }, 700);
 }
 
 function showToast(msg){
@@ -761,40 +1198,61 @@ function renderSidebar(){
 }
 
 function renderTopBar(){
-  const reminders = getReminders(state.customers, state.followUps, state.staleDays);
+  const reminders = activeReminders();
   const list = [];
-  reminders.followUps.forEach(r => list.push({ customer:r.customer, text:r.followUp.content }));
-  reminders.cdMaturity.forEach(r => list.push({ customer:r.customer, text:`定存到期：${r.product.name}` }));
-  reminders.birthdays.forEach(r => list.push({ customer:r.customer, text:"生日提醒" }));
+  reminders.followUps.forEach(r => list.push({ customer:r.customer, text:r.followUp.content, days:r.days }));
+  reminders.cdMaturity.forEach(r => list.push({ customer:r.customer, text:`定存到期：${r.product.name}`, days:r.days }));
+  reminders.fundMaturity.forEach(r => list.push({ customer:r.customer, text:`基金到期：${r.product.name}`, days:r.days }));
+  reminders.birthdays.forEach(r => list.push({ customer:r.customer, text:"生日提醒", days:r.days }));
+  reminders.stale.forEach(r => list.push({ customer:r.customer, text:`已 ${r.days} 天未聯繫`, days:9999 }));
+  list.sort((a,b) => a.days - b.days);
   const count = list.length;
 
   const dropdown = state.bellOpen ? `
     <div class="bell-dropdown" onclick="event.stopPropagation()">
-      <div class="bell-dropdown-title">近期提醒</div>
+      <div class="bell-dropdown-title">近期提醒（${count}）</div>
       <div style="max-height:256px;overflow-y:auto;display:flex;flex-direction:column;gap:2px;">
         ${list.length===0 ? `<div class="empty-row">目前沒有待處理提醒</div>` :
-          list.slice(0,5).map(r => `<div class="bell-item"><b>${esc(r.customer.name)}</b> · ${esc(r.text)}</div>`).join("")}
+          list.slice(0,6).map(r => `
+            <button class="bell-item" style="width:100%;text-align:left;" onclick="openCustomer(${r.customer.id})">
+              <b>${esc(r.customer.name)}</b> · ${esc(r.text)}
+            </button>`).join("")}
       </div>
       <button class="bell-more" onclick="setView('reminders')">查看全部提醒 →</button>
+    </div>` : "";
+
+  const profileMenu = state.menuOpen === "profile" ? `
+    <div class="menu" onclick="event.stopPropagation()">
+      <div style="padding:8px 10px;">
+        <p class="text-sm font-medium">${esc(state.profile.name)}</p>
+        <p class="text-xs faint">${esc(state.authUser ? state.authUser.email : "")}</p>
+      </div>
+      <div class="menu-sep"></div>
+      <button class="menu-item" onclick="setView('settings')">${icon("settings",15)}設定</button>
+      <button class="menu-item" onclick="openDialog({type:'profile'})">${icon("user",15)}編輯個人資料</button>
+      <div class="menu-sep"></div>
+      <button class="menu-item danger" onclick="logout()">${icon("logout",15)}登出</button>
     </div>` : "";
 
   return `
     <header class="topbar">
       <div>
-        <p class="topbar-greeting">早安，陳經理</p>
-        <p class="topbar-date">2026 年 7 月 17 日 星期五</p>
+        <p class="topbar-greeting">${greetingText()}，${esc(state.profile.name)}</p>
+        <p class="topbar-date">${fmtDateCN(todayStr())}</p>
       </div>
       <div class="topbar-actions">
-        <button class="icon-btn" onclick="toggleDark()">${icon(state.dark?"sun":"moon",17)}</button>
+        <button class="icon-btn" title="切換深色模式" onclick="toggleDark()">${icon(state.dark?"sun":"moon",17)}</button>
         <div style="position:relative;">
-          <button class="icon-btn" onclick="event.stopPropagation();toggleBell()">
+          <button class="icon-btn" title="提醒" onclick="event.stopPropagation();toggleBell()">
             ${icon("bell",17)}
             ${count>0?`<span class="badge-dot">${count>9?"9+":count}</span>`:""}
           </button>
           ${dropdown}
         </div>
-        <div class="avatar-me" title="${esc(state.authUser ? state.authUser.name : '')}">陳</div>
-        <button class="icon-btn" onclick="logout()" title="登出">${icon("x",17)}</button>
+        <div class="menu-wrap">
+          <button class="avatar-me" title="${esc(state.profile.name)}" onclick="event.stopPropagation();toggleMenu('profile')">${esc(initialOf(state.profile.name))}</button>
+          ${profileMenu}
+        </div>
       </div>
     </header>`;
 }
@@ -839,17 +1297,21 @@ function renderLogin(){
               </div>
               <div>
                 <label class="field-label" for="loginPassword">密碼</label>
-                <input type="password" id="loginPassword" placeholder="••••••••" value="password123" autocomplete="current-password" />
+                <div style="position:relative;">
+                  <input type="${state.showPassword?"text":"password"}" id="loginPassword" placeholder="••••••••" value="password123" autocomplete="current-password" style="padding-right:42px;" />
+                  <button type="button" id="pwToggle" class="icon-btn" style="position:absolute;right:2px;top:1px;width:32px;height:32px;"
+                    title="顯示／隱藏密碼" onclick="toggleLoginPassword()">${icon(state.showPassword?"eyeOff":"eye",16)}</button>
+                </div>
               </div>
               <div id="loginErrorWrap"></div>
               <div class="flex items-center justify-between">
-                <label style="display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;">
-                  <input type="checkbox" id="loginRemember" checked style="width:16px;height:16px;accent-color:var(--accent);" />
+                <label class="checkline">
+                  <input type="checkbox" id="loginRemember" checked />
                   記住我
                 </label>
-                <button type="button" class="link-btn" style="font-size:13px;" onclick="showToast('忘記密碼流程尚未實作')">忘記密碼？</button>
+                <button type="button" class="link-btn" style="font-size:13px;" onclick="openDialog({type:'forgot'})">忘記密碼？</button>
               </div>
-              <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">登入</button>
+              <button type="submit" id="loginSubmit" class="btn btn-primary" style="width:100%;justify-content:center;">登入</button>
             </form>
             <button type="button" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:12px;" onclick="quickLogin()">
               ${icon("sparkles",15)}一鍵使用示範帳號登入
@@ -868,18 +1330,19 @@ function renderLogin(){
 
 function renderDashboard(){
   const suggestions = getSuggestions(state.customers, state.followUps, state.staleDays);
-  const reminders = getReminders(state.customers, state.followUps, state.staleDays);
+  const reminders = activeReminders();
 
   let brief;
   const top = suggestions.slice(0,3);
-  if(top.length === 0) brief = "早安，今天暫無特別緊急的客戶待辦，適合安排例行關係維繫聯繫。";
-  else brief = `早安，今天建議優先聯繫 ${top.length} 位客戶：` + top.map(s => `${s.customer.name}（${s.reasons[0]}）`).join("、") + "。";
+  if(top.length === 0) brief = `${greetingText()}，今天暫無特別緊急的客戶待辦，適合安排例行關係維繫聯繫。`;
+  else brief = `${greetingText()}，今天建議優先聯繫 ${top.length} 位客戶：` + top.map(s => `${s.customer.name}（${s.reasons[0]}）`).join("、") + "。";
 
   const doneCount = state.todos.filter(t => t.done).length;
   const callRate = state.todos.length ? Math.round(doneCount/state.todos.length*100) : 0;
   const totalAUM = state.customers.reduce((s,c)=>s+c.asset,0);
   const todayBirthdayCount = reminders.birthdays.filter(r=>r.days===0).length;
-  const monthlyNewCount = state.customers.filter(c => c.joinedDate && c.joinedDate.slice(0,7) === "2026-07").length;
+  const thisMonth = todayStr().slice(0,7);
+  const monthlyNewCount = state.customers.filter(c => c.joinedDate && c.joinedDate.slice(0,7) === thisMonth).length;
 
   const statCards = [
     { label:"客戶數", value:state.customers.length, icon:"users" },
@@ -894,9 +1357,12 @@ function renderDashboard(){
       <p class="text-lg font-semibold" style="margin:0;">${s.value}</p>
     </div>`).join("");
 
-  const chartData = [
-    { m:"2月", v:5 }, { m:"3月", v:6 }, { m:"4月", v:6 }, { m:"5月", v:7 }, { m:"6月", v:7 }, { m:"7月", v:8 },
-  ];
+  /* 近 6 個月客戶累積數：以目前客戶數回推（示範資料無完整歷史）*/
+  const total = state.customers.length;
+  const chartData = [5,4,3,2,1,0].map((back,i) => {
+    const d = new Date(TODAY.getFullYear(), TODAY.getMonth() - back, 1);
+    return { m:`${d.getMonth()+1}月`, v: Math.max(1, total - (5-i)) };
+  });
   const chartMax = Math.max(...chartData.map(d=>d.v));
   const chartBars = chartData.map(d => `
     <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;">
@@ -904,16 +1370,23 @@ function renderDashboard(){
       <span class="text-xs faint">${d.m}</span>
     </div>`).join("");
 
-  const todoRows = state.todos.map(t => {
-    const c = findCustomer(t.customerId);
-    if(!c) return "";
-    return `
-      <button class="todo-item" onclick="toggleTodo(${t.id})">
-        ${icon(t.done?"circleCheck":"circle",18, `color:${t.done?"var(--emerald)":"var(--faint)"}`)}
-        <span class="todo-name ${t.done?"todo-done":""}">${esc(c.name)}</span>
-        <span class="todo-time">${t.time}</span>
-      </button>`;
-  }).join("");
+  const sortedTodos = [...state.todos].sort((a,b) => String(a.time).localeCompare(String(b.time)));
+  const todoRows = sortedTodos.length === 0 ? `<div class="empty-row">今天還沒有待辦，點右上角新增</div>` :
+    sortedTodos.map(t => {
+      const c = t.customerId ? findCustomer(t.customerId) : null;
+      const label = c ? c.name : (t.note || "自訂事項");
+      const sub = c && t.note ? t.note : "";
+      return `
+      <div class="todo-item">
+        <button style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;text-align:left;" onclick="toggleTodo(${t.id})">
+          ${icon(t.done?"circleCheck":"circle",18, `color:${t.done?"var(--emerald)":"var(--faint)"}`)}
+          <span class="todo-name ${t.done?"todo-done":""} truncate">${esc(label)}${sub?` <span class="text-xs faint">· ${esc(sub)}</span>`:""}</span>
+        </button>
+        <span class="todo-time">${esc(t.time)}</span>
+        ${c ? `<button class="icon-btn" style="width:26px;height:26px;" title="查看客戶" onclick="openCustomer(${c.id})">${icon("chevronRight",14)}</button>` : ""}
+        <button class="icon-btn" style="width:26px;height:26px;" title="刪除待辦" onclick="deleteTodo(${t.id})">${icon("trash",13)}</button>
+      </div>`;
+    }).join("");
 
   const suggestionRows = suggestions.length===0 ? `<div class="empty-row">今天沒有特別建議的客戶</div>` :
     suggestions.slice(0,4).map(s => `
@@ -970,10 +1443,19 @@ function renderDashboard(){
       <div class="hero-card">
         <div class="hero-tag">${icon("sparkles",18)}<span>AI 每日建議</span></div>
         <p>${esc(brief)}</p>
-        <button class="hero-btn" onclick="showToast('已展開完整建議清單')">查看詳細原因 →</button>
+        <div class="out-actions">
+          <button class="btn" onclick="openDialog({type:'suggestions'})">${icon("list",15)}查看詳細原因</button>
+          <button class="btn" onclick="generateTodosFromAI()">${icon("bolt",15)}一鍵排入今日待辦</button>
+        </div>
       </div>
       <div class="card">
-        <div class="section-title"><div class="section-title-left">${icon("checkCircle",16)}<h3>今日待辦 (${doneCount}/${state.todos.length})</h3></div></div>
+        <div class="section-title">
+          <div class="section-title-left">${icon("checkCircle",16)}<h3>今日待辦 (${doneCount}/${state.todos.length})</h3></div>
+          <div class="row-actions">
+            ${state.todos.some(t=>t.done) ? `<button class="btn btn-ghost btn-xs" onclick="clearDoneTodos()">清除已完成</button>` : ""}
+            <button class="btn btn-outline btn-xs" onclick="openDialog({type:'todo'})">${icon("plus",13)}新增</button>
+          </div>
+        </div>
         <div class="todo-list">${todoRows}</div>
       </div>
     </div>
@@ -992,11 +1474,18 @@ function renderDashboard(){
 /* ================================================================== */
 
 function filteredCustomers(){
-  const { q, risk, sort } = state.custFilter;
-  let list = state.customers.filter(c => c.name.includes(q) || c.occupation.includes(q));
+  const { q, risk, tag, sort } = state.custFilter;
+  const kw = q.trim().toLowerCase();
+  let list = state.customers.filter(c => {
+    if(!kw) return true;
+    return [c.name, c.occupation, c.phone, c.email, c.note, ...c.tags]
+      .filter(Boolean).some(v => String(v).toLowerCase().includes(kw));
+  });
   if(risk !== "全部") list = list.filter(c => c.risk === risk);
+  if(tag !== "全部") list = list.filter(c => c.tags.includes(tag));
   if(sort === "資產規模") list = [...list].sort((a,b) => b.asset - a.asset);
   if(sort === "最近聯絡") list = [...list].sort((a,b) => daysFromToday(a.lastContact) - daysFromToday(b.lastContact));
+  if(sort === "姓名") list = [...list].sort((a,b) => a.name.localeCompare(b.name, "zh-Hant"));
   return list;
 }
 function renderCustomerRows(list){
@@ -1005,49 +1494,80 @@ function renderCustomerRows(list){
     const days = -daysFromToday(c.lastContact);
     return `
       <tr>
-        <td><div class="flex items-center gap-3">${avatarHTML(c.name,"sm")}<div><p class="font-medium">${esc(c.name)}</p><p class="text-xs faint">${c.age} 歲・${esc(c.occupation)}</p></div></div></td>
+        <td><div class="flex items-center gap-3">${avatarHTML(c.name,"sm")}<div><p class="font-medium cust-name">${esc(c.name)}</p><p class="text-xs faint cust-meta">${c.age} 歲・${esc(c.occupation)}</p></div></div></td>
         <td class="col-hide-sm">${fmtMoney(c.asset)}</td>
         <td class="col-hide-md">${badgeHTML(c.risk+" · "+c.style, riskColor(c.risk))}</td>
-        <td class="col-hide-lg" style="${days>=45?"color:var(--rose);font-weight:500;":"color:var(--muted);"}">${days} 天前</td>
-        <td><div class="flex gap-1 flex-wrap">${c.tags.slice(0,2).map(t=>badgeHTML(t,"indigo")).join("")}</div></td>
-        <td style="text-align:right;"><button class="link-btn" onclick="openCustomer(${c.id})">查看 ${icon("chevronRight",14)}</button></td>
+        <td class="col-hide-lg" style="${days>=state.staleDays?"color:var(--rose);font-weight:500;":"color:var(--muted);"}">${days} 天前</td>
+        <td><div class="flex gap-1 flex-wrap">${c.tags.slice(0,2).map(t=>badgeHTML(esc(t),"indigo")).join("")}</div></td>
+        <td style="text-align:right;">
+          <div class="row-actions" style="justify-content:flex-end;">
+            <button class="icon-btn only-md" style="width:30px;height:30px;" title="撥打電話" onclick="startCall(${c.id})">${icon("phone",14)}</button>
+            <button class="icon-btn only-md" style="width:30px;height:30px;" title="編輯客戶" onclick="openDialog({type:'customer',id:${c.id}})">${icon("edit",14)}</button>
+            <button class="link-btn" onclick="openCustomer(${c.id})">查看 ${icon("chevronRight",14)}</button>
+          </div>
+        </td>
       </tr>`;
   }).join("");
 }
 function refreshCustomerTable(){
   const wrap = document.getElementById("custTbody");
   if(wrap) wrap.innerHTML = renderCustomerRows(filteredCustomers());
+  const cnt = document.getElementById("custCount");
+  if(cnt) cnt.textContent = `${filteredCustomers().length} / ${state.customers.length} 位`;
 }
 function updateCustFilter(field, value){
   state.custFilter[field] = value;
   refreshCustomerTable();
 }
+function exportCustomersCSV(){
+  const header = ["姓名","年齡","職業","家庭狀況","電話","Email","資產規模(萬)","投資屬性","風險屬性","最近聯絡","生日","標籤","備註"];
+  const rows = filteredCustomers().map(c => [
+    c.name, c.age, c.occupation, c.family, c.phone, c.email, c.asset, c.style, c.risk,
+    c.lastContact, c.birthdayDate || "", c.tags.join(" / "), (c.note||"").replace(/\r?\n/g," "),
+  ]);
+  const csv = [header, ...rows]
+    .map(r => r.map(v => `"${String(v == null ? "" : v).replace(/"/g,'""')}"`).join(","))
+    .join("\r\n");
+  download(`客戶名單_${todayStr()}.csv`, "﻿" + csv, "text/csv;charset=utf-8");
+  showToast(`已匯出 ${rows.length} 位客戶`);
+}
 
 function renderCustomers(){
   const f = state.custFilter;
+  const list = filteredCustomers();
+  const tagOptions = ["全部", ...allTags()];
   return `
     <div class="flex-col gap-4">
       <div class="flex items-center justify-between flex-wrap gap-3">
-        <h2 class="text-xl font-semibold" style="margin:0;">客戶管理</h2>
-        <button class="btn btn-primary" onclick="addCustomerPlaceholder()">${icon("plus",16)}新增客戶</button>
+        <div>
+          <h2 class="text-xl font-semibold" style="margin:0;">客戶管理</h2>
+          <p class="text-xs faint mt-1"><span id="custCount">${list.length} / ${state.customers.length} 位</span></p>
+        </div>
+        <div class="flex gap-2 flex-wrap">
+          <button class="btn btn-outline" onclick="exportCustomersCSV()">${icon("download",16)}匯出 CSV</button>
+          <button class="btn btn-primary" onclick="openDialog({type:'customer'})">${icon("plus",16)}新增客戶</button>
+        </div>
       </div>
       <div class="toolbar">
         <div class="search-box">
           ${icon("search",16,"color:var(--faint)")}
-          <input type="text" placeholder="搜尋姓名或職業" value="${esc(f.q)}" oninput="updateCustFilter('q', this.value)" />
+          <input type="text" placeholder="搜尋姓名、職業、電話、標籤…" value="${esc(f.q)}" oninput="updateCustFilter('q', this.value)" />
         </div>
-        <select onchange="updateCustFilter('risk', this.value)">
-          ${["全部","RR2","RR3","RR4","RR5"].map(r => `<option value="${r}" ${f.risk===r?"selected":""}>${r==="全部"?"風險屬性：全部":r}</option>`).join("")}
+        <select style="max-width:150px;" onchange="updateCustFilter('risk', this.value)">
+          ${["全部",...RISK_LEVELS].map(r => `<option value="${r}" ${f.risk===r?"selected":""}>${r==="全部"?"風險屬性：全部":r}</option>`).join("")}
         </select>
-        <select onchange="updateCustFilter('sort', this.value)">
-          ${["資產規模","最近聯絡"].map(s => `<option value="${s}" ${f.sort===s?"selected":""}>排序：${s}</option>`).join("")}
+        <select style="max-width:180px;" onchange="updateCustFilter('tag', this.value)">
+          ${tagOptions.map(t => `<option value="${esc(t)}" ${f.tag===t?"selected":""}>${t==="全部"?"標籤：全部":esc(t)}</option>`).join("")}
+        </select>
+        <select style="max-width:160px;" onchange="updateCustFilter('sort', this.value)">
+          ${["資產規模","最近聯絡","姓名"].map(s => `<option value="${s}" ${f.sort===s?"selected":""}>排序：${s}</option>`).join("")}
         </select>
       </div>
       <div class="card card-flat">
         <div style="overflow-x:auto;">
           <table>
             <thead><tr><th>客戶</th><th class="col-hide-sm">資產規模</th><th class="col-hide-md">風險屬性</th><th class="col-hide-lg">最近聯絡</th><th>標籤</th><th style="text-align:right;">操作</th></tr></thead>
-            <tbody id="custTbody">${renderCustomerRows(filteredCustomers())}</tbody>
+            <tbody id="custTbody">${renderCustomerRows(list)}</tbody>
           </table>
         </div>
       </div>
@@ -1073,50 +1593,132 @@ function renderCustomerDetail(){
 
   let tabContent = "";
   if(detailTab === "basic"){
-    const rows = [["姓名",c.name],["年齡",c.age+" 歲"],["職業",c.occupation],["家庭狀況",c.family],["資產規模",fmtMoney(c.asset)],["投資屬性",c.style],["風險屬性",c.risk],["最近聯絡日期",c.lastContact]];
-    tabContent = `<div class="info-grid">${rows.map(([l,v])=>`<div><p class="info-label">${l}</p><p>${esc(String(v))}</p></div>`).join("")}<div class="span-2"><p class="info-label">備註</p><p>${esc(c.note)}</p></div></div>`;
+    const rows = [
+      ["姓名",c.name],["年齡",c.age+" 歲"],["職業",c.occupation],["家庭狀況",c.family || "—"],
+      ["電話",c.phone || "—"],["Email",c.email || "—"],
+      ["資產規模",fmtMoney(c.asset)],["投資屬性",c.style],["風險屬性",c.risk],
+      ["生日",c.birthdayDate || "—"],["最近聯絡日期",c.lastContact],["建檔日期",c.joinedDate || "—"],
+    ];
+    tabContent = `
+      <div class="section-title">
+        <div class="section-title-left">${icon("user",16)}<h3>基本資料</h3></div>
+        <button class="btn btn-outline btn-xs" onclick="openDialog({type:'customer',id:${c.id}})">${icon("edit",13)}編輯</button>
+      </div>
+      <div class="info-grid">
+        ${rows.map(([l,v])=>`<div><p class="info-label">${l}</p><p>${esc(String(v))}</p></div>`).join("")}
+        <div class="span-2"><p class="info-label">備註</p><p>${esc(c.note || "—")}</p></div>
+        <div class="span-2"><p class="info-label">標籤</p><div class="tags-row">${c.tags.length?c.tags.map(t=>badgeHTML(esc(t),"indigo")).join(""):'<span class="text-sm faint">尚無標籤</span>'}</div></div>
+      </div>`;
   } else if(detailTab === "products"){
-    tabContent = c.products.map(p => `
-      <div class="product-row">
-        <div>
-          <div class="flex items-center gap-2">${badgeHTML(p.type,"slate")}<span class="text-sm font-medium">${esc(p.name)}</span></div>
-          <p class="text-xs faint mt-1">${p.maturity?`到期日：${p.maturity}`: p.changePct!==undefined ? "追蹤中" : "持有中"}</p>
-        </div>
-        <div style="text-align:right;">
-          <p class="text-sm font-semibold">${fmtMoney(p.amount)}</p>
-          ${p.changePct!==undefined?`<p class="text-xs font-medium" style="color:${p.changePct>0?"var(--emerald)":"var(--rose)"}">${p.changePct>0?"+":""}${p.changePct}%</p>`:""}
-        </div>
-      </div>`).join("");
+    const totalAmt = c.products.reduce((s,p)=>s+Number(p.amount||0),0);
+    tabContent = `
+      <div class="section-title">
+        <div class="section-title-left">${icon("wallet",16)}<h3>持有商品（共 ${c.products.length} 筆・${fmtMoney(totalAmt)}）</h3></div>
+        <button class="btn btn-outline btn-xs" onclick="openDialog({type:'product',customerId:${c.id}})">${icon("plus",13)}新增商品</button>
+      </div>
+      ${c.products.length===0 ? `<div class="empty-row">尚無持有商品，點右上角新增</div>` :
+        c.products.map(p => `
+        <div class="product-row">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2">${badgeHTML(esc(p.type),"slate")}<span class="text-sm font-medium">${esc(p.name)}</span></div>
+            <p class="text-xs faint mt-1">${p.maturity?`到期日：${p.maturity}（${relativeDay(daysFromToday(p.maturity))}）`: p.changePct!==undefined ? "追蹤中" : "持有中"}</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <div style="text-align:right;">
+              <p class="text-sm font-semibold">${fmtMoney(p.amount)}</p>
+              ${p.changePct!==undefined&&p.changePct!==null&&p.changePct!==""?`<p class="text-xs font-medium" style="color:${p.changePct>0?"var(--emerald)":"var(--rose)"}">${p.changePct>0?"+":""}${p.changePct}%</p>`:""}
+            </div>
+            <div class="row-actions">
+              <button class="icon-btn" style="width:30px;height:30px;" title="編輯商品" onclick="openDialog({type:'product',customerId:${c.id},id:${p.id}})">${icon("edit",14)}</button>
+              <button class="icon-btn" style="width:30px;height:30px;color:var(--rose);" title="刪除商品" onclick="deleteProduct(${c.id},${p.id})">${icon("trash",14)}</button>
+            </div>
+          </div>
+        </div>`).join("")}`;
   } else if(detailTab === "calls"){
-    const logs = [...c.callLogs].reverse();
-    tabContent = logs.length===0 ? `<div class="empty-row">尚無通話紀錄，開始第一次紀錄吧</div>` :
-      logs.map((log,idx) => `
+    const logs = [...c.callLogs].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+    tabContent = `
+      <div class="section-title">
+        <div class="section-title-left">${icon("phone",16)}<h3>通話紀錄（${logs.length} 次）</h3></div>
+        <button class="btn btn-outline btn-xs" onclick="openDialog({type:'calllog',customerId:${c.id}})">${icon("plus",13)}新增紀錄</button>
+      </div>
+      ${logs.length===0 ? `<div class="empty-row">尚無通話紀錄，開始第一次紀錄吧</div>` :
+        logs.map((log,idx) => `
         <div class="timeline-item">
           <div class="timeline-dot-col"><div class="timeline-dot"></div>${idx<logs.length-1?'<div class="timeline-line"></div>':""}</div>
-          <div style="padding-bottom:16px;flex:1;">
-            <p class="text-xs faint mb-1">${log.date}</p>
+          <div style="padding-bottom:16px;flex:1;min-width:0;">
+            <div class="flex items-center justify-between gap-2">
+              <p class="text-xs faint mb-1">${esc(log.date)}${log.durationText?`・通話 ${esc(log.durationText)}`:""}</p>
+              <button class="icon-btn" style="width:26px;height:26px;color:var(--rose);" title="刪除紀錄" onclick="deleteCallLog(${c.id},${log.id})">${icon("trash",13)}</button>
+            </div>
             <p class="text-sm mb-2">${esc(log.summary)}</p>
-            <div class="flex gap-2 flex-wrap mb-1">${log.needs.map(n=>badgeHTML(n,"indigo")).join("")}${badgeHTML("客戶反應："+log.reaction, log.reaction==="正面"?"emerald":log.reaction==="保留"?"rose":"slate")}</div>
-            ${log.followUp?`<p class="text-xs muted">Follow Up：${esc(log.followUp)}（下次聯絡 ${log.nextContact}）</p>`:""}
+            <div class="flex gap-2 flex-wrap mb-1">${(log.needs||[]).map(n=>badgeHTML(esc(n),"indigo")).join("")}${badgeHTML("客戶反應："+esc(log.reaction||"—"), log.reaction==="正面"?"emerald":log.reaction==="保留"?"rose":"slate")}</div>
+            ${log.followUp?`<p class="text-xs muted">Follow Up：${esc(log.followUp)}${log.nextContact?`（下次聯絡 ${esc(log.nextContact)}）`:""}</p>`:""}
           </div>
-        </div>`).join("");
+        </div>`).join("")}`;
   } else if(detailTab === "ai"){
-    tabContent = c.tags.map(t => `
+    const insights = [
+      ...c.tags.map(t => ({ title:t, desc:`依據 ${c.callLogs.length} 次通話紀錄與商品持有狀況分析歸納` })),
+      { title:`風險屬性 ${c.risk}／${c.style}`, desc:generateAIAnalysis(c,"risk") },
+      { title:"資產配置概況", desc:generateAIAnalysis(c,"allocation") },
+      { title:"商品推薦方向", desc:generateAIAnalysis(c,"product") },
+    ];
+    tabContent = `
+      <div class="section-title">
+        <div class="section-title-left">${icon("sparkles",16)}<h3>AI 洞察</h3></div>
+        <button class="btn btn-outline btn-xs" onclick="openAIConsoleFor(${c.id})">${icon("bolt",13)}到 AI 助理深入分析</button>
+      </div>
+      ${insights.map(it => `
       <div class="insight-row">
         ${icon("sparkles",16,"color:var(--accent);margin-top:2px;")}
-        <div><p class="text-sm font-medium">${esc(t)}</p><p class="text-xs faint mt-1">依據 ${c.callLogs.length} 次通話紀錄與商品持有狀況分析歸納</p></div>
-      </div>`).join("");
+        <div><p class="text-sm font-medium">${esc(it.title)}</p><p class="text-xs faint mt-1" style="line-height:1.6;">${esc(it.desc)}</p></div>
+      </div>`).join("")}`;
   } else if(detailTab === "followup"){
-    tabContent = custFollowUps.length===0 ? `<div class="empty-row">目前沒有待處理的 Follow Up</div>` :
-      custFollowUps.map(f => {
-        const d = daysFromToday(f.dueDate);
-        return `
-        <div class="followup-row">
-          <div><p class="text-sm font-medium">${esc(f.content)}</p><p class="text-xs faint mt-1">預定日期：${f.dueDate}</p></div>
-          <div class="flex items-center gap-2">${badgeHTML(relativeDay(d), d<0?"rose":d===0?"amber":"slate")}<button class="link-btn" style="font-size:12px;" onclick="completeFollowUp(${f.id})">標記完成</button></div>
-        </div>`;
-      }).join("");
+    const pending = custFollowUps.filter(f => f.status === "pending").sort((a,b)=>String(a.dueDate).localeCompare(String(b.dueDate)));
+    const done = custFollowUps.filter(f => f.status !== "pending");
+    tabContent = `
+      <div class="section-title">
+        <div class="section-title-left">${icon("clock",16)}<h3>待處理（${pending.length}）</h3></div>
+        <button class="btn btn-outline btn-xs" onclick="openDialog({type:'followup',customerId:${c.id}})">${icon("plus",13)}新增 Follow Up</button>
+      </div>
+      ${pending.length===0 ? `<div class="empty-row">目前沒有待處理的 Follow Up</div>` :
+        pending.map(f => {
+          const d = daysFromToday(f.dueDate);
+          return `
+          <div class="followup-row">
+            <div class="min-w-0"><p class="text-sm font-medium">${esc(f.content)}</p><p class="text-xs faint mt-1">預定日期：${esc(f.dueDate)}</p></div>
+            <div class="flex items-center gap-2">
+              ${badgeHTML(relativeDay(d), d<0?"rose":d===0?"amber":"slate")}
+              <button class="btn btn-outline btn-xs" onclick="completeFollowUp(${f.id})">完成</button>
+              <button class="icon-btn" style="width:30px;height:30px;" title="編輯" onclick="openDialog({type:'followup',customerId:${c.id},id:${f.id}})">${icon("edit",14)}</button>
+              <button class="icon-btn" style="width:30px;height:30px;color:var(--rose);" title="刪除" onclick="deleteFollowUp(${f.id})">${icon("trash",14)}</button>
+            </div>
+          </div>`;
+        }).join("")}
+      ${done.length===0 ? "" : `
+        <div class="section-title" style="margin-top:20px;"><div class="section-title-left">${icon("checkCircle",16)}<h3>已完成（${done.length}）</h3></div></div>
+        ${done.map(f => `
+          <div class="followup-row">
+            <div class="min-w-0"><p class="text-sm font-medium strike">${esc(f.content)}</p><p class="text-xs faint mt-1">預定日期：${esc(f.dueDate)}${f.doneDate?`・完成於 ${esc(f.doneDate)}`:""}</p></div>
+            <div class="flex items-center gap-2">
+              <button class="btn btn-ghost btn-xs" onclick="reopenFollowUp(${f.id})">${icon("undo",13)}復原</button>
+              <button class="icon-btn" style="width:30px;height:30px;color:var(--rose);" title="刪除" onclick="deleteFollowUp(${f.id})">${icon("trash",14)}</button>
+            </div>
+          </div>`).join("")}`}`;
   }
+
+  const menu = state.menuOpen === "customer" ? `
+    <div class="menu" onclick="event.stopPropagation()">
+      <button class="menu-item" onclick="openDialog({type:'customer',id:${c.id}})">${icon("edit",15)}編輯客戶資料</button>
+      <button class="menu-item" onclick="openDialog({type:'product',customerId:${c.id}})">${icon("wallet",15)}新增持有商品</button>
+      <button class="menu-item" onclick="openDialog({type:'followup',customerId:${c.id}})">${icon("clock",15)}新增 Follow Up</button>
+      <button class="menu-item" onclick="openDialog({type:'todo',customerId:${c.id}})">${icon("checkCircle",15)}排入今日待辦</button>
+      <div class="menu-sep"></div>
+      <button class="menu-item" onclick="refreshChatSuggestions(${c.id})">${icon("refresh",15)}重新產生建議話題</button>
+      <div class="menu-sep"></div>
+      <button class="menu-item danger" onclick="confirmDeleteCustomer(${c.id})">${icon("trash",15)}刪除客戶</button>
+    </div>` : "";
+
+  const suggestions = chatSuggestionsOf(c);
 
   return `
     <div class="flex-col gap-4">
@@ -1124,15 +1726,23 @@ function renderCustomerDetail(){
       <div class="flex items-start justify-between flex-wrap gap-4">
         <div class="flex items-center gap-4">
           ${avatarHTML(c.name,"lg")}
-          <div>
+          <div class="min-w-0">
             <h2 class="text-xl font-semibold" style="margin:0;">${esc(c.name)}</h2>
-            <p class="text-sm muted mt-1">${c.age} 歲・${esc(c.occupation)}・${esc(c.family)}</p>
-            <div class="tags-row">${c.tags.map(t=>badgeHTML(t,"indigo")).join("")}</div>
+            <p class="text-sm muted mt-1">${c.age} 歲・${esc(c.occupation)}${c.family?`・${esc(c.family)}`:""}</p>
+            <p class="text-xs faint mt-1 flex items-center gap-3 flex-wrap">
+              ${c.phone?`<span class="flex items-center gap-1">${icon("phone",12)}${esc(c.phone)}</span>`:""}
+              ${c.email?`<span class="flex items-center gap-1">${icon("mail",12)}${esc(c.email)}</span>`:""}
+            </p>
+            <div class="tags-row">${c.tags.map(t=>badgeHTML(esc(t),"indigo")).join("")}</div>
           </div>
         </div>
         <div class="flex gap-2">
-          <button class="btn btn-outline" onclick="callCustomer('${esc(c.name)}')">${icon("phone",15)}撥打</button>
-          <button class="btn btn-primary" onclick="openModal()">${icon("plus",15)}新增通話紀錄</button>
+          <button class="btn btn-outline" onclick="startCall(${c.id})">${icon("phone",15)}撥打</button>
+          <button class="btn btn-primary" onclick="openDialog({type:'calllog',customerId:${c.id}})">${icon("plus",15)}新增通話紀錄</button>
+          <div class="menu-wrap">
+            <button class="btn btn-outline" onclick="event.stopPropagation();toggleMenu('customer')">${icon("more",16)}</button>
+            ${menu}
+          </div>
         </div>
       </div>
       <div class="stat-grid">
@@ -1142,9 +1752,14 @@ function renderCustomerDetail(){
       </div>
       <div class="hero-card">
         <div class="hero-tag">${icon("sparkles",16)}<span>今天可以聊什麼</span></div>
+        ${suggestions.length===0 ? `<p style="font-size:14px;">目前資料不足，補齊持有商品與通話紀錄後即可產生建議話題。</p>` : `
         <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;">
-          ${c.chatSuggestions.map((s,i)=>`<li style="font-size:14px;line-height:1.6;display:flex;gap:8px;"><span style="opacity:.7;">${i+1}.</span><span>${esc(s)}</span></li>`).join("")}
-        </ul>
+          ${suggestions.map((s,i)=>`<li style="font-size:14px;line-height:1.6;display:flex;gap:8px;"><span style="opacity:.7;">${i+1}.</span><span>${esc(s)}</span></li>`).join("")}
+        </ul>`}
+        <div class="out-actions">
+          <button class="btn" onclick="copyChatSuggestions(${c.id})">${icon("copy",15)}複製話題</button>
+          <button class="btn" onclick="refreshChatSuggestions(${c.id})">${icon("refresh",15)}重新產生</button>
+        </div>
       </div>
       <div class="tabs">${tabBtns}</div>
       <div class="card">${tabContent}</div>
@@ -1158,20 +1773,29 @@ function renderCustomerDetail(){
 let remindersTab = "all";
 function setRemindersTab(t){ remindersTab = t; render(); }
 
-function renderReminders(){
-  const reminders = getReminders(state.customers, state.followUps, state.staleDays);
+function reminderRows(){
+  const reminders = activeReminders();
   const rows = [];
-  reminders.followUps.forEach(r => rows.push({ type:"followup", customer:r.customer, days:r.days, text:r.followUp.content, followUpId:r.followUp.id }));
-  reminders.birthdays.forEach(r => rows.push({ type:"birthday", customer:r.customer, days:r.days, text:"生日提醒" }));
-  reminders.cdMaturity.forEach(r => rows.push({ type:"maturity", customer:r.customer, days:r.days, text:`定存到期：${r.product.name}` }));
-  reminders.fundMaturity.forEach(r => rows.push({ type:"maturity", customer:r.customer, days:r.days, text:`基金到期：${r.product.name}` }));
-  reminders.stale.forEach(r => rows.push({ type:"stale", customer:r.customer, days:-r.days, text:`已 ${r.days} 天未聯繫` }));
+  reminders.followUps.forEach(r => rows.push({ type:"followup", customer:r.customer, days:r.days, text:r.followUp.content, followUpId:r.followUp.id, key:reminderKey("followup", r.customer.id, r.followUp.id) }));
+  reminders.birthdays.forEach(r => rows.push({ type:"birthday", customer:r.customer, days:r.days, text:`生日提醒（${r.customer.birthdayDate}）`, key:reminderKey("birthday", r.customer.id) }));
+  reminders.cdMaturity.forEach(r => rows.push({ type:"maturity", customer:r.customer, days:r.days, text:`定存到期：${r.product.name}・${fmtMoney(r.product.amount)}`, key:reminderKey("maturity", r.customer.id, r.product.id) }));
+  reminders.fundMaturity.forEach(r => rows.push({ type:"maturity", customer:r.customer, days:r.days, text:`基金到期：${r.product.name}・${fmtMoney(r.product.amount)}`, key:reminderKey("maturity", r.customer.id, r.product.id) }));
+  reminders.etf.forEach(r => rows.push({ type:"etf", customer:r.customer, days:0, text:`${r.product.name} 近期${r.product.changePct>0?"上漲":"下跌"} ${Math.abs(r.product.changePct)}%`, key:reminderKey("etf", r.customer.id, r.product.id) }));
+  reminders.stale.forEach(r => rows.push({ type:"stale", customer:r.customer, days:-r.days, text:`已 ${r.days} 天未聯繫`, key:reminderKey("stale", r.customer.id) }));
   rows.sort((a,b) => a.days - b.days);
+  return rows;
+}
 
-  const tabs = [["all","全部"],["followup","Follow Up"],["birthday","生日"],["maturity","商品到期"],["stale","久未聯繫"]];
+function renderReminders(){
+  const rows = reminderRows();
+  const counts = rows.reduce((m,r) => { m[r.type] = (m[r.type]||0)+1; return m; }, {});
+  const tabs = [["all","全部"],["followup","Follow Up"],["birthday","生日"],["maturity","商品到期"],["etf","ETF 波動"],["stale","久未聯繫"]];
   const filtered = remindersTab==="all" ? rows : rows.filter(r => r.type===remindersTab);
 
-  const urgency = (days) => {
+  const urgency = (r) => {
+    const days = r.days;
+    if(r.type === "etf") return { color:"amber", label:"需關注" };
+    if(r.type === "stale") return { color:-days >= 60 ? "rose" : "amber", label:`${-days} 天未聯繫` };
     if(days < 0) return { color:"rose", label:`已逾期 ${-days} 天` };
     if(days === 0) return { color:"rose", label:"今天" };
     if(days <= 3) return { color:"amber", label:relativeDay(days) };
@@ -1180,59 +1804,202 @@ function renderReminders(){
 
   const rowsHTML = filtered.length===0 ? `<div class="empty-row">這個分類目前沒有提醒</div>` :
     filtered.map(r => {
-      const u = urgency(r.days);
+      const u = urgency(r);
+      const menuId = "rm:" + r.key;
+      const menu = state.menuOpen === menuId ? `
+        <div class="menu" onclick="event.stopPropagation()">
+          ${r.type==="followup" ? `<button class="menu-item" onclick="completeFollowUp(${r.followUpId})">${icon("checkCircle",15)}標記完成</button>` : ""}
+          <button class="menu-item" onclick="startCall(${r.customer.id})">${icon("phone",15)}立即撥打</button>
+          <button class="menu-item" onclick="openDialog({type:'todo',customerId:${r.customer.id}})">${icon("clock",15)}排入今日待辦</button>
+          <div class="menu-sep"></div>
+          <button class="menu-item" onclick="dismissReminder('${esc(r.key)}',3)">${icon("clock",15)}延後 3 天</button>
+          <button class="menu-item" onclick="dismissReminder('${esc(r.key)}',7)">${icon("clock",15)}延後 7 天</button>
+          <button class="menu-item danger" onclick="dismissReminder('${esc(r.key)}',0)">${icon("x",15)}忽略此提醒</button>
+        </div>` : "";
       return `
         <div class="reminder-row">
           <button class="row-btn" style="padding:0;" onclick="openCustomer(${r.customer.id})">
             ${avatarHTML(r.customer.name,"sm")}
             <div class="min-w-0"><p class="text-sm font-medium">${esc(r.customer.name)}</p><p class="text-xs muted truncate">${esc(r.text)}</p></div>
           </button>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
             ${badgeHTML(u.label, u.color)}
             ${r.type==="followup"?`<button class="link-btn" style="font-size:12px;" onclick="completeFollowUp(${r.followUpId})">標記完成</button>`:""}
+            <div class="menu-wrap">
+              <button class="icon-btn" style="width:30px;height:30px;" title="更多操作" onclick="event.stopPropagation();toggleMenu('${esc(menuId)}')">${icon("more",16)}</button>
+              ${menu}
+            </div>
           </div>
         </div>`;
     }).join("");
 
+  const dismissedList = state.dismissed.filter(d => !d.until || daysFromToday(d.until) > 0);
+  const dismissedHTML = !state.showDismissed || dismissedList.length===0 ? "" : `
+    <div class="card card-flat">
+      <div style="padding:14px 16px;border-bottom:1px solid var(--border);" class="text-xs font-semibold muted">已忽略／延後中（${dismissedList.length}）</div>
+      ${dismissedList.map(d => {
+        const [type, cid] = d.key.split(":");
+        const c = findCustomer(Number(cid));
+        const typeLabel = { followup:"Follow Up", birthday:"生日", maturity:"商品到期", etf:"ETF 波動", stale:"久未聯繫" }[type] || type;
+        return `
+        <div class="reminder-row">
+          <div class="flex items-center gap-3 min-w-0">
+            ${c?avatarHTML(c.name,"sm"):""}
+            <div class="min-w-0">
+              <p class="text-sm font-medium">${esc(c?c.name:"（已刪除客戶）")}</p>
+              <p class="text-xs muted">${esc(typeLabel)}・${d.until?`延後至 ${esc(d.until)}`:"永久忽略"}</p>
+            </div>
+          </div>
+          <button class="btn btn-ghost btn-xs" onclick="restoreReminder('${esc(d.key)}')">${icon("undo",13)}恢復提醒</button>
+        </div>`;
+      }).join("")}
+    </div>`;
+
   return `
     <div class="flex-col gap-4">
-      <h2 class="text-xl font-semibold" style="margin:0;">提醒中心</h2>
-      <div class="flex gap-2 flex-wrap">${tabs.map(([k,l]) => `<button class="chip ${remindersTab===k?"active":""}" onclick="setRemindersTab('${k}')">${l}</button>`).join("")}</div>
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h2 class="text-xl font-semibold" style="margin:0;">提醒中心</h2>
+          <p class="text-xs faint mt-1">共 ${rows.length} 則待處理提醒・可於設定頁調整提醒類型</p>
+        </div>
+        <div class="flex gap-2">
+          ${dismissedList.length>0 ? `<button class="btn btn-outline btn-sm" onclick="toggleShowDismissed()">${icon(state.showDismissed?"eyeOff":"eye",15)}${state.showDismissed?"隱藏":"顯示"}已忽略（${dismissedList.length}）</button>` : ""}
+          <button class="btn btn-outline btn-sm" onclick="setView('settings')">${icon("settings",15)}提醒設定</button>
+        </div>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        ${tabs.map(([k,l]) => {
+          const n = k==="all" ? rows.length : (counts[k]||0);
+          return `<button class="chip ${remindersTab===k?"active":""}" onclick="setRemindersTab('${k}')">${l}${n?` ${n}`:""}</button>`;
+        }).join("")}
+      </div>
       <div class="card card-flat">${rowsHTML}</div>
+      ${dismissedHTML}
     </div>`;
 }
+function toggleShowDismissed(){ state.showDismissed = !state.showDismissed; render(); }
 
 /* ================================================================== */
 /* 設定頁                                                                */
 /* ================================================================== */
 
 function renderSettings(){
+  const stats = {
+    customers: state.customers.length,
+    products: state.customers.reduce((s,c)=>s+c.products.length,0),
+    logs: state.customers.reduce((s,c)=>s+c.callLogs.length,0),
+    followUps: state.followUps.filter(f=>f.status==="pending").length,
+  };
   return `
-    <div class="flex-col gap-4" style="max-width:520px;">
+    <div class="flex-col gap-4" style="max-width:640px;">
       <h2 class="text-xl font-semibold" style="margin:0;">設定</h2>
+
       <div class="card">
-        <div class="section-title"><h3>個人資料</h3></div>
-        <div class="flex items-center gap-4">${avatarHTML("陳經理","lg")}<div><p class="text-sm font-medium">陳經理</p><p class="text-xs faint">台北信義分行・理財專員</p></div></div>
+        <div class="section-title">
+          <div class="section-title-left">${icon("user",16)}<h3>個人資料</h3></div>
+          <button class="btn btn-outline btn-xs" onclick="openDialog({type:'profile'})">${icon("edit",13)}編輯</button>
+        </div>
+        <div class="flex items-center gap-4">
+          ${avatarHTML(state.profile.name,"lg")}
+          <div class="min-w-0">
+            <p class="text-sm font-medium">${esc(state.profile.name)}</p>
+            <p class="text-xs faint">${esc(state.profile.branch)}・${esc(state.profile.title)}</p>
+            <p class="text-xs faint mt-1">${esc(state.authUser ? state.authUser.email : "")}</p>
+          </div>
+        </div>
       </div>
+
       <div class="card">
-        <div class="section-title"><h3>外觀</h3></div>
+        <div class="section-title"><div class="section-title-left">${icon("moon",16)}<h3>外觀</h3></div></div>
         <div class="flex items-center justify-between">
-          <div><p class="text-sm font-medium">深色模式</p><p class="text-xs faint">切換淺色／深色主題</p></div>
+          <div><p class="text-sm font-medium">深色模式</p><p class="text-xs faint">切換淺色／深色主題，設定會自動保存</p></div>
           <button class="toggle ${state.dark?"on":""}" onclick="toggleDark()"><span class="toggle-dot"></span></button>
         </div>
       </div>
+
       <div class="card">
-        <div class="section-title"><h3>通知設定</h3></div>
-        <div class="flex items-center justify-between mb-2">
-          <p class="text-sm font-medium">久未聯繫提醒閾值</p>
-          <span id="staleDaysLabel" class="text-sm font-semibold" style="color:var(--accent);">${state.staleDays} 天</span>
+        <div class="section-title"><div class="section-title-left">${icon("bell",16)}<h3>通知設定</h3></div></div>
+        ${PREF_ITEMS.map(p => `
+          <div class="pref-row">
+            <div><p class="text-sm font-medium">${p.label}</p><p class="text-xs faint">${p.desc}</p></div>
+            <button class="toggle toggle-sm ${state.prefs[p.key]?"on":""}" onclick="togglePref('${p.key}')"><span class="toggle-dot"></span></button>
+          </div>`).join("")}
+        <div style="margin-top:16px;">
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-sm font-medium">久未聯繫提醒閾值</p>
+            <span id="staleDaysLabel" class="text-sm font-semibold" style="color:var(--accent);">${state.staleDays} 天</span>
+          </div>
+          <input type="range" min="15" max="90" step="5" value="${state.staleDays}"
+            oninput="document.getElementById('staleDaysLabel').textContent = this.value + ' 天'; state.staleDays = Number(this.value);"
+            onchange="commitStaleDays(Number(this.value))" />
+          <p class="text-xs faint mt-2">超過此天數未聯繫的客戶，將出現在提醒中心與今日建議聯絡名單中。</p>
         </div>
-        <input type="range" min="15" max="90" step="5" value="${state.staleDays}"
-          oninput="document.getElementById('staleDaysLabel').textContent = this.value + ' 天'; state.staleDays = Number(this.value);"
-          onchange="render()" />
-        <p class="text-xs faint mt-2">超過此天數未聯繫的客戶，將出現在提醒中心與今日建議聯絡名單中。</p>
       </div>
+
+      <div class="card">
+        <div class="section-title"><div class="section-title-left">${icon("wallet",16)}<h3>資料管理</h3></div></div>
+        <p class="hint mb-3">目前資料：${stats.customers} 位客戶・${stats.products} 筆持有商品・${stats.logs} 筆通話紀錄・${stats.followUps} 筆待處理 Follow Up。<br/>所有變更會即時儲存在這台裝置的瀏覽器（LocalStorage），不會上傳到任何伺服器。</p>
+        <div class="flex gap-2 flex-wrap">
+          <button class="btn btn-outline btn-sm" onclick="exportBackup()">${icon("download",15)}匯出備份 JSON</button>
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('importFile').click()">${icon("upload",15)}匯入備份</button>
+          <button class="btn btn-outline btn-sm" onclick="exportCustomersCSV()">${icon("download",15)}匯出客戶 CSV</button>
+          <button class="btn btn-danger-ghost btn-sm" onclick="openDialog({type:'confirm',title:'重置示範資料',message:'將清除所有新增與修改的資料，回復為初始示範情境。此動作無法復原。',confirmLabel:'確定重置',action:'resetDemo'})">${icon("refresh",15)}重置示範資料</button>
+        </div>
+        <input type="file" id="importFile" accept="application/json,.json" style="display:none;" onchange="importBackup(this)" />
+      </div>
+
+      <div class="card">
+        <div class="section-title"><div class="section-title-left">${icon("logout",16)}<h3>帳號</h3></div></div>
+        <div class="flex items-center justify-between">
+          <div><p class="text-sm font-medium">登出此裝置</p><p class="text-xs faint">客戶資料仍會保留在瀏覽器中</p></div>
+          <button class="btn btn-danger-ghost btn-sm" onclick="logout()">${icon("logout",15)}登出</button>
+        </div>
+      </div>
+
+      <p class="hint">作品集原型 · 資料為模擬情境；示範情境基準日設定為 ${todayStr()}，提醒與到期日皆以此日期計算。</p>
     </div>`;
+}
+function togglePref(key){
+  state.prefs[key] = !state.prefs[key];
+  saveData(); render();
+  showToast(`${PREF_ITEMS.find(p=>p.key===key).label}已${state.prefs[key]?"開啟":"關閉"}`);
+}
+function commitStaleDays(v){
+  state.staleDays = v;
+  saveData(); render();
+}
+function exportBackup(){
+  const payload = {};
+  PERSIST_FIELDS.forEach(k => { payload[k] = state[k]; });
+  payload._exportedAt = new Date().toISOString();
+  payload._app = "ai-relationship-manager";
+  download(`AI理專助理備份_${todayStr()}.json`, JSON.stringify(payload, null, 2), "application/json");
+  showToast("已匯出備份檔");
+}
+function importBackup(input){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const data = JSON.parse(String(reader.result));
+      if(!data || !Array.isArray(data.customers)) throw new Error("格式不符");
+      PERSIST_FIELDS.forEach(k => {
+        if(data[k] === undefined || data[k] === null) return;
+        if(k === "prefs" || k === "profile") state[k] = { ...state[k], ...data[k] };
+        else state[k] = data[k];
+      });
+      state.customers.forEach(normalizeCustomer);
+      _uidSeq = Math.max(_uidSeq, Date.now());
+      saveData(); render();
+      showToast(`已匯入 ${state.customers.length} 位客戶資料`);
+    } catch(err){
+      showToast("匯入失敗：檔案格式不正確");
+    }
+    input.value = "";
+  };
+  reader.onerror = () => { showToast("讀取檔案失敗"); input.value = ""; };
+  reader.readAsText(file);
 }
 
 /* ================================================================== */
@@ -1249,10 +2016,11 @@ const AI_ACTIONS = [
 ];
 
 function generateAIAnalysis(customer, type){
-  const totalAmt = customer.products.reduce((s,p)=>s+p.amount,0);
+  if(!customer) return "";
+  const totalAmt = customer.products.reduce((s,p)=>s+Number(p.amount||0),0);
   const byType = {};
-  customer.products.forEach(p => { byType[p.type] = (byType[p.type]||0) + p.amount; });
-  const allocLines = Object.entries(byType).map(([t,amt]) => `${t} ${fmtMoney(amt)}（約 ${Math.round(amt/totalAmt*100)}%）`).join("、");
+  customer.products.forEach(p => { byType[p.type] = (byType[p.type]||0) + Number(p.amount||0); });
+  const allocLines = Object.entries(byType).map(([t,amt]) => `${t} ${fmtMoney(amt)}（約 ${totalAmt?Math.round(amt/totalAmt*100):0}%）`).join("、");
 
   if(type === "analyze"){
     return `${customer.name}（${customer.age}歲・${customer.occupation}）目前資產規模約 ${fmtMoney(customer.asset)}，風險屬性 ${customer.risk}／${customer.style}。`
@@ -1260,9 +2028,12 @@ function generateAIAnalysis(customer, type){
       + `${customer.note} 建議下次聯繫時延續這個方向切入，會比從零開始更容易建立信任感。`;
   }
   if(type === "opener"){
-    return customer.chatSuggestions.map((s,i)=>`${i+1}. ${s}`).join("\n");
+    const list = chatSuggestionsOf(customer);
+    return list.length ? list.map((s,i)=>`${i+1}. ${s}`).join("\n")
+      : `${customer.name} 目前資料較少，建議先從關心近況、確認理財目標開始，並在通話後補齊持有商品與需求紀錄。`;
   }
   if(type === "allocation"){
+    if(customer.products.length === 0) return `${customer.name} 目前尚無登錄任何持有商品，建議先了解其他行庫的既有部位，再規劃整體資產配置。`;
     return `${customer.name} 目前持有商品總額約 ${fmtMoney(totalAmt)}：${allocLines}。`
       + (Object.keys(byType).length <= 1
           ? " 目前配置較集中在單一類型商品，可評估是否適度分散以降低集中度風險。"
@@ -1312,9 +2083,16 @@ function renderAIAssistantPage(){
     </button>`).join("");
 
   const outputBlock = state.aiConsole.output ? `
-    <div class="hero-card" style="white-space:pre-line;">
-      <div class="hero-tag">${icon("sparkles",16)}<span>AI 分析結果</span></div>
-      <p style="font-size:14px;">${esc(state.aiConsole.output)}</p>
+    <div class="hero-card">
+      <div class="hero-tag">${icon("sparkles",16)}<span>${esc(state.aiConsole.title || "AI 分析結果")}</span></div>
+      <p style="font-size:14px;white-space:pre-line;">${esc(state.aiConsole.output)}</p>
+      <div class="out-actions">
+        <button class="btn" onclick="copyAIOutput()">${icon("copy",15)}複製結果</button>
+        ${state.aiConsole.type !== "daily" ? `
+          <button class="btn" onclick="createFollowUpFromAI()">${icon("clock",15)}建立 Follow Up</button>
+          <button class="btn" onclick="openDialog({type:'todo',customerId:${c.id}})">${icon("checkCircle",15)}排入今日待辦</button>` : ""}
+        <button class="btn" onclick="exportAIOutput()">${icon("download",15)}匯出 txt</button>
+      </div>
     </div>` : `
     <div class="card" style="text-align:center;padding:40px 20px;">
       <p class="text-sm muted">選擇一位客戶，並點擊上方任一分析功能，AI 會在這裡產生結果。</p>
@@ -1322,13 +2100,16 @@ function renderAIAssistantPage(){
 
   return `
     <div class="flex-col gap-4">
-      <div>
-        <h2 class="text-xl font-semibold" style="margin:0;">AI 助理</h2>
-        <p class="text-sm muted mt-1">不只是聊天，而是能直接協助日常工作的分析工具。</p>
+      <div class="flex items-start justify-between flex-wrap gap-3">
+        <div>
+          <h2 class="text-xl font-semibold" style="margin:0;">AI 助理</h2>
+          <p class="text-sm muted mt-1">不只是聊天，而是能直接協助日常工作的分析工具。</p>
+        </div>
+        <button class="btn btn-primary" onclick="runDailyBriefing()">${icon("bolt",16)}產生今日行動清單</button>
       </div>
 
       <div class="card">
-        <div class="section-title"><div class="section-title-left">${icon("sparkles",16)}<h3>今天建議優先聯繫</h3></div></div>
+        <div class="section-title"><div class="section-title-left">${icon("target",16)}<h3>今天建議優先聯繫</h3></div></div>
         <div class="flex gap-2 flex-wrap">
           ${suggestions.length===0 ? `<span class="text-sm muted">今天沒有特別建議的客戶</span>` :
             suggestions.map(s => `<button class="chip" onclick="selectAICustomer(${s.customer.id})">${esc(s.customer.name)} · ${esc(s.reasons[0])}</button>`).join("")}
@@ -1339,6 +2120,7 @@ function renderAIAssistantPage(){
         <div class="flex items-center gap-3 flex-wrap mb-4">
           <label class="field-label" style="margin:0;">選擇客戶</label>
           <select style="max-width:220px;" onchange="selectAICustomer(Number(this.value))">${customerOptions}</select>
+          <button class="btn btn-ghost btn-xs" onclick="openCustomer(${c.id})">查看客戶頁 ${icon("chevronRight",13)}</button>
         </div>
         <div class="flex gap-2 flex-wrap">${actionBtns}</div>
       </div>
@@ -1347,15 +2129,89 @@ function renderAIAssistantPage(){
     </div>`;
 }
 
+function runDailyBriefing(){
+  const suggestions = getSuggestions(state.customers, state.followUps, state.staleDays);
+  const r = activeReminders();
+  const lines = [];
+  lines.push(`【${todayStr()} 今日行動清單】`);
+  lines.push("");
+  if(suggestions.length === 0){
+    lines.push("今天沒有緊急待辦，建議安排例行關係維繫聯繫。");
+  } else {
+    lines.push(`■ 優先聯繫（依 AI 計分排序，共 ${suggestions.length} 位）`);
+    suggestions.slice(0,6).forEach((s,i) => {
+      lines.push(`${i+1}. ${s.customer.name}（${s.customer.risk}／${fmtMoney(s.customer.asset)}）`);
+      s.reasons.forEach(rs => lines.push(`   · ${rs}`));
+      lines.push(`   · 建議切入：${chatSuggestionsOf(s.customer)[0] || "關心近況"}`);
+    });
+  }
+  if(r.followUps.length){
+    lines.push("");
+    lines.push("■ Follow Up 待處理");
+    r.followUps.forEach(f => lines.push(`· ${f.customer.name}：${f.followUp.content}（${f.dueDate || f.followUp.dueDate}，${relativeDay(f.days)}）`));
+  }
+  if(r.cdMaturity.length || r.fundMaturity.length){
+    lines.push("");
+    lines.push("■ 商品到期");
+    [...r.cdMaturity, ...r.fundMaturity].forEach(m => lines.push(`· ${m.customer.name}：${m.product.name} ${fmtMoney(m.product.amount)}（${relativeDay(m.days)}）`));
+  }
+  if(r.birthdays.length){
+    lines.push("");
+    lines.push("■ 生日祝賀");
+    r.birthdays.forEach(b => lines.push(`· ${b.customer.name}（${relativeDay(b.days)}）`));
+  }
+  if(r.stale.length){
+    lines.push("");
+    lines.push("■ 久未聯繫（超過 " + state.staleDays + " 天）");
+    r.stale.forEach(s => lines.push(`· ${s.customer.name}：已 ${s.days} 天未聯繫`));
+  }
+  state.aiConsole.type = "daily";
+  state.aiConsole.title = "今日行動清單";
+  state.aiConsole.output = lines.join("\n");
+  state.view = "ai";
+  render();
+}
+function openAIConsoleFor(id){
+  state.aiConsole.customerId = Number(id);
+  state.aiConsole.type = "analyze";
+  state.aiConsole.title = "客戶分析";
+  state.aiConsole.output = generateAIAnalysis(findCustomer(id), "analyze");
+  state.view = "ai";
+  state.menuOpen = null;
+  render();
+}
+function copyAIOutput(){
+  if(!state.aiConsole.output) return;
+  copyText(state.aiConsole.output).then(() => showToast("已複製分析結果"));
+}
+function exportAIOutput(){
+  if(!state.aiConsole.output) return;
+  const c = findCustomer(state.aiConsole.customerId);
+  const name = state.aiConsole.type === "daily" ? "今日行動清單" : `${c?c.name:"客戶"}_${state.aiConsole.title||"分析"}`;
+  download(`${name}_${todayStr()}.txt`, state.aiConsole.output, "text/plain;charset=utf-8");
+  showToast("已匯出分析結果");
+}
+function createFollowUpFromAI(){
+  const c = findCustomer(state.aiConsole.customerId);
+  if(!c) return;
+  const label = { analyze:"依 AI 分析結果安排下次聯繫", opener:"依建議話題進行聯繫", allocation:"與客戶討論資產配置調整",
+    risk:"重新確認風險屬性與投資目標", product:"提供推薦商品資料", followup:"處理待辦事項" }[state.aiConsole.type] || "AI 建議追蹤事項";
+  openDialog({ type:"followup", customerId:c.id, presetContent:label, presetDate:addDaysStr(todayStr(),7) });
+}
+
 function selectAICustomer(id){
-  state.aiConsole.customerId = id;
+  state.aiConsole.customerId = Number(id);
   state.aiConsole.output = "";
   state.aiConsole.type = null;
+  state.aiConsole.title = "";
   render();
 }
 function runAIConsole(type){
   const c = findCustomer(state.aiConsole.customerId);
+  if(!c) return;
+  const action = AI_ACTIONS.find(a => a.key === type);
   state.aiConsole.type = type;
+  state.aiConsole.title = `${c.name}・${action ? action.label : "AI 分析"}`;
   state.aiConsole.output = generateAIAnalysis(c, type);
   render();
 }
@@ -1393,15 +2249,27 @@ function renderCalendar(){
     selEvents.map(ev => {
       const s = EVENT_STYLE[ev.type];
       const c = findCustomer(ev.customerId);
+      if(!c) return "";
       return `
-        <button class="row-btn" onclick="openCustomer(${ev.customerId})">
-          ${avatarHTML(c.name,"sm")}
-          <div class="min-w-0 flex-1">
-            <div class="flex items-center justify-between gap-2"><p class="text-sm font-medium truncate">${esc(c.name)}</p>${badgeHTML(s.label, s.badge)}</div>
-            <p class="text-xs muted truncate mt-1">${esc(ev.text)}</p>
-          </div>
-        </button>`;
+        <div class="row-btn" style="align-items:flex-start;">
+          <button style="display:flex;gap:12px;flex:1;min-width:0;text-align:left;align-items:flex-start;" onclick="openCustomer(${ev.customerId})">
+            ${avatarHTML(c.name,"sm")}
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between gap-2"><p class="text-sm font-medium truncate">${esc(c.name)}</p>${badgeHTML(s.label, s.badge)}</div>
+              <p class="text-xs muted mt-1">${esc(ev.text)}</p>
+            </div>
+          </button>
+          ${ev.followUpId ? `<button class="icon-btn" style="width:28px;height:28px;" title="標記完成" onclick="completeFollowUp(${ev.followUpId})">${icon("checkCircle",15)}</button>` : ""}
+        </div>`;
     }).join("");
+
+  /* 本月事件統計 */
+  const monthPrefix = `${state.cal.year}-${pad2(state.cal.month+1)}`;
+  const monthCounts = {};
+  Object.entries(events).forEach(([k, evs]) => {
+    if(!k.startsWith(monthPrefix)) return;
+    evs.forEach(ev => { monthCounts[ev.type] = (monthCounts[ev.type]||0) + 1; });
+  });
 
   return `
     <div class="flex-col gap-4">
@@ -1421,9 +2289,15 @@ function renderCalendar(){
           </div>
           <div class="cal-weekdays">${weekdayRow}</div>
           <div class="cal-days">${dayCells}</div>
+          <div class="flex gap-3 flex-wrap mt-4 text-xs muted">
+            ${Object.entries(EVENT_STYLE).map(([k,s]) => `<span>${s.label}：${monthCounts[k]||0}</span>`).join("")}
+          </div>
         </div>
         <div class="card">
-          <div class="section-title"><div class="section-title-left">${icon("calendar",16)}<h3>${selLabel} 的行程</h3></div></div>
+          <div class="section-title">
+            <div class="section-title-left">${icon("calendar",16)}<h3>${selLabel} 的行程（${selEvents.length}）</h3></div>
+            <button class="btn btn-outline btn-xs" onclick="openDialog({type:'followup',presetDate:'${state.cal.selectedKey}'})">${icon("plus",13)}新增</button>
+          </div>
           <div class="flex-col gap-1" style="max-height:384px;overflow-y:auto;">${eventList}</div>
         </div>
       </div>
@@ -1431,108 +2305,666 @@ function renderCalendar(){
 }
 
 /* ================================================================== */
-/* 新增通話紀錄 Modal                                                    */
+/* 對話框系統（通話紀錄／客戶／商品／Follow Up／待辦／其他）                  */
 /* ================================================================== */
 
-function renderModal(){
-  if(!state.modalOpen) return "";
-  const c = findCustomer(state.selectedId);
-  if(!c) return "";
+function openDialog(cfg){
+  state.dialog = { ...cfg, error:"" };
+  state.menuOpen = null;
+  if(cfg.type === "customer"){
+    const c = cfg.id ? findCustomer(cfg.id) : null;
+    state.dialog.tags = c ? [...c.tags] : [];
+  }
+  render();
+  setTimeout(() => {
+    const el = document.querySelector(".modal-body input:not([type=checkbox]), .modal-body textarea");
+    if(el) el.focus();
+  }, 30);
+}
+function closeDialog(){
+  state.dialog = null;
+  render();
+}
+function setDialogError(msg){
+  if(state.dialog) state.dialog.error = msg;
+  const el = document.getElementById("dialogError");
+  if(el) el.innerHTML = msg ? `<p class="form-error" role="alert">${esc(msg)}</p>` : "";
+}
+function val(id){ const el = document.getElementById(id); return el ? el.value.trim() : ""; }
+function checked(id){ const el = document.getElementById(id); return el ? el.checked : false; }
+
+function customerSelectHTML(id, selectedId){
+  return `<select id="${id}">
+    <option value="">（不指定客戶）</option>
+    ${state.customers.map(c => `<option value="${c.id}" ${Number(selectedId)===c.id?"selected":""}>${esc(c.name)}</option>`).join("")}
+  </select>`;
+}
+
+function renderDialog(){
+  const d = state.dialog;
+  if(!d) return "";
+  if(d.type === "call") return renderCallOverlay(d);
+
+  const parts = {
+    calllog:  renderCallLogDialog,
+    customer: renderCustomerDialog,
+    product:  renderProductDialog,
+    followup: renderFollowUpDialog,
+    todo:     renderTodoDialog,
+    profile:  renderProfileDialog,
+    forgot:   renderForgotDialog,
+    suggestions: renderSuggestionsDialog,
+    confirm:  renderConfirmDialog,
+  }[d.type];
+  if(!parts) return "";
+  const { title, body, foot, wide } = parts(d);
   return `
-    <div class="modal-overlay" onclick="closeModal()">
-      <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-overlay" onclick="closeDialog()">
+      <div class="modal-box ${wide?"lg":""}" onclick="event.stopPropagation()">
         <div class="modal-head">
-          <h3 class="text-sm font-semibold" style="margin:0;">新增通話紀錄・${esc(c.name)}</h3>
-          <button class="icon-btn" onclick="closeModal()">${icon("x",16)}</button>
+          <h3 class="text-sm font-semibold" style="margin:0;">${title}</h3>
+          <button class="icon-btn" onclick="closeDialog()">${icon("x",16)}</button>
         </div>
         <div class="modal-body">
-          <div>
-            <label class="field-label">通話日期</label>
-            <input type="date" id="clDate" value="2026-07-17" />
-          </div>
-          <div>
-            <label class="field-label">通話內容（貼上或輸入原始筆記）</label>
-            <textarea id="clRaw" rows="4" placeholder="例如：今天跟客戶聊到 ETF 加碼意願，也提到子女教育金規劃需求，客戶反應正面……"></textarea>
-          </div>
-          <button class="btn btn-primary" id="aiBtn" style="justify-content:center;" onclick="runAI()">${icon("sparkles",16)}AI 整理摘要</button>
-          <div id="aiResultWrap"></div>
+          <div id="dialogError">${d.error?`<p class="form-error" role="alert">${esc(d.error)}</p>`:""}</div>
+          ${body}
         </div>
-        <div class="modal-foot">
-          <button class="btn btn-ghost" onclick="closeModal()">取消</button>
-          <button class="btn btn-primary" id="saveBtn" disabled onclick="saveCallLog()">儲存紀錄</button>
-        </div>
+        <div class="modal-foot">${foot}</div>
       </div>
     </div>`;
 }
 
+/* -------------------- 通話紀錄 -------------------- */
+function renderCallLogDialog(d){
+  const c = findCustomer(d.customerId || state.selectedId);
+  if(!c) return { title:"新增通話紀錄", body:`<div class="empty-row">找不到客戶資料</div>`, foot:`<button class="btn btn-ghost" onclick="closeDialog()">關閉</button>` };
+  const log = d.id ? c.callLogs.find(l => l.id === d.id) : null;
+  const date = log ? log.date : (d.date || todayStr());
+  return {
+    title: `${log?"編輯":"新增"}通話紀錄・${esc(c.name)}`,
+    wide: true,
+    body: `
+      <div class="form-grid">
+        <div><label class="field-label" for="clDate">通話日期</label><input type="date" id="clDate" value="${esc(date)}" /></div>
+        <div><label class="field-label" for="clDuration">通話時長（選填）</label><input type="text" id="clDuration" value="${esc(log?log.durationText||"":d.durationText||"")}" placeholder="例如 05:20" /></div>
+      </div>
+      <div>
+        <label class="field-label" for="clRaw">通話內容（貼上或輸入原始筆記）</label>
+        <textarea id="clRaw" rows="4" placeholder="例如：今天跟客戶聊到 ETF 加碼意願，也提到子女教育金規劃需求，客戶反應正面……">${esc(d.raw||"")}</textarea>
+      </div>
+      <button class="btn btn-primary" id="aiBtn" style="justify-content:center;" onclick="runAI()">${icon("sparkles",16)}AI 整理摘要</button>
+      <div class="ai-result-box">
+        <p class="ai-result-title">${icon("sparkles",13,"color:var(--accent)")}紀錄內容（AI 整理後可直接編輯，也可手動填寫）</p>
+        <div><label class="field-label" for="clSummary">摘要</label><textarea id="clSummary" rows="2">${esc(log?log.summary:"")}</textarea></div>
+        <div><label class="field-label" for="clNeeds">客戶需求（以「、」分隔）</label><input type="text" id="clNeeds" value="${esc(log?(log.needs||[]).join("、"):"")}" placeholder="例如：ETF加碼意願、子女教育金規劃" /></div>
+        <div class="two-col">
+          <div><label class="field-label" for="clReaction">客戶反應</label>
+            <select id="clReaction">${REACTIONS.map(x=>`<option ${log&&log.reaction===x?"selected":""}>${x}</option>`).join("")}</select>
+          </div>
+          <div><label class="field-label" for="clNext">下次聯絡時間</label><input type="date" id="clNext" value="${esc(log?log.nextContact||"":addDaysStr(date,14))}" /></div>
+        </div>
+        <div><label class="field-label" for="clFollowUp">Follow Up 事項</label><input type="text" id="clFollowUp" value="${esc(log?log.followUp||"":"")}" placeholder="例如：提供加碼建議書" /></div>
+      </div>
+      ${log ? "" : `
+      <label class="checkline"><input type="checkbox" id="clMakeFollowUp" checked />將 Follow Up 事項加入追蹤清單</label>
+      <label class="checkline"><input type="checkbox" id="clUpdateContact" checked />同步更新「最近聯絡日期」</label>`}`,
+    foot: `
+      <button class="btn btn-ghost" onclick="closeDialog()">取消</button>
+      <button class="btn btn-primary" id="saveBtn" onclick="saveCallLog(${c.id}${log?`,${log.id}`:""})">儲存紀錄</button>`,
+  };
+}
+
 function runAI(){
-  const raw = document.getElementById("clRaw").value;
-  if(!raw.trim()) return;
+  const raw = val("clRaw");
+  if(!raw){
+    setDialogError("請先輸入通話內容，AI 才能整理摘要");
+    return;
+  }
+  setDialogError("");
   const btn = document.getElementById("aiBtn");
   btn.disabled = true;
   btn.innerHTML = icon("loader",16) + "AI 整理中…";
   setTimeout(() => {
     const r = generateAISummary(raw);
-    state.aiResult = { summary:r.summary, needs:r.needs.join("、"), reaction:r.reaction, nextContact:"2026-08-01", followUp:`${r.needs[0]}：後續追蹤與確認` };
+    document.getElementById("clSummary").value = r.summary;
+    document.getElementById("clNeeds").value = r.needs.join("、");
+    document.getElementById("clReaction").value = r.reaction;
+    const followUpEl = document.getElementById("clFollowUp");
+    if(!followUpEl.value) followUpEl.value = `${r.needs[0]}：後續追蹤與確認`;
     btn.disabled = false;
     btn.innerHTML = icon("sparkles",16) + "AI 整理摘要";
-    document.getElementById("aiResultWrap").innerHTML = renderAIResult();
-    document.getElementById("saveBtn").disabled = false;
-  }, 900);
+    showToast("AI 已整理摘要，可再手動調整");
+  }, 700);
 }
 
-function renderAIResult(){
-  const r = state.aiResult;
-  if(!r) return "";
-  return `
-    <div class="ai-result-box">
-      <p class="ai-result-title">${icon("sparkles",13,"color:var(--accent)")}AI 整理結果（可編輯）</p>
-      <div><label class="field-label">摘要</label><textarea id="clSummary" rows="2">${esc(r.summary)}</textarea></div>
-      <div><label class="field-label">客戶需求</label><input type="text" id="clNeeds" value="${esc(r.needs)}" /></div>
-      <div class="two-col">
-        <div><label class="field-label">客戶反應</label>
-          <select id="clReaction">${["正面","中立","保留"].map(x=>`<option ${r.reaction===x?"selected":""}>${x}</option>`).join("")}</select>
+function saveCallLog(customerId, logId){
+  const c = findCustomer(customerId);
+  if(!c) return;
+  const date = val("clDate");
+  const summary = val("clSummary");
+  if(!isValidDateStr(date)) return setDialogError("請選擇正確的通話日期");
+  if(!summary) return setDialogError("請輸入摘要，或先用「AI 整理摘要」產生");
+
+  const needs = val("clNeeds").split(/[、,]/).map(s=>s.trim()).filter(Boolean);
+  const reaction = val("clReaction");
+  const nextContact = val("clNext");
+  const followUp = val("clFollowUp");
+  const durationText = val("clDuration");
+
+  if(logId){
+    const log = c.callLogs.find(l => l.id === logId);
+    Object.assign(log, { date, summary, needs, reaction, nextContact, followUp, durationText });
+    closeDialog(); saveData();
+    showToast("已更新通話紀錄");
+    return;
+  }
+
+  c.callLogs.push({ id:uid(), date, summary, needs, reaction, nextContact, followUp, durationText });
+  if(checked("clUpdateContact")) c.lastContact = date;
+
+  let madeFollowUp = false;
+  if(checked("clMakeFollowUp") && followUp && isValidDateStr(nextContact)){
+    state.followUps.push({ id:uid(), customerId:c.id, dueDate:nextContact, content:followUp, status:"pending" });
+    madeFollowUp = true;
+  }
+  c.chatSuggestions = generateChatSuggestions(c);
+
+  closeDialog(); saveData();
+  showToast(madeFollowUp ? "已儲存通話紀錄，並建立 Follow Up" : "已儲存通話紀錄");
+}
+
+function deleteCallLog(customerId, logId){
+  const c = findCustomer(customerId);
+  if(!c) return;
+  c.callLogs = c.callLogs.filter(l => l.id !== logId);
+  c.chatSuggestions = generateChatSuggestions(c);
+  state.dialog = null;
+  saveData(); render();
+  showToast("已刪除通話紀錄");
+}
+
+/* -------------------- 客戶新增／編輯 -------------------- */
+function renderTagChips(){
+  const tags = (state.dialog && state.dialog.tags) || [];
+  return tags.map((t,i) => `
+    <span class="tag-chip">${esc(t)}<button type="button" title="移除" onclick="removeDialogTag(${i})">${icon("x",11)}</button></span>`).join("");
+}
+function refreshTagChips(){
+  const el = document.getElementById("tagChips");
+  if(el) el.innerHTML = renderTagChips();
+}
+function addDialogTag(){
+  const input = document.getElementById("tagInput");
+  if(!input) return;
+  const v = input.value.trim();
+  if(!v) return;
+  if(!state.dialog.tags.includes(v)) state.dialog.tags.push(v);
+  input.value = "";
+  refreshTagChips();
+  input.focus();
+}
+function removeDialogTag(i){
+  state.dialog.tags.splice(i,1);
+  refreshTagChips();
+}
+
+function renderCustomerDialog(d){
+  const c = d.id ? findCustomer(d.id) : null;
+  const v = (k, fallback) => esc(c && c[k] !== undefined && c[k] !== null ? c[k] : (fallback === undefined ? "" : fallback));
+  return {
+    title: c ? `編輯客戶・${esc(c.name)}` : "新增客戶",
+    wide: true,
+    body: `
+      <div class="form-grid">
+        <div><label class="field-label" for="cfName">姓名 <span style="color:var(--rose)">*</span></label><input type="text" id="cfName" value="${v("name")}" placeholder="王小明" /></div>
+        <div><label class="field-label" for="cfAge">年齡</label><input type="number" id="cfAge" min="18" max="120" value="${v("age",40)}" /></div>
+        <div><label class="field-label" for="cfOcc">職業</label><input type="text" id="cfOcc" value="${v("occupation")}" placeholder="工程師" /></div>
+        <div><label class="field-label" for="cfFamily">家庭狀況</label><input type="text" id="cfFamily" value="${v("family")}" placeholder="已婚，育有 2 名子女" /></div>
+        <div><label class="field-label" for="cfPhone">電話</label><input type="tel" id="cfPhone" value="${v("phone")}" placeholder="0912-345-678" /></div>
+        <div><label class="field-label" for="cfEmail">Email</label><input type="email" id="cfEmail" value="${v("email")}" placeholder="name@example.com" /></div>
+        <div><label class="field-label" for="cfAsset">資產規模（萬）<span style="color:var(--rose)">*</span></label><input type="number" id="cfAsset" min="0" step="10" value="${v("asset",100)}" /></div>
+        <div><label class="field-label" for="cfStyle">投資屬性</label>
+          <select id="cfStyle">${INVEST_STYLES.map(s=>`<option ${c&&c.style===s?"selected":""}>${s}</option>`).join("")}</select>
         </div>
-        <div><label class="field-label">下次聯絡時間</label><input type="date" id="clNext" value="${r.nextContact}" /></div>
+        <div><label class="field-label" for="cfRisk">風險屬性</label>
+          <select id="cfRisk">${RISK_LEVELS.map(r=>`<option ${c&&c.risk===r?"selected":(!c&&r==="RR3"?"selected":"")}>${r}</option>`).join("")}</select>
+        </div>
+        <div><label class="field-label" for="cfBirthday">生日</label><input type="date" id="cfBirthday" value="${v("birthdayDate")}" /></div>
+        <div><label class="field-label" for="cfLast">最近聯絡日期</label><input type="date" id="cfLast" value="${v("lastContact", todayStr())}" /></div>
+        <div class="span-2">
+          <label class="field-label">標籤（輸入後按 Enter 新增）</label>
+          <div class="tag-input-wrap">
+            <span id="tagChips" style="display:contents;">${renderTagChips()}</span>
+            <input type="text" id="tagInput" placeholder="例如：高資產客戶"
+              onkeydown="if(event.key==='Enter'){ event.preventDefault(); addDialogTag(); }" />
+            <button type="button" class="btn btn-outline btn-xs" onclick="addDialogTag()">${icon("plus",12)}加入</button>
+          </div>
+        </div>
+        <div class="span-2"><label class="field-label" for="cfNote">備註</label><textarea id="cfNote" rows="3" placeholder="客戶偏好、關注議題、注意事項…">${v("note")}</textarea></div>
+      </div>`,
+    foot: `
+      ${c ? `<button class="btn btn-danger-ghost" onclick="confirmDeleteCustomer(${c.id})">${icon("trash",15)}刪除</button>` : ""}
+      <button class="btn btn-ghost" onclick="closeDialog()">取消</button>
+      <button class="btn btn-primary" onclick="saveCustomer(${c?c.id:"null"})">${c?"儲存變更":"新增客戶"}</button>`,
+  };
+}
+
+function saveCustomer(id){
+  const name = val("cfName");
+  if(!name) return setDialogError("請輸入客戶姓名");
+  const asset = Number(val("cfAsset"));
+  if(!(asset >= 0) || val("cfAsset") === "") return setDialogError("請輸入正確的資產規模（數字，單位：萬）");
+  const age = Number(val("cfAge")) || 0;
+  const birthdayDate = val("cfBirthday");
+  const lastContact = val("cfLast") || todayStr();
+  if(birthdayDate && !isValidDateStr(birthdayDate)) return setDialogError("生日格式不正確");
+  if(!isValidDateStr(lastContact)) return setDialogError("最近聯絡日期格式不正確");
+
+  const payload = {
+    name, age, occupation: val("cfOcc") || "未填寫", family: val("cfFamily"),
+    phone: val("cfPhone"), email: val("cfEmail"),
+    asset, style: val("cfStyle"), risk: val("cfRisk"),
+    birthdayDate, lastContact, note: val("cfNote"),
+    tags: [...state.dialog.tags],
+  };
+
+  if(id){
+    const c = findCustomer(id);
+    if(!c) return setDialogError("找不到客戶資料");
+    Object.assign(c, payload);
+    if(!c.chatSuggestions.length) c.chatSuggestions = generateChatSuggestions(c);
+    closeDialog(); saveData();
+    showToast(`已更新 ${name} 的資料`);
+  } else {
+    const c = normalizeCustomer({ id:uid(), ...payload, joinedDate:todayStr(), products:[], callLogs:[], chatSuggestions:[] });
+    c.chatSuggestions = generateChatSuggestions(c);
+    state.customers.push(c);
+    state.dialog = null;
+    state.selectedId = c.id;
+    state.view = "customerDetail";
+    detailTab = "basic";
+    saveData(); render();
+    showToast(`已新增客戶 ${name}`);
+  }
+}
+
+function confirmDeleteCustomer(id){
+  const c = findCustomer(id);
+  if(!c) return;
+  openDialog({ type:"confirm", title:"刪除客戶", message:`確定要刪除「${c.name}」嗎？其通話紀錄、持有商品、Follow Up 與待辦都會一併移除，且無法復原。`,
+    confirmLabel:"確定刪除", action:"deleteCustomer", payload:id });
+}
+function deleteCustomer(id){
+  const c = findCustomer(id);
+  if(!c) return;
+  state.customers = state.customers.filter(x => x.id !== id);
+  state.followUps = state.followUps.filter(f => f.customerId !== id);
+  state.todos = state.todos.filter(t => t.customerId !== id);
+  state.dismissed = state.dismissed.filter(x => x.key.split(":")[1] !== String(id));
+  if(state.selectedId === id){ state.selectedId = null; state.view = "customers"; }
+  if(state.aiConsole.customerId === id){ state.aiConsole = { customerId: state.customers[0] ? state.customers[0].id : null, type:null, output:"", title:"" }; }
+  state.dialog = null;
+  saveData(); render();
+  showToast(`已刪除客戶 ${c.name}`);
+}
+
+/* -------------------- 持有商品 -------------------- */
+function renderProductDialog(d){
+  const c = findCustomer(d.customerId);
+  if(!c) return { title:"持有商品", body:`<div class="empty-row">找不到客戶資料</div>`, foot:`<button class="btn btn-ghost" onclick="closeDialog()">關閉</button>` };
+  const p = d.id ? c.products.find(x => x.id === d.id) : null;
+  return {
+    title: `${p?"編輯":"新增"}持有商品・${esc(c.name)}`,
+    body: `
+      <div class="form-grid">
+        <div><label class="field-label" for="pfType">商品類型</label>
+          <select id="pfType">${PRODUCT_TYPES.map(t=>`<option ${p&&p.type===t?"selected":""}>${t}</option>`).join("")}</select>
+        </div>
+        <div><label class="field-label" for="pfAmount">金額（萬）<span style="color:var(--rose)">*</span></label><input type="number" id="pfAmount" min="0" step="10" value="${esc(p?p.amount:100)}" /></div>
+        <div class="span-2"><label class="field-label" for="pfName">商品名稱 <span style="color:var(--rose)">*</span></label><input type="text" id="pfName" value="${esc(p?p.name:"")}" placeholder="例如：元大台灣50 (0050)" /></div>
+        <div><label class="field-label" for="pfMaturity">到期日（選填）</label><input type="date" id="pfMaturity" value="${esc(p?p.maturity||"":"")}" /></div>
+        <div><label class="field-label" for="pfChange">近期漲跌幅 %（選填）</label><input type="number" id="pfChange" step="0.1" value="${p&&p.changePct!==undefined&&p.changePct!==null?esc(p.changePct):""}" placeholder="例如 12 或 -5" /></div>
       </div>
-      <div><label class="field-label">Follow Up</label><input type="text" id="clFollowUp" value="${esc(r.followUp)}" /></div>
+      <p class="hint">・「到期日」填寫後，定存與基金會自動出現在到期提醒與行事曆。<br/>・「漲跌幅」絕對值 ≥ 5% 的 ETF 會出現在 ETF 追蹤提醒。</p>`,
+    foot: `
+      ${p ? `<button class="btn btn-danger-ghost" onclick="deleteProduct(${c.id},${p.id})">${icon("trash",15)}刪除</button>` : ""}
+      <button class="btn btn-ghost" onclick="closeDialog()">取消</button>
+      <button class="btn btn-primary" onclick="saveProduct(${c.id}${p?`,${p.id}`:""})">${p?"儲存變更":"新增商品"}</button>`,
+  };
+}
+function saveProduct(customerId, productId){
+  const c = findCustomer(customerId);
+  if(!c) return;
+  const name = val("pfName");
+  if(!name) return setDialogError("請輸入商品名稱");
+  if(val("pfAmount") === "" || !(Number(val("pfAmount")) >= 0)) return setDialogError("請輸入正確的金額（單位：萬）");
+  const maturity = val("pfMaturity");
+  if(maturity && !isValidDateStr(maturity)) return setDialogError("到期日格式不正確");
+  const changeRaw = val("pfChange");
+
+  const payload = { type: val("pfType"), name, amount: Number(val("pfAmount")) };
+  if(maturity) payload.maturity = maturity;
+  if(changeRaw !== "" && !isNaN(Number(changeRaw))) payload.changePct = Number(changeRaw);
+
+  if(productId){
+    const p = c.products.find(x => x.id === productId);
+    delete p.maturity; delete p.changePct;
+    Object.assign(p, payload);
+    showToast("已更新持有商品");
+  } else {
+    c.products.push({ id:uid(), ...payload });
+    showToast(`已為 ${c.name} 新增持有商品`);
+  }
+  c.chatSuggestions = generateChatSuggestions(c);
+  closeDialog(); saveData();
+}
+function deleteProduct(customerId, productId){
+  const c = findCustomer(customerId);
+  if(!c) return;
+  const p = c.products.find(x => x.id === productId);
+  c.products = c.products.filter(x => x.id !== productId);
+  c.chatSuggestions = generateChatSuggestions(c);
+  state.dialog = null;
+  saveData(); render();
+  showToast(`已刪除商品${p?`「${p.name}」`:""}`);
+}
+
+/* -------------------- Follow Up -------------------- */
+function renderFollowUpDialog(d){
+  const f = d.id ? state.followUps.find(x => x.id === d.id) : null;
+  const customerId = f ? f.customerId : d.customerId;
+  return {
+    title: f ? "編輯 Follow Up" : "新增 Follow Up",
+    body: `
+      <div>
+        <label class="field-label" for="fuCustomer">客戶 <span style="color:var(--rose)">*</span></label>
+        ${customerSelectHTML("fuCustomer", customerId)}
+      </div>
+      <div>
+        <label class="field-label" for="fuContent">追蹤事項 <span style="color:var(--rose)">*</span></label>
+        <input type="text" id="fuContent" value="${esc(f?f.content:(d.presetContent||""))}" placeholder="例如：提供加碼建議書" />
+      </div>
+      <div>
+        <label class="field-label" for="fuDate">預定日期 <span style="color:var(--rose)">*</span></label>
+        <input type="date" id="fuDate" value="${esc(f?f.dueDate:(d.presetDate||addDaysStr(todayStr(),7)))}" />
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        ${[["今天",0],["明天",1],["3 天後",3],["1 週後",7],["2 週後",14]].map(([l,n]) =>
+          `<button type="button" class="chip" onclick="document.getElementById('fuDate').value='${addDaysStr(todayStr(),n)}'">${l}</button>`).join("")}
+      </div>`,
+    foot: `
+      ${f ? `<button class="btn btn-danger-ghost" onclick="deleteFollowUp(${f.id})">${icon("trash",15)}刪除</button>` : ""}
+      <button class="btn btn-ghost" onclick="closeDialog()">取消</button>
+      <button class="btn btn-primary" onclick="saveFollowUp(${f?f.id:"null"})">${f?"儲存變更":"新增"}</button>`,
+  };
+}
+function saveFollowUp(id){
+  const customerId = Number(val("fuCustomer"));
+  const content = val("fuContent");
+  const dueDate = val("fuDate");
+  if(!customerId) return setDialogError("請選擇客戶");
+  if(!content) return setDialogError("請輸入追蹤事項");
+  if(!isValidDateStr(dueDate)) return setDialogError("請選擇預定日期");
+
+  if(id){
+    const f = state.followUps.find(x => x.id === id);
+    Object.assign(f, { customerId, content, dueDate });
+    showToast("已更新 Follow Up");
+  } else {
+    state.followUps.push({ id:uid(), customerId, content, dueDate, status:"pending" });
+    showToast("已新增 Follow Up");
+  }
+  closeDialog(); saveData();
+}
+function deleteFollowUp(id){
+  state.followUps = state.followUps.filter(f => f.id !== id);
+  state.dialog = null;
+  saveData(); render();
+  showToast("已刪除 Follow Up");
+}
+function reopenFollowUp(id){
+  const f = state.followUps.find(x => x.id === id);
+  if(!f) return;
+  f.status = "pending";
+  delete f.doneDate;
+  saveData(); render();
+  showToast("已復原為待處理");
+}
+
+/* -------------------- 今日待辦 -------------------- */
+function renderTodoDialog(d){
+  const t = d.id ? state.todos.find(x => x.id === d.id) : null;
+  return {
+    title: t ? "編輯待辦" : "新增今日待辦",
+    body: `
+      <div>
+        <label class="field-label" for="tdCustomer">客戶</label>
+        ${customerSelectHTML("tdCustomer", t ? t.customerId : d.customerId)}
+      </div>
+      <div class="two-col">
+        <div><label class="field-label" for="tdTime">預定時間</label><input type="time" id="tdTime" value="${esc(t?t.time:(d.time||"10:00"))}" /></div>
+        <div><label class="field-label" for="tdNote">事項說明</label><input type="text" id="tdNote" value="${esc(t?t.note||"":"")}" placeholder="例如：確認定存續存" /></div>
+      </div>
+      <p class="hint">未選擇客戶時，請填寫事項說明作為待辦名稱。</p>`,
+    foot: `
+      <button class="btn btn-ghost" onclick="closeDialog()">取消</button>
+      <button class="btn btn-primary" onclick="saveTodo(${t?t.id:"null"})">${t?"儲存變更":"新增待辦"}</button>`,
+  };
+}
+function saveTodo(id){
+  const customerId = Number(val("tdCustomer")) || null;
+  const note = val("tdNote");
+  const time = val("tdTime") || "10:00";
+  if(!customerId && !note) return setDialogError("請選擇客戶或填寫事項說明");
+  if(id){
+    const t = state.todos.find(x => x.id === id);
+    Object.assign(t, { customerId, note, time });
+    showToast("已更新待辦");
+  } else {
+    state.todos.push({ id:uid(), customerId, note, time, done:false });
+    showToast("已新增今日待辦");
+  }
+  closeDialog(); saveData();
+}
+function deleteTodo(id){
+  state.todos = state.todos.filter(t => t.id !== id);
+  saveData(); render();
+  showToast("已刪除待辦");
+}
+function clearDoneTodos(){
+  const n = state.todos.filter(t => t.done).length;
+  state.todos = state.todos.filter(t => !t.done);
+  saveData(); render();
+  showToast(`已清除 ${n} 筆已完成待辦`);
+}
+function generateTodosFromAI(){
+  const suggestions = getSuggestions(state.customers, state.followUps, state.staleDays).slice(0,5);
+  if(suggestions.length === 0){ showToast("今天沒有需要優先聯繫的客戶"); return; }
+  let added = 0;
+  suggestions.forEach((s,i) => {
+    if(state.todos.some(t => t.customerId === s.customer.id)) return;
+    state.todos.push({ id:uid(), customerId:s.customer.id, note:s.reasons[0], time:`${pad2(9+i)}:30`, done:false });
+    added++;
+  });
+  saveData(); render();
+  showToast(added ? `已排入 ${added} 筆待辦` : "建議客戶都已在待辦清單中");
+}
+
+/* -------------------- 個人資料 -------------------- */
+function renderProfileDialog(){
+  return {
+    title: "編輯個人資料",
+    body: `
+      <div><label class="field-label" for="pfDispName">顯示名稱</label><input type="text" id="pfDispName" value="${esc(state.profile.name)}" /></div>
+      <div class="two-col">
+        <div><label class="field-label" for="pfBranch">所屬分行</label><input type="text" id="pfBranch" value="${esc(state.profile.branch)}" /></div>
+        <div><label class="field-label" for="pfTitle">職稱</label><input type="text" id="pfTitle" value="${esc(state.profile.title)}" /></div>
+      </div>`,
+    foot: `
+      <button class="btn btn-ghost" onclick="closeDialog()">取消</button>
+      <button class="btn btn-primary" onclick="saveProfile()">儲存</button>`,
+  };
+}
+function saveProfile(){
+  const name = val("pfDispName");
+  if(!name) return setDialogError("請輸入顯示名稱");
+  state.profile = { name, branch: val("pfBranch"), title: val("pfTitle") };
+  if(state.authUser){ state.authUser.name = name; state.authUser.branch = state.profile.branch;
+    try{ if(state.authUser.rememberMe) localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(state.authUser)); } catch {} }
+  closeDialog(); saveData();
+  showToast("已更新個人資料");
+}
+
+/* -------------------- 忘記密碼 -------------------- */
+function renderForgotDialog(){
+  return {
+    title: "重設密碼",
+    body: `
+      <p class="text-sm muted" style="margin:0;">輸入註冊時使用的 Email，我們會寄送重設密碼連結給你。</p>
+      <form onsubmit="submitForgotPassword(event)">
+        <label class="field-label" for="forgotEmail">Email</label>
+        <input type="email" id="forgotEmail" value="${esc(DEMO_ACCOUNT.email)}" placeholder="you@bank.com" />
+      </form>
+      <p class="hint">＊此為作品集原型，不會真的寄出信件。</p>`,
+    foot: `
+      <button class="btn btn-ghost" onclick="closeDialog()">取消</button>
+      <button class="btn btn-primary" id="forgotSubmit" onclick="submitForgotPassword(event)">傳送重設連結</button>`,
+  };
+}
+
+/* -------------------- AI 建議詳細原因 -------------------- */
+function renderSuggestionsDialog(){
+  const suggestions = getSuggestions(state.customers, state.followUps, state.staleDays);
+  return {
+    title: "AI 每日建議・詳細原因",
+    wide: true,
+    body: suggestions.length === 0 ? `<div class="empty-row">今天沒有需要優先處理的客戶</div>` : `
+      <p class="hint" style="margin:0;">AI 依「久未聯繫天數、商品到期、ETF 波動、生日、Follow Up 逾期」加權計分後排序，分數越高代表越應該優先聯繫。</p>
+      ${suggestions.map((s,i) => `
+        <div class="reason-row">
+          <div style="width:22px;" class="text-sm faint">${i+1}</div>
+          ${avatarHTML(s.customer.name,"sm")}
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-2">
+              <p class="text-sm font-medium">${esc(s.customer.name)}</p>
+              <span class="score-pill">分數 ${s.score}</span>
+            </div>
+            <ul style="margin:6px 0 0;padding-left:18px;" class="text-xs muted">
+              ${s.reasons.map(r => `<li style="line-height:1.7;">${esc(r)}</li>`).join("")}
+            </ul>
+            <div class="flex gap-2 mt-2 flex-wrap">
+              <button class="btn btn-outline btn-xs" onclick="openCustomer(${s.customer.id})">查看客戶</button>
+              <button class="btn btn-outline btn-xs" onclick="startCall(${s.customer.id})">${icon("phone",12)}撥打</button>
+              <button class="btn btn-outline btn-xs" onclick="openDialog({type:'todo',customerId:${s.customer.id}})">排入待辦</button>
+            </div>
+          </div>
+        </div>`).join("")}`,
+    foot: `
+      <button class="btn btn-outline" onclick="generateTodosFromAI()">${icon("bolt",15)}一鍵排入待辦</button>
+      <button class="btn btn-primary" onclick="closeDialog()">關閉</button>`,
+  };
+}
+
+/* -------------------- 通用確認框 -------------------- */
+const CONFIRM_ACTIONS = {
+  deleteCustomer: (payload) => deleteCustomer(payload),
+  resetDemo: () => resetDemoData(),
+  clearChat: () => { state.assistantMessages = [ { ...INITIAL_ASSISTANT_MSG } ]; state.dialog = null; saveData(); render(); showToast("已清除對話紀錄"); },
+};
+function renderConfirmDialog(d){
+  return {
+    title: esc(d.title || "確認"),
+    body: `<p class="text-sm" style="margin:0;line-height:1.7;">${esc(d.message || "")}</p>`,
+    foot: `
+      <button class="btn btn-ghost" onclick="closeDialog()">取消</button>
+      <button class="btn btn-danger" onclick="runConfirmAction()">${esc(d.confirmLabel || "確定")}</button>`,
+  };
+}
+function runConfirmAction(){
+  const d = state.dialog;
+  if(!d) return;
+  const fn = CONFIRM_ACTIONS[d.action];
+  if(fn) fn(d.payload);
+  else closeDialog();
+}
+
+/* -------------------- 撥號畫面 -------------------- */
+function renderCallOverlay(d){
+  const c = findCustomer(d.customerId);
+  if(!c) return "";
+  const mm = pad2(Math.floor(state.callSeconds/60)), ss = pad2(state.callSeconds%60);
+  return `
+    <div class="modal-overlay">
+      <div class="call-card">
+        <div class="call-pulse">${icon("phone",34)}</div>
+        <p class="text-base font-semibold" style="margin:0;">${esc(c.name)}</p>
+        <p class="text-xs muted mt-1">${esc(c.phone || "未登錄電話")}</p>
+        <p class="call-timer" id="callTimer">${mm}:${ss}</p>
+        <p class="text-xs faint">通話中（模擬）</p>
+        <div class="call-actions">
+          <button class="btn btn-outline" onclick="endCall(false)">${icon("x",15)}取消</button>
+          <button class="btn btn-danger" onclick="endCall(true)">${icon("phoneOff",15)}結束並記錄</button>
+        </div>
+        <p class="hint mt-3">結束通話後會自動開啟通話紀錄，並帶入通話時長。</p>
+      </div>
     </div>`;
 }
-
-function saveCallLog(){
-  if(!state.aiResult) return;
-  const date = document.getElementById("clDate").value;
-  const summary = document.getElementById("clSummary").value;
-  const needs = document.getElementById("clNeeds").value.split("、").filter(Boolean);
-  const reaction = document.getElementById("clReaction").value;
-  const nextContact = document.getElementById("clNext").value;
-  const followUp = document.getElementById("clFollowUp").value;
-
-  const c = findCustomer(state.selectedId);
-  c.lastContact = date;
-  c.callLogs.push({ id:Date.now(), date, summary, needs, reaction, nextContact, followUp });
-  state.followUps.push({ id:Date.now(), customerId:c.id, dueDate:nextContact, content:followUp, status:"pending" });
-
-  state.modalOpen = false;
-  state.aiResult = null;
+function startCall(id){
+  const c = findCustomer(id);
+  if(!c) return;
+  state.menuOpen = null;
+  state.callSeconds = 0;
+  state.dialog = { type:"call", customerId:c.id };
+  clearInterval(state.callTimer);
+  state.callTimer = setInterval(() => {
+    state.callSeconds++;
+    const el = document.getElementById("callTimer");
+    if(el) el.textContent = `${pad2(Math.floor(state.callSeconds/60))}:${pad2(state.callSeconds%60)}`;
+    else { clearInterval(state.callTimer); state.callTimer = null; }
+  }, 1000);
   render();
-  showToast("已儲存通話紀錄，並建立 Follow Up");
+}
+function endCall(withLog){
+  clearInterval(state.callTimer);
+  state.callTimer = null;
+  const customerId = state.dialog ? state.dialog.customerId : null;
+  const durationText = `${pad2(Math.floor(state.callSeconds/60))}:${pad2(state.callSeconds%60)}`;
+  const seconds = state.callSeconds;
+  state.callSeconds = 0;
+  if(withLog && customerId){
+    openDialog({ type:"calllog", customerId, date:todayStr(), durationText });
+    showToast(`通話結束（${durationText}）`);
+  } else {
+    closeDialog();
+    if(seconds > 0) showToast("已結束通話");
+  }
 }
 
-function openModal(){ state.modalOpen = true; state.aiResult = null; render(); }
-function closeModal(){ state.modalOpen = false; state.aiResult = null; render(); }
+/* 快捷入口：從目前選取的客戶直接開啟通話紀錄 */
+function openCallLogForSelected(){
+  if(state.selectedId) openDialog({ type:"calllog", customerId: state.selectedId });
+}
 
 /* ================================================================== */
 /* AI 助理浮動面板                                                       */
 /* ================================================================== */
 
+const ASSISTANT_QUICK = ["今天該聯繫誰？","有誰快生日？","哪些商品要到期？","今天的待辦","資產排行","我能問你什麼？"];
+
 function renderAssistant(){
-  const fab = `<button class="assistant-fab" onclick="toggleAssistant()">${icon(state.assistantOpen?"x":"message",22)}</button>`;
+  const fab = `<button class="assistant-fab" title="AI 助理" onclick="toggleAssistant()">${icon(state.assistantOpen?"x":"message",22)}</button>`;
   if(!state.assistantOpen) return fab;
   return fab + `
     <div class="assistant-panel">
-      <div class="assistant-head">${icon("sparkles",16,"color:var(--accent)")}AI 助理</div>
+      <div class="assistant-head">
+        ${icon("sparkles",16,"color:var(--accent)")}<span class="flex-1">AI 助理</span>
+        <button class="icon-btn" style="width:28px;height:28px;" title="清除對話"
+          onclick="openDialog({type:'confirm',title:'清除對話',message:'確定要清除與 AI 助理的對話紀錄嗎？',confirmLabel:'清除',action:'clearChat'})">${icon("trash",14)}</button>
+      </div>
       <div class="assistant-msgs" id="assistantMsgs">${renderAssistantMessages()}</div>
+      <div class="quick-chips">
+        ${ASSISTANT_QUICK.map(q => `<button class="quick-chip" onclick="askAssistant('${esc(q)}')">${esc(q)}</button>`).join("")}
+      </div>
       <div class="assistant-input-row">
         <input type="text" id="assistantInput" placeholder="輸入問題…" onkeydown="if(event.key==='Enter') sendAssistant()" />
         <button class="send-btn" onclick="sendAssistant()">${icon("send",14)}</button>
@@ -1540,31 +2972,133 @@ function renderAssistant(){
     </div>`;
 }
 function renderAssistantMessages(){
-  return state.assistantMessages.map(m => `
-    <div class="msg-row ${m.role}"><div class="msg-bubble ${m.role}">${esc(m.text)}</div></div>`).join("");
+  const msgs = state.assistantMessages.map(m => `
+    <div class="msg-row ${m.role}"><div class="msg-bubble ${m.role}" style="white-space:pre-line;">${esc(m.text)}</div></div>`).join("");
+  const typing = state.assistantTyping
+    ? `<div class="msg-row ai"><div class="msg-bubble ai"><span class="typing-dots"><span></span><span></span><span></span></span></div></div>`
+    : "";
+  return msgs + typing;
+}
+function refreshAssistantMsgs(){
+  const wrap = document.getElementById("assistantMsgs");
+  if(!wrap) return;
+  wrap.innerHTML = renderAssistantMessages();
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+/* 規則式意圖判斷：以現有資料回答，並支援「幫我建立待辦」等實際動作 */
+function answerAssistant(q){
+  const matched = state.customers.find(c => q.includes(c.name));
+  const r = activeReminders();
+
+  if(/^(help|你會什麼|功能|能問|可以問|幫助)/.test(q) || /我能問你什麼/.test(q)){
+    return "我可以幫你：\n・查客戶近況：「王小明上次聊了什麼？」\n・盤點今日重點：「今天該聯繫誰？」\n・查提醒：「有誰快生日？」「哪些商品要到期？」「有誰久未聯繫？」\n・看待辦與 Follow Up：「今天的待辦」「有哪些逾期事項？」\n・看資產排行與統計：「資產排行」「總共有幾位客戶？」\n・直接動作：「幫我建立林淑芬的待辦」";
+  }
+  /* 動作：建立待辦 */
+  if(/建立.*待辦|新增.*待辦|排.*待辦|提醒我聯繫/.test(q)){
+    if(!matched) return "請告訴我要為哪一位客戶建立待辦，例如「幫我建立林淑芬的待辦」。";
+    if(state.todos.some(t => t.customerId === matched.id)) return `${matched.name} 已經在今日待辦清單中了。`;
+    state.todos.push({ id:uid(), customerId:matched.id, note:chatSuggestionsOf(matched)[0] || "關心近況", time:"10:00", done:false });
+    saveData();
+    return `已把 ${matched.name} 排入今日待辦（10:00）。建議切入：${chatSuggestionsOf(matched)[0] || "關心近況"}`;
+  }
+  /* 特定客戶 */
+  if(matched){
+    const lastLog = [...matched.callLogs].sort((a,b)=>String(b.date).localeCompare(String(a.date)))[0];
+    const pending = state.followUps.filter(f => f.customerId === matched.id && f.status === "pending");
+    const lines = [];
+    lines.push(lastLog
+      ? `${matched.name} 上次於 ${lastLog.date} 通話，摘要：「${lastLog.summary}」客戶反應為${lastLog.reaction}。`
+      : `${matched.name} 目前尚無通話紀錄。`);
+    lines.push(`資產 ${fmtMoney(matched.asset)}・${matched.risk}／${matched.style}・已 ${-daysFromToday(matched.lastContact)} 天未聯繫。`);
+    if(matched.tags.length) lines.push(`標籤：${matched.tags.join("、")}`);
+    if(pending.length) lines.push(`待處理 Follow Up：${pending.map(f=>`${f.content}（${f.dueDate}）`).join("、")}`);
+    const tip = chatSuggestionsOf(matched)[0];
+    if(tip) lines.push(`建議切入：${tip}`);
+    return lines.join("\n");
+  }
+  /* 今日優先 */
+  if(/今天.*(聯繫|聯絡|誰|重點)|該聯繫|優先|建議聯絡/.test(q)){
+    const s = getSuggestions(state.customers, state.followUps, state.staleDays).slice(0,5);
+    if(!s.length) return "今天沒有特別緊急的客戶，適合安排例行關係維繫。";
+    return "今天建議優先聯繫：\n" + s.map((x,i)=>`${i+1}. ${x.customer.name}（${x.reasons[0]}）`).join("\n");
+  }
+  /* 生日 */
+  if(/生日/.test(q)){
+    if(!r.birthdays.length) return "未來 7 天內沒有客戶生日。";
+    return "近期生日：\n" + r.birthdays.map(b=>`・${b.customer.name}（${b.customer.birthdayDate}，${relativeDay(b.days)}）`).join("\n");
+  }
+  /* 到期 */
+  if(/到期|續存|贖回/.test(q)){
+    const all = [...r.cdMaturity, ...r.fundMaturity];
+    if(!all.length) return "近期沒有商品到期。";
+    return "近期到期商品：\n" + all.map(m=>`・${m.customer.name}：${m.product.name} ${fmtMoney(m.product.amount)}（${relativeDay(m.days)}）`).join("\n");
+  }
+  /* 久未聯繫 */
+  if(/久未|沒聯繫|未聯繫|流失/.test(q)){
+    if(!r.stale.length) return `目前沒有超過 ${state.staleDays} 天未聯繫的客戶。`;
+    return `超過 ${state.staleDays} 天未聯繫：\n` + r.stale.map(s=>`・${s.customer.name}（已 ${s.days} 天）`).join("\n");
+  }
+  /* Follow Up */
+  if(/follow|逾期|待處理|追蹤事項/i.test(q)){
+    if(!r.followUps.length) return "目前沒有待處理的 Follow Up。";
+    return "待處理 Follow Up：\n" + r.followUps.map(f=>`・${f.customer.name}：${f.followUp.content}（${relativeDay(f.days)}）`).join("\n");
+  }
+  /* 待辦 */
+  if(/待辦|todo|行程/i.test(q)){
+    if(!state.todos.length) return "今天還沒有安排待辦，可以說「幫我建立王小明的待辦」。";
+    const done = state.todos.filter(t=>t.done).length;
+    return `今日待辦（${done}/${state.todos.length} 已完成）：\n` + [...state.todos]
+      .sort((a,b)=>String(a.time).localeCompare(String(b.time)))
+      .map(t => {
+        const c = t.customerId ? findCustomer(t.customerId) : null;
+        return `・${t.time} ${c?c.name:(t.note||"自訂事項")}${t.done?"（已完成）":""}`;
+      }).join("\n");
+  }
+  /* ETF／成長 */
+  if(/ETF|漲|跌|波動|成長/i.test(q)){
+    if(!r.etf.length) return "目前沒有漲跌幅超過 5% 的 ETF 部位。";
+    return "ETF 波動較大的客戶：\n" + r.etf.map(e=>`・${e.customer.name}：${e.product.name} ${e.product.changePct>0?"+":""}${e.product.changePct}%`).join("\n");
+  }
+  /* 資產排行／統計 */
+  if(/資產|排行|AUM|規模/i.test(q)){
+    const top = [...state.customers].sort((a,b)=>b.asset-a.asset).slice(0,5);
+    const total = state.customers.reduce((s,c)=>s+c.asset,0);
+    return `總資產 ${fmtMoney(total)}，資產前 ${top.length} 名：\n` + top.map((c,i)=>`${i+1}. ${c.name}　${fmtMoney(c.asset)}（${c.risk}）`).join("\n");
+  }
+  if(/幾位|多少客戶|統計|總共/.test(q)){
+    const byRisk = {};
+    state.customers.forEach(c => { byRisk[c.risk] = (byRisk[c.risk]||0)+1; });
+    return `目前共 ${state.customers.length} 位客戶，風險屬性分布：${Object.entries(byRisk).map(([k,v])=>`${k} ${v} 位`).join("、")}。`
+      + `\n待處理 Follow Up ${state.followUps.filter(f=>f.status==="pending").length} 筆，今日待辦 ${state.todos.length} 筆。`;
+  }
+  return "這個問題我還沒學會，可以試著問「今天該聯繫誰？」、「哪些商品要到期？」，或輸入客戶姓名查詢近況。輸入「功能」可以看完整能力清單。";
+}
+
+function askAssistant(text){
+  const input = document.getElementById("assistantInput");
+  if(input) input.value = text;
+  sendAssistant();
 }
 function sendAssistant(){
   const input = document.getElementById("assistantInput");
-  const val = input.value.trim();
-  if(!val) return;
-  const matched = state.customers.find(c => val.includes(c.name));
-  let reply;
-  if(matched){
-    const lastLog = matched.callLogs[matched.callLogs.length-1];
-    reply = lastLog
-      ? `${matched.name} 上次於 ${lastLog.date} 通話，內容摘要：「${lastLog.summary}」客戶反應為${lastLog.reaction}。目前標籤：${matched.tags.join("、")}。`
-      : `${matched.name} 目前尚無通話紀錄。`;
-  } else if(/資產.*成長|成長.*資產/.test(val)){
-    reply = "目前偵測到王小明的 ETF 部位近一個月成長 12%，張家豪的高股息 ETF 本週成長 6%，可留意加碼或維繫聯繫。";
-  } else {
-    reply = "這個問題我還在學習中，你可以換個問法，或直接到「客戶管理」查看完整名單喔。";
-  }
-  state.assistantMessages.push({ role:"user", text:val });
-  state.assistantMessages.push({ role:"ai", text:reply });
+  if(!input) return;
+  const q = input.value.trim();
+  if(!q || state.assistantTyping) return;
   input.value = "";
-  const wrap = document.getElementById("assistantMsgs");
-  wrap.innerHTML = renderAssistantMessages();
-  wrap.scrollTop = wrap.scrollHeight;
+  state.assistantMessages.push({ role:"user", text:q });
+  state.assistantTyping = true;
+  refreshAssistantMsgs();
+  setTimeout(() => {
+    const reply = answerAssistant(q);
+    state.assistantTyping = false;
+    state.assistantMessages.push({ role:"ai", text:reply });
+    if(state.assistantMessages.length > 60) state.assistantMessages = state.assistantMessages.slice(-40);
+    saveData();
+    refreshAssistantMsgs();
+    /* 若動作改動了資料（例如建立待辦），同步更新主畫面 */
+    if(/已把|已新增|已建立/.test(reply)) renderMainOnly();
+  }, 550);
 }
 function toggleAssistant(){ state.assistantOpen = !state.assistantOpen; render(); }
 
@@ -1572,20 +3106,47 @@ function toggleAssistant(){ state.assistantOpen = !state.assistantOpen; render()
 /* 事件處理函式（全域）                                                    */
 /* ================================================================== */
 
-function setView(v){ state.view = v; state.selectedId = null; state.bellOpen = false; detailTab = "basic"; render(); }
-function openCustomer(id){ state.selectedId = id; state.view = "customerDetail"; state.bellOpen = false; detailTab = "basic"; render(); }
-function toggleDark(){ state.dark = !state.dark; document.body.classList.toggle("dark", state.dark); render(); }
-function toggleBell(){ state.bellOpen = !state.bellOpen; render(); }
-function toggleTodo(id){ const t = state.todos.find(x=>x.id===id); if(t) t.done = !t.done; render(); }
-function completeFollowUp(id){ const f = state.followUps.find(x=>x.id===id); if(f) f.status="done"; render(); showToast("Follow Up 已標記完成"); }
-function callCustomer(name){ showToast(`正在撥打 ${name}…`); }
-function addCustomerPlaceholder(){ showToast("示範原型：新增客戶表單可於此串接"); }
+function setView(v){
+  state.view = v; state.selectedId = null; state.bellOpen = false; state.menuOpen = null; state.dialog = null;
+  detailTab = "basic";
+  render();
+}
+function openCustomer(id){
+  if(!findCustomer(id)) return;
+  state.selectedId = Number(id); state.view = "customerDetail";
+  state.bellOpen = false; state.menuOpen = null; state.dialog = null;
+  detailTab = "basic";
+  render();
+}
+function toggleDark(){ state.dark = !state.dark; document.body.classList.toggle("dark", state.dark); saveData(); render(); }
+function toggleBell(){ state.bellOpen = !state.bellOpen; state.menuOpen = null; render(); }
+function toggleMenu(id){ state.menuOpen = state.menuOpen === id ? null : id; state.bellOpen = false; render(); }
+function toggleTodo(id){
+  const t = state.todos.find(x=>x.id===id);
+  if(t) t.done = !t.done;
+  saveData(); render();
+}
+function completeFollowUp(id){
+  const f = state.followUps.find(x=>x.id===id);
+  if(!f) return;
+  f.status = "done";
+  f.doneDate = todayStr();
+  state.menuOpen = null;
+  state.dialog = null;
+  saveData(); render();
+  showToast("Follow Up 已標記完成");
+}
 function changeCalMonth(delta){
   let m = state.cal.month + delta, y = state.cal.year;
   if(m < 0){ m = 11; y -= 1; } if(m > 11){ m = 0; y += 1; }
   state.cal.month = m; state.cal.year = y; render();
 }
-function gotoCalToday(){ state.cal.year = 2026; state.cal.month = 6; state.cal.selectedKey = toKey(TODAY); render(); }
+function gotoCalToday(){
+  state.cal.year = TODAY.getFullYear();
+  state.cal.month = TODAY.getMonth();
+  state.cal.selectedKey = toKey(TODAY);
+  render();
+}
 function selectCalDay(key){ state.cal.selectedKey = key; render(); }
 
 /* ================================================================== */
@@ -1603,12 +3164,19 @@ function renderMainView(){
   return "";
 }
 
+/* 只重繪主內容區（避免打斷輸入焦點，例如助理面板正在使用中） */
+function renderMainOnly(){
+  const main = document.querySelector("main");
+  if(main) main.innerHTML = renderMainView();
+}
+
 function render(){
   document.body.classList.toggle("dark", state.dark);
 
-  // 未登入：只渲染登入頁，不掛載 Sidebar / TopBar / 任何受保護內容
+  // 未登入：只渲染登入頁與登入相關對話框，不掛載 Sidebar / TopBar / 任何受保護內容
   if(!state.authUser){
-    document.getElementById("app").innerHTML = renderLogin();
+    const publicDialog = state.dialog && state.dialog.type === "forgot" ? renderDialog() : "";
+    document.getElementById("app").innerHTML = renderLogin() + publicDialog;
     renderToast();
     return;
   }
@@ -1619,18 +3187,37 @@ function render(){
       ${renderTopBar()}
       <main>${renderMainView()}</main>
     </div>
-    ${renderModal()}
+    ${renderDialog()}
     ${renderAssistant()}
   `;
   renderToast();
 }
 
-document.addEventListener("click", () => { if(state.bellOpen){ state.bellOpen = false; render(); } });
+/* 點擊空白處關閉下拉選單 */
+document.addEventListener("click", () => {
+  if(state.bellOpen || state.menuOpen){
+    state.bellOpen = false;
+    state.menuOpen = null;
+    render();
+  }
+});
+
+/* Esc 關閉對話框／選單 */
+document.addEventListener("keydown", (e) => {
+  if(e.key !== "Escape") return;
+  if(state.dialog){
+    if(state.dialog.type === "call") endCall(false);
+    else closeDialog();
+  } else if(state.bellOpen || state.menuOpen){
+    state.bellOpen = false; state.menuOpen = null; render();
+  }
+});
 
 const toastDiv = document.createElement("div");
 toastDiv.id = "toastWrap";
 document.body.appendChild(toastDiv);
 
+loadData();
 render();
 </script>
 </body>
