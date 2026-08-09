@@ -3,6 +3,7 @@ import { AiAssistantProvider } from '@/components/dashboard/AiAssistantDrawer';
 import { AppShell } from '@/components/layout/AppShell';
 import { SignInRequired } from '@/components/layout/SignInRequired';
 import { ProfileForm, StaleDaysSlider, ThemeToggle } from '@/components/settings/SettingsForm';
+import { BankSyncButton } from '@/components/BankSyncButton';
 import { loadShellData } from '@/lib/shell';
 import { createClient } from '@/lib/supabase/server';
 
@@ -15,12 +16,13 @@ export default async function SettingsPage() {
   const supabase = await createClient();
 
   // 各表筆數 — 順便當作資料庫連線的健康檢查
-  const [customers, assets, logs, followUps, tasks] = await Promise.all([
+  const [customers, assets, logs, followUps, tasks, bankTx] = await Promise.all([
     supabase.from('customers').select('id', { count: 'exact', head: true }),
     supabase.from('customer_assets').select('id', { count: 'exact', head: true }),
     supabase.from('interaction_logs').select('id', { count: 'exact', head: true }),
     supabase.from('follow_ups').select('id', { count: 'exact', head: true }),
     supabase.from('tasks').select('id', { count: 'exact', head: true }),
+    supabase.from('bank_transactions').select('id', { count: 'exact', head: true }),
   ]);
 
   const counts = [
@@ -29,6 +31,8 @@ export default async function SettingsPage() {
     ['通聯紀錄', logs.count],
     ['Follow Up', followUps.count],
     ['行程', tasks.count],
+    // bank_transactions 可能還沒建表 → count 會是 null，顯示 '—'
+    ['銀行交易明細', bankTx.count],
   ] as const;
 
   const displayName = shell.advisor.name || shell.advisor.email;
@@ -116,6 +120,15 @@ export default async function SettingsPage() {
                   </span>
                 </div>
               ))}
+            </div>
+
+            <div style={{ marginTop: 16, borderTop: '1px solid var(--border)', paddingTop: 16 }}>
+              <p className="m-0 text-sm font-medium">銀行帳戶同步</p>
+              <p className="mt-1 mb-3 text-xs" style={{ color: 'var(--faint)', lineHeight: 1.7 }}>
+                模擬向銀行 API 抓取名下所有客戶的交易明細並寫入 bank_transactions。
+                重複同步會被唯一索引擋掉，不會產生重複資料。
+              </p>
+              <BankSyncButton />
             </div>
 
             {seedLooksDuplicated && (
