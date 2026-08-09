@@ -1,28 +1,41 @@
-# 環境變數 — 含 Supabase service role key 與 Gemini API key，絕不可進版控
-.env
-.env.local
-.env*.local
-.env.development
-.env.production
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# 依賴與建置產物
-node_modules/
-.next/
-out/
-build/
-dist/
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 
-# 編輯器與作業系統
-.vscode/
-.idea/
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
 .DS_Store
-Thumbs.db
-
-# 日誌
-*.log
-npm-debug.log*
-yarn-error.log*
-
-# 憑證
 *.pem
-*.key
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
