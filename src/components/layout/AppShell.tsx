@@ -56,10 +56,10 @@ export function AppShell({
   const [dark, setDark] = useState(false);
   const [bellOpen, setBellOpen] = useState(false);
 
-  // 初始化主題（原型預設淺色）
+  // 初始化主題（預設深色，展現高質感深色儀表板）
   useEffect(() => {
     const stored = localStorage.getItem('arm_theme');
-    const isDark = stored === 'dark';
+    const isDark = stored ? stored === 'dark' : true;
     setDark(isDark);
     document.documentElement.classList.toggle('dark', isDark);
   }, []);

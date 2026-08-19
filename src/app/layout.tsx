@@ -8,8 +8,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    // 主題預設淺色（與原型一致），由 AppShell 的切換鈕在 <html> 上加／移除 .dark
-    <html lang="zh-TW">
+    // 主題預設深色（高質感深色儀表板），AppShell 的切換鈕在 <html> 上加／移除 .dark
+    <html lang="zh-TW" className="dark">
       <body>{children}</body>
     </html>
   );

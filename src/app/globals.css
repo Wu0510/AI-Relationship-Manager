@@ -40,18 +40,18 @@
 }
 
 .dark {
-  --bg-app: #000000;
-  --bg-card: #0f172a;
-  --border: #1e293b;
-  --border-hover: #334155;
+  --bg-app: #020617;
+  --bg-card: #0b1220;
+  --border: rgba(148, 163, 184, 0.12);
+  --border-hover: rgba(129, 140, 248, 0.4);
   --text: #f8fafc;
   --muted: #94a3b8;
   --faint: #64748b;
-  --hover: #1e293b;
-  --active-bg: #1e1b4b;
-  --active-text: #a5b4fc;
-  --input-bg: #0f172a;
-  --overlay: rgba(0, 0, 0, 0.65);
+  --hover: rgba(148, 163, 184, 0.08);
+  --active-bg: rgba(79, 70, 229, 0.22);
+  --active-text: #c7d2fe;
+  --input-bg: rgba(15, 23, 42, 0.6);
+  --overlay: rgba(2, 6, 23, 0.72);
   --badge-indigo-bg: #1e1b4b;
   --badge-indigo-text: #a5b4fc;
   --badge-indigo-border: #312e81;
@@ -109,6 +109,26 @@ body {
   transition:
     background 0.2s ease,
     color 0.2s ease;
+}
+
+/* 深色模式：深邃 slate-950 + 藍紫暈染微漸層 */
+.dark body {
+  background:
+    radial-gradient(ellipse 70% 55% at 12% -8%, rgba(99, 102, 241, 0.18), transparent 60%),
+    radial-gradient(ellipse 60% 55% at 100% 0%, rgba(124, 58, 237, 0.15), transparent 55%),
+    radial-gradient(ellipse 90% 70% at 50% 118%, rgba(56, 189, 248, 0.08), transparent 62%),
+    #020617;
+  background-attachment: fixed;
+}
+
+.dark .sidebar,
+.dark .topbar {
+  background: rgba(2, 6, 23, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.dark .app-main {
+  background: transparent;
 }
 
 button {
@@ -355,10 +375,31 @@ button {
   border: 1px solid var(--border);
   background: var(--bg-card);
   padding: 20px;
-  transition: border-color 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 .card:hover {
   border-color: var(--border-hover);
+}
+
+/* 玻璃擬態 + 微光邊框（深色模式） */
+.dark .card {
+  background: linear-gradient(158deg, rgba(30, 41, 59, 0.55), rgba(15, 23, 42, 0.32));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 10px 30px rgba(0, 0, 0, 0.35);
+}
+.dark .card:hover {
+  border-color: rgba(129, 140, 248, 0.35);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 0 0 1px rgba(129, 140, 248, 0.18),
+    0 16px 40px rgba(79, 70, 229, 0.16);
 }
 
 .section-title {
@@ -948,4 +989,298 @@ textarea {
   background: var(--badge-emerald-bg);
   color: var(--badge-emerald-text);
   border-color: var(--badge-emerald-border);
+}
+
+/* ==========================================================================
+ *  升級：Bento 核心數據看板 + 微互動（2026 高質感 SaaS 儀表板）
+ * ========================================================================== */
+
+/* 進場動畫（staggered reveal） */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.rise {
+  opacity: 0;
+  animation: fadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Bento Grid 便當盒排版 */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+@media (min-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: minmax(116px, 1fr);
+  }
+}
+
+.metric-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 116px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.25s ease,
+    border-color 0.2s ease;
+}
+.dark .metric-card {
+  background: linear-gradient(158deg, rgba(30, 41, 59, 0.55), rgba(15, 23, 42, 0.3));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 10px 30px rgba(0, 0, 0, 0.35);
+}
+.metric-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-hover);
+}
+.dark .metric-card:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1px rgba(129, 140, 248, 0.2),
+    0 18px 44px rgba(79, 70, 229, 0.2);
+}
+
+/* 特色大格：AUM */
+.metric-card--feature {
+  grid-column: span 2;
+}
+@media (min-width: 1024px) {
+  .metric-card--feature {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+}
+.metric-card--feature {
+  background: linear-gradient(150deg, #4f46e5 0%, #4338ca 42%, #6d28d9 100%);
+  border: 1px solid rgba(165, 180, 252, 0.4);
+  color: #fff;
+}
+.dark .metric-card--feature {
+  background: linear-gradient(150deg, rgba(79, 70, 229, 0.92) 0%, rgba(67, 56, 202, 0.85) 45%, rgba(109, 40, 217, 0.9) 100%);
+  border: 1px solid rgba(165, 180, 252, 0.35);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 20px 50px rgba(79, 70, 229, 0.4);
+}
+.metric-card--feature .metric-label,
+.metric-card--feature .metric-sub {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 特色格內的光暈裝飾 */
+.metric-card--feature::before {
+  content: '';
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  top: -90px;
+  right: -70px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.28), transparent 70%);
+  pointer-events: none;
+}
+
+.metric-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--accent);
+  background: var(--badge-indigo-bg);
+  border: 1px solid var(--badge-indigo-border);
+}
+.metric-card--feature .metric-icon {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.metric-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.01em;
+}
+.metric-value {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.metric-card--feature .metric-value {
+  font-size: clamp(34px, 5vw, 50px);
+}
+.metric-sub {
+  font-size: 12px;
+  color: var(--faint);
+  margin: 0;
+}
+
+.metric-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* 趨勢標籤（帶上升箭頭 + 綠色霓虹） */
+.trend-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.trend-up {
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.12);
+  box-shadow:
+    0 0 0 1px rgba(16, 185, 129, 0.3),
+    0 0 16px rgba(16, 185, 129, 0.28);
+}
+.trend-down {
+  color: #fb7185;
+  background: rgba(244, 63, 94, 0.12);
+  box-shadow: 0 0 0 1px rgba(244, 63, 94, 0.28);
+}
+.trend-flat {
+  color: var(--muted);
+  background: var(--badge-slate-bg);
+  border: 1px solid var(--badge-slate-border);
+}
+.metric-card--feature .trend-up {
+  color: #6ee7b7;
+  background: rgba(16, 185, 129, 0.2);
+  box-shadow:
+    0 0 0 1px rgba(110, 231, 183, 0.4),
+    0 0 16px rgba(16, 185, 129, 0.35);
+}
+
+/* 浮動焦點卡片：優先聯繫客戶 */
+.focus-card {
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  padding: 20px;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.2s ease;
+}
+.dark .focus-card {
+  background: linear-gradient(158deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.35));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.focus-rank {
+  width: 22px;
+  height: 22px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  color: var(--accent);
+  background: var(--badge-indigo-bg);
+  border: 1px solid var(--badge-indigo-border);
+}
+.focus-rank.top {
+  color: #fff;
+  background: linear-gradient(135deg, #6366f1, #7c3aed);
+  border: none;
+  box-shadow: 0 0 12px rgba(124, 58, 237, 0.5);
+}
+
+/* 滑鼠懸停微放大 + 發光（客戶列 / 建議列） */
+.glow-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 14px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid transparent;
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.glow-row:hover {
+  transform: translateY(-2px) scale(1.01);
+  background: var(--hover);
+  border-color: rgba(129, 140, 248, 0.28);
+}
+.dark .glow-row:hover {
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.32),
+    0 0 0 1px rgba(129, 140, 248, 0.18),
+    0 0 18px rgba(79, 70, 229, 0.16);
+}
+
+/* AUM 條（客戶列右側迷你視覺化） */
+.aum-bar {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #818cf8, #7c3aed);
+  box-shadow: 0 0 8px rgba(124, 58, 237, 0.5);
+}
+
+/* 升級版 hero（AI 每日建議） */
+.hero-card {
+  position: relative;
+  overflow: hidden;
+}
+.hero-card::before {
+  content: '';
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  bottom: -120px;
+  left: -60px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.16), transparent 70%);
+  pointer-events: none;
+}
+.dark .hero-card {
+  border: 1px solid rgba(165, 180, 252, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 20px 50px rgba(79, 70, 229, 0.35);
 }

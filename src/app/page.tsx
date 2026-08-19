@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import {
+  ArrowDownRight,
+  ArrowUpRight,
   Bell,
   Cake,
   CheckCircle2,
+  ChevronRight,
   Circle,
   Clock,
   LayoutDashboard,
@@ -110,24 +113,52 @@ function riskColor(risk: RiskLevel | null): 'emerald' | 'amber' | 'rose' | 'slat
   return 'rose';
 }
 
-function StatCard({
+function TrendTag({ pct }: { pct: number | null }) {
+  if (pct === null || pct === undefined) return null;
+  const dir = pct > 0 ? 'up' : pct < 0 ? 'down' : 'flat';
+  return (
+    <span className={`trend-tag trend-${dir}`}>
+      {pct > 0 && <ArrowUpRight size={12} />}
+      {pct < 0 && <ArrowDownRight size={12} />}
+      {pct > 0 ? '+' : ''}
+      {pct}%
+    </span>
+  );
+}
+
+function MetricCard({
   label,
   value,
+  sub,
   icon: Icon,
+  trend,
+  feature = false,
+  delay = 0,
 }: {
   label: string;
   value: string | number;
-  icon: React.ComponentType<{ size?: number; style?: React.CSSProperties }>;
+  sub?: string;
+  icon: React.ComponentType<{ size?: number }>;
+  trend?: number | null;
+  feature?: boolean;
+  delay?: number;
 }) {
   return (
-    <div className="card" style={{ padding: 16 }}>
-      <div className="mb-2 flex items-center gap-2">
-        <Icon size={15} style={{ color: 'var(--accent)' }} />
-        <span className="text-xs" style={{ color: 'var(--muted)' }}>
-          {label}
-        </span>
+    <div
+      className={`metric-card rise${feature ? ' metric-card--feature' : ''}`}
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      <div className="metric-head">
+        <div className="metric-icon">
+          <Icon size={feature ? 20 : 17} />
+        </div>
+        {trend !== undefined && <TrendTag pct={trend ?? null} />}
       </div>
-      <p className="m-0 text-lg font-semibold">{value}</p>
+      <div>
+        <p className="metric-value">{value}</p>
+        <p className="metric-label mt-1.5">{label}</p>
+        {sub && <p className="metric-sub mt-0.5">{sub}</p>}
+      </div>
     </div>
   );
 }
@@ -317,6 +348,19 @@ export default async function DashboardPage() {
   });
   const trendMax = Math.max(...trend.map((t) => t.value), 1);
 
+  /* ── 便當盒看板的增長趨勢（皆來自真實資料）─────────────────────────── */
+  const prevCumulative = trend[4]?.value ?? 0;
+  const custGrowthPct =
+    prevCumulative > 0 ? Math.round(((customers.length - prevCumulative) / prevCumulative) * 100) : null;
+
+  const newThisMonth = (trend[5]?.value ?? customers.length) - (trend[4]?.value ?? 0);
+  const newPrevMonth = (trend[4]?.value ?? 0) - (trend[3]?.value ?? 0);
+  const newGrowthPct =
+    newPrevMonth > 0 ? Math.round(((newThisMonth - newPrevMonth) / newPrevMonth) * 100) : null;
+
+  const avgAum = customers.length ? Math.round(totalAum / customers.length) : 0;
+  const maxAum = customers.reduce((m, c) => Math.max(m, Number(c.aum_twd)), 0) || 1;
+
   return (
     <AiAssistantProvider>
       <AppShell
@@ -347,48 +391,65 @@ export default async function DashboardPage() {
           </div>
         )}
 
-        {/* ── 6 格 KPI ─────────────────────────────────────────────────── */}
-        <div className="stats-grid">
-          <StatCard label="客戶數" value={customers.length} icon={Users} />
-          <StatCard label="總資產 AUM" value={formatTwd(totalAum)} icon={Wallet} />
-          <StatCard label="今日待辦" value={`${doneCount}/${tasks.length}`} icon={CheckCircle2} />
-          <StatCard label="今日生日" value={todayBirthdays} icon={Cake} />
-          <StatCard label="本月新增客戶" value={monthlyNew} icon={TrendingUp} />
-          <StatCard label="Call客完成率" value={`${callRate}%`} icon={Clock} />
-        </div>
-
-        {/* ── 趨勢圖 ───────────────────────────────────────────────────── */}
-        <div className="card" style={{ marginTop: 16, marginBottom: 16 }}>
-          <div className="section-title">
-            <div className="section-title-left">
-              <TrendingUp size={16} />
-              <h3>近 6 個月客戶數趨勢</h3>
+        {/* ── 核心數據看板（Bento Grid）────────────────────────────────── */}
+        <div className="bento-grid">
+          <div
+            className="metric-card metric-card--feature rise"
+            style={{ animationDelay: '0ms' }}
+          >
+            <div className="metric-head">
+              <div className="metric-icon">
+                <Wallet size={20} />
+              </div>
+              <span className="trend-tag trend-up">
+                <ArrowUpRight size={12} />
+                本月 +{monthlyNew} 戶
+              </span>
+            </div>
+            <div>
+              <p className="metric-label">總資產規模 AUM</p>
+              <p className="metric-value mt-1">{formatTwd(totalAum)}</p>
+              <p className="metric-sub mt-2">
+                平均每戶 {formatTwd(avgAum)}・共 {customers.length} 位客戶
+              </p>
             </div>
           </div>
-          <div className="flex items-end gap-3" style={{ height: 110 }}>
-            {trend.map((t) => (
-              <div key={t.label} className="flex flex-1 flex-col items-center gap-1.5">
-                <div
-                  style={{
-                    width: '100%',
-                    maxWidth: 36,
-                    height: Math.max(Math.round((t.value / trendMax) * 90), 4),
-                    borderRadius: '8px 8px 0 0',
-                    background: 'linear-gradient(180deg,#818cf8,#4f46e5)',
-                  }}
-                  title={`${t.label}：${t.value} 位`}
-                />
-                <span className="text-xs" style={{ color: 'var(--faint)' }}>
-                  {t.label}
-                </span>
-              </div>
-            ))}
-          </div>
+
+          <MetricCard
+            label="客戶總覽"
+            value={customers.length}
+            sub={`本月新增 ${monthlyNew} 位`}
+            icon={Users}
+            trend={custGrowthPct}
+            delay={80}
+          />
+          <MetricCard
+            label="今日待辦"
+            value={`${doneCount}/${tasks.length}`}
+            sub={`Call 客完成率 ${callRate}%`}
+            icon={CheckCircle2}
+            delay={160}
+          />
+          <MetricCard
+            label="今日生日"
+            value={todayBirthdays}
+            sub={todayBirthdays > 0 ? '記得送上祝福' : '今日無壽星'}
+            icon={Cake}
+            delay={240}
+          />
+          <MetricCard
+            label="本月新增客戶"
+            value={monthlyNew}
+            sub="較上月變化"
+            icon={TrendingUp}
+            trend={newGrowthPct}
+            delay={320}
+          />
         </div>
 
-        {/* ── AI 建議 + 今日待辦 ───────────────────────────────────────── */}
-        <div className="dash-grid">
-          <div className="hero-card">
+        {/* ── 焦點：AI 每日建議 + 優先聯繫客戶 ─────────────────────────── */}
+        <div className="dash-grid" style={{ marginTop: 16 }}>
+          <div className="hero-card rise" style={{ animationDelay: '360ms' }}>
             <div className="hero-tag">
               <Sparkles size={18} />
               <span>AI 每日建議</span>
@@ -403,6 +464,77 @@ export default async function DashboardPage() {
                 問 AI 該怎麼開場 →
               </AskAiButton>
             )}
+          </div>
+
+          <div className="focus-card rise" style={{ animationDelay: '440ms' }}>
+            <div className="section-title">
+              <div className="section-title-left">
+                <Sparkles size={16} />
+                <h3>優先聯繫客戶</h3>
+              </div>
+              <span className="text-xs" style={{ color: 'var(--muted)' }}>
+                AI 智慧排序
+              </span>
+            </div>
+            <div className="flex flex-col gap-1">
+              {suggestions.length === 0 ? (
+                <EmptyRow>今天沒有特別建議的客戶</EmptyRow>
+              ) : (
+                suggestions.slice(0, 4).map((s, i) => (
+                  <div key={s.c.id} className="glow-row">
+                    {/* Link 與 AskAiButton 是兄弟節點，不是父子 ——
+                        button 嵌在 a 裡是無效 HTML，而且 stopPropagation()
+                        擋不住 anchor 的 activation behavior（那不是 listener）。 */}
+                    <span className={`focus-rank${i === 0 ? ' top' : ''}`}>{i + 1}</span>
+                    <Link
+                      href={`/customers/${s.c.id}`}
+                      className="flex min-w-0 flex-1 items-center gap-3"
+                    >
+                      <Avatar name={s.c.name} />
+                      <div className="min-w-0 flex-1">
+                        <p className="m-0 text-sm font-medium">{s.c.name}</p>
+                        <p className="m-0 truncate text-xs" style={{ color: 'var(--muted)' }}>
+                          {s.reasons[0]}
+                        </p>
+                      </div>
+                    </Link>
+                    <AskAiButton customerId={s.c.id} customerName={s.c.name} />
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* ── 今日待辦 + 近 6 個月趨勢 ─────────────────────────────────── */}
+        <div className="dash-grid" style={{ marginTop: 16 }}>
+          <div className="card">
+            <div className="section-title">
+              <div className="section-title-left">
+                <TrendingUp size={16} />
+                <h3>近 6 個月客戶數趨勢</h3>
+              </div>
+            </div>
+            <div className="flex items-end gap-3" style={{ height: 140 }}>
+              {trend.map((t) => (
+                <div key={t.label} className="flex flex-1 flex-col items-center gap-1.5">
+                  <div
+                    style={{
+                      width: '100%',
+                      maxWidth: 40,
+                      height: Math.max(Math.round((t.value / trendMax) * 116), 4),
+                      borderRadius: '10px 10px 0 0',
+                      background: 'linear-gradient(180deg,#818cf8,#4f46e5)',
+                      boxShadow: '0 0 16px rgba(99,102,241,0.4)',
+                    }}
+                    title={`${t.label}：${t.value} 位`}
+                  />
+                  <span className="text-xs" style={{ color: 'var(--faint)' }}>
+                    {t.label}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="card">
@@ -439,35 +571,8 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* ── 6 張提醒卡 ───────────────────────────────────────────────── */}
+        {/* ── 提醒卡 ───────────────────────────────────────────────────── */}
         <div className="cards-grid">
-          <SectionCard title="今日建議聯絡客戶" icon={Users}>
-            {suggestions.length === 0 ? (
-              <EmptyRow>今天沒有特別建議的客戶</EmptyRow>
-            ) : (
-              suggestions.slice(0, 4).map((s) => (
-                <div key={s.c.id} className="row-btn">
-                  {/* Link 與 AskAiButton 是兄弟節點，不是父子 ——
-                      button 嵌在 a 裡是無效 HTML，而且 stopPropagation()
-                      擋不住 anchor 的 activation behavior（那不是 listener）。 */}
-                  <Link
-                    href={`/customers/${s.c.id}`}
-                    className="flex min-w-0 flex-1 items-center gap-3"
-                  >
-                    <Avatar name={s.c.name} />
-                    <div className="min-w-0 flex-1">
-                      <p className="m-0 text-sm font-medium">{s.c.name}</p>
-                      <p className="m-0 truncate text-xs" style={{ color: 'var(--muted)' }}>
-                        {s.reasons[0]}
-                      </p>
-                    </div>
-                  </Link>
-                  <AskAiButton customerId={s.c.id} customerName={s.c.name} />
-                </div>
-              ))
-            )}
-          </SectionCard>
-
           <SectionCard title="生日提醒" icon={Cake}>
             {birthdayList.length === 0 ? (
               <EmptyRow>近期無客戶生日</EmptyRow>
@@ -616,38 +721,53 @@ export default async function DashboardPage() {
             <EmptyRow>目前沒有客戶資料，請執行 supabase/seed.sql</EmptyRow>
           ) : (
             <div className="flex flex-col gap-1">
-              {customers.map((c) => {
+              {customers.map((c, i) => {
                 const a = alertById.get(c.id);
+                const aumPct = Math.max(Math.round((Number(c.aum_twd) / maxAum) * 100), 3);
+                const stale =
+                  a?.days_since_contact != null && a.days_since_contact >= staleDays;
                 return (
-                  <div key={c.id} className="row-btn">
+                  <div key={c.id} className="glow-row">
                     {/* 整列除了右側 AI 按鈕以外都可點擊。Link 與按鈕平行擺放，
                         不把按鈕包進 Link ——那是無效 HTML，且 stopPropagation()
                         無法阻止 anchor 導航（activation behavior 不是 listener）。 */}
+                    <span className="hidden w-6 shrink-0 text-center text-xs font-semibold sm:block" style={{ color: 'var(--faint)' }}>
+                      {i + 1}
+                    </span>
                     <Link
                       href={`/customers/${c.id}`}
                       className="flex min-w-0 flex-1 items-center gap-3"
                     >
                       <Avatar name={c.name} size="md" />
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2">
-                          <p className="m-0 text-sm font-medium">{c.name}</p>
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                          <p className="m-0 text-sm font-semibold">{c.name}</p>
                           <Badge color={riskColor(c.risk_level)}>{c.risk_level ?? '未評估'}</Badge>
-                          {a?.days_since_contact != null && a.days_since_contact >= staleDays && (
-                            <Badge color="rose">久未聯繫</Badge>
-                          )}
+                          {c.occupation && <Badge color="slate">{c.occupation}</Badge>}
+                          {c.invest_style && <Badge color="indigo">{c.invest_style}</Badge>}
+                          {c.tags.slice(0, 2).map((t) => (
+                            <Badge key={t} color="slate">
+                              {t}
+                            </Badge>
+                          ))}
+                          {stale && <Badge color="rose">久未聯繫</Badge>}
                         </div>
-                        <p className="m-0 truncate text-xs" style={{ color: 'var(--muted)' }}>
-                          {[c.age ? `${c.age} 歲` : null, c.occupation, c.invest_style]
+                        <p className="m-0 mt-0.5 truncate text-xs" style={{ color: 'var(--faint)' }}>
+                          {[c.age ? `${c.age} 歲` : null, `最後聯繫 ${c.last_contact_at ?? '—'}`]
                             .filter(Boolean)
                             .join('・')}
-                          {c.tags.length > 0 && ` · ${c.tags.join('、')}`}
                         </p>
                       </div>
-                      <div className="hidden shrink-0 text-right sm:block">
-                        <p className="m-0 text-sm font-semibold">{formatTwd(Number(c.aum_twd))}</p>
-                        <p className="m-0 text-xs" style={{ color: 'var(--faint)' }}>
-                          最後聯繫 {c.last_contact_at ?? '—'}
-                        </p>
+                      <div className="hidden shrink-0 items-center gap-3 sm:flex">
+                        <div className="h-10 w-16 shrink-0 self-center">
+                          <div className="flex h-full flex-col justify-center gap-1.5">
+                            <p className="m-0 text-right text-sm font-semibold">
+                              {formatTwd(Number(c.aum_twd))}
+                            </p>
+                            <div className="aum-bar" style={{ width: `${aumPct}%` }} />
+                          </div>
+                        </div>
+                        <ChevronRight size={16} style={{ color: 'var(--faint)' }} />
                       </div>
                     </Link>
                     <AskAiButton customerId={c.id} customerName={c.name} />
