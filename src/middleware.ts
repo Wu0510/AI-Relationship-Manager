@@ -23,9 +23,19 @@ const PUBLIC_PATHS = [
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
 
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // 若環境變數尚未載入（例如預覽環境冷啟動），不要讓整個 App 崩潰成 500。
+  // 直接放行，讓後續的頁面 / API 各自處理未登入或設定缺失的情況。
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.log('[v0] middleware: Supabase env vars missing, skipping auth check');
+    return response;
+  }
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         getAll() {
