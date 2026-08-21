@@ -97,18 +97,13 @@
  *  基礎
  * ========================================================================== */
 html,
-body {
-  height: 100%;
-}
 
 body {
-  background: var(--bg-app);
-  color: var(--text);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
+  height: 100%;
+  margin: 0;
+  background: #f8fafc;
+  color: #0f172a;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 button {

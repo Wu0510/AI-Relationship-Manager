@@ -2,33 +2,37 @@
 
 import { useEffect, useState, type ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+
 import {
   Bell,
   CalendarDays,
   LayoutDashboard,
+  LogOut,
   Moon,
   Settings,
   Sparkles,
   Sun,
   Users,
-  X,
 } from 'lucide-react';
+
 import { createClient } from '@/lib/supabase/client';
 
-/** 導覽項目 — 對應原型的 NAV_ITEMS */
+
 const NAV_ITEMS = [
-  { href: '/', label: '首頁', icon: LayoutDashboard },
-  { href: '/customers', label: '客戶管理', icon: Users },
-  { href: '/calendar', label: '行事曆', icon: CalendarDays },
-  { href: '/assistant', label: 'AI 助理', icon: Sparkles },
-  { href: '/reminders', label: '提醒中心', icon: Bell },
-  { href: '/settings', label: '設定', icon: Settings },
+  { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/customers', label: 'Customers', icon: Users },
+  { href: '/calendar', label: 'Calendar', icon: CalendarDays },
+  { href: '/assistant', label: 'AI Insight', icon: Sparkles },
+  { href: '/reminders', label: 'Reminders', icon: Bell },
+  { href: '/settings', label: 'Settings', icon: Settings },
 ] as const;
+
 
 export interface ShellReminder {
   customerName: string;
   text: string;
 }
+
 
 export interface ShellAdvisor {
   name: string;
@@ -36,10 +40,7 @@ export interface ShellAdvisor {
   branch: string | null;
 }
 
-/**
- * App 骨架：左側導覽 + 上方 Header + 內容區。
- * 深色切換沿用原型做法（切 <html class="dark">），並存進 localStorage。
- */
+
 export function AppShell({
   advisor,
   todayLabel,
@@ -53,137 +54,628 @@ export function AppShell({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+
   const [dark, setDark] = useState(false);
   const [bellOpen, setBellOpen] = useState(false);
 
-  // 初始化主題（原型預設淺色）
+
   useEffect(() => {
     const stored = localStorage.getItem('arm_theme');
     const isDark = stored === 'dark';
+
     setDark(isDark);
-    document.documentElement.classList.toggle('dark', isDark);
+
+    document.documentElement.classList.toggle(
+      'dark',
+      isDark,
+    );
   }, []);
+
 
   function toggleDark() {
     const next = !dark;
+
     setDark(next);
-    document.documentElement.classList.toggle('dark', next);
-    localStorage.setItem('arm_theme', next ? 'dark' : 'light');
+
+    document.documentElement.classList.toggle(
+      'dark',
+      next,
+    );
+
+    localStorage.setItem(
+      'arm_theme',
+      next ? 'dark' : 'light',
+    );
   }
 
-  // 點空白處關閉通知下拉
+
   useEffect(() => {
     if (!bellOpen) return;
+
     const close = () => setBellOpen(false);
+
     window.addEventListener('click', close);
-    return () => window.removeEventListener('click', close);
+
+    return () =>
+      window.removeEventListener('click', close);
   }, [bellOpen]);
+
 
   async function logout() {
     await createClient().auth.signOut();
+
     router.push('/login');
     router.refresh();
   }
 
+
+  /* ============================================================
+   * Theme
+   * ============================================================ */
+
+  const shellBg = dark
+    ? 'bg-slate-950 text-slate-100'
+    : 'bg-slate-50 text-slate-900';
+
+  const sidebarBg = dark
+    ? 'border-slate-800 bg-slate-950'
+    : 'border-slate-200 bg-white';
+
+  const topbarBg = dark
+    ? 'border-slate-800 bg-slate-950/95'
+    : 'border-slate-200 bg-white/95';
+
+  const logoBorder = dark
+    ? 'border-slate-800'
+    : 'border-slate-100';
+
+  const titleColor = dark
+    ? 'text-slate-100'
+    : 'text-slate-900';
+
+  const secondaryText = dark
+    ? 'text-slate-400'
+    : 'text-slate-500';
+
+  const subtleText = dark
+    ? 'text-slate-500'
+    : 'text-slate-400';
+
+  const buttonStyle = dark
+    ? 'border-slate-700 bg-slate-900 text-slate-400 hover:bg-slate-800 hover:text-white'
+    : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50 hover:text-slate-900';
+
+
   return (
-    <div className="app-shell">
-      {/* ── 側邊導覽 ─────────────────────────────────────────────────── */}
-      <aside className="sidebar">
-        <div className="sidebar-brand">
-          <div className="brand-icon">
-            <Sparkles size={16} />
+    <div className={`min-h-screen ${shellBg}`}>
+
+      {/* ========================================================
+       * SIDEBAR
+       * ======================================================== */}
+
+      <aside
+        className={`
+          fixed left-0 top-0 z-40
+          flex h-screen w-64 flex-col
+          border-r
+          transition-colors duration-200
+          ${sidebarBg}
+        `}
+      >
+
+        {/* LOGO */}
+
+        <div
+          className={`
+            flex h-20 items-center
+            border-b px-6
+            ${logoBorder}
+          `}
+        >
+
+          <div className="mr-3 flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm">
+            <Sparkles size={18} />
           </div>
-          <span className="brand-label">理專助理 AI</span>
+
+
+          <div>
+
+            <div
+              className={`
+                text-sm font-semibold tracking-tight
+                ${titleColor}
+              `}
+            >
+              AI Relationship
+            </div>
+
+            <div
+              className={`text-xs ${subtleText}`}
+            >
+              Manager
+            </div>
+
+          </div>
+
         </div>
 
-        <nav className="nav">
-          {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-            const active = href === '/' ? pathname === '/' : pathname.startsWith(href);
-            return (
-              <a key={href} href={href} className={`nav-item ${active ? 'active' : ''}`}>
-                <Icon size={18} />
-                <span className="nav-label">{label}</span>
-              </a>
-            );
-          })}
+
+        {/* NAVIGATION */}
+
+        <nav className="flex-1 space-y-1 px-4 py-6">
+
+          <p
+            className={`
+              mb-3 px-3 text-[11px]
+              font-semibold uppercase tracking-wider
+              ${subtleText}
+            `}
+          >
+            Workspace
+          </p>
+
+
+          {NAV_ITEMS.map(
+            ({ href, label, icon: Icon }) => {
+
+              const active =
+                href === '/'
+                  ? pathname === '/'
+                  : pathname.startsWith(href);
+
+
+              const inactiveStyle = dark
+                ? 'text-slate-400 hover:bg-slate-900 hover:text-white'
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900';
+
+
+              const activeStyle = dark
+                ? 'bg-blue-500/10 text-blue-400'
+                : 'bg-blue-50 text-blue-700';
+
+
+              return (
+
+                <a
+                  key={href}
+                  href={href}
+                  className={`
+                    flex items-center gap-3
+                    rounded-lg px-3 py-2.5
+                    text-sm font-medium
+                    transition
+                    ${
+                      active
+                        ? activeStyle
+                        : inactiveStyle
+                    }
+                  `}
+                >
+
+                  <Icon size={18} />
+
+                  <span>{label}</span>
+
+                </a>
+
+              );
+            },
+          )}
+
         </nav>
 
-        <div className="sidebar-foot">
-          {advisor.branch ?? '財富管理部'}
-          <br />
-          資料受 RLS 隔離，僅顯示您名下的客戶。
+
+        {/* SIDEBAR FOOTER */}
+
+        <div
+          className={`
+            border-t p-4
+            ${
+              dark
+                ? 'border-slate-800'
+                : 'border-slate-100'
+            }
+          `}
+        >
+
+          <div
+            className={`
+              rounded-xl p-3
+              ${
+                dark
+                  ? 'bg-slate-900'
+                  : 'bg-slate-50'
+              }
+            `}
+          >
+
+            <p
+              className={`
+                m-0 text-xs font-medium
+                ${
+                  dark
+                    ? 'text-slate-300'
+                    : 'text-slate-700'
+                }
+              `}
+            >
+              {advisor.branch ??
+                'Wealth Management'}
+            </p>
+
+
+            <p
+              className={`
+                mb-0 mt-1 text-[11px]
+                leading-4
+                ${subtleText}
+              `}
+            >
+              Secure customer workspace
+            </p>
+
+          </div>
+
         </div>
+
       </aside>
 
-      {/* ── 主欄 ─────────────────────────────────────────────────────── */}
-      <div className="main-col">
-        <header className="topbar">
+
+      {/* ========================================================
+       * MAIN
+       * ======================================================== */}
+
+      <div className="ml-64 min-h-screen">
+
+        {/* ======================================================
+         * TOP BAR
+         * ====================================================== */}
+
+        <header
+          className={`
+            sticky top-0 z-30
+            flex h-20 items-center justify-between
+            border-b px-8
+            backdrop-blur
+            transition-colors duration-200
+            ${topbarBg}
+          `}
+        >
+
+          {/* GREETING */}
+
           <div>
-            <p className="topbar-greeting">早安，{advisor.name || advisor.email}</p>
-            <p className="topbar-date">{todayLabel}</p>
+
+            <p
+              className={`
+                m-0 text-sm font-semibold
+                ${titleColor}
+              `}
+            >
+              早安，{advisor.name || advisor.email} 👋
+            </p>
+
+
+            <p
+              className={`
+                mb-0 mt-1 text-xs
+                ${subtleText}
+              `}
+            >
+              {todayLabel}
+            </p>
+
           </div>
 
-          <div className="topbar-actions">
+
+          {/* ACTIONS */}
+
+          <div className="flex items-center gap-3">
+
+            {/* DARK MODE */}
+
             <button
               type="button"
-              className="icon-btn"
               onClick={toggleDark}
-              aria-label={dark ? '切換淺色模式' : '切換深色模式'}
+              aria-label={
+                dark
+                  ? '切換淺色模式'
+                  : '切換深色模式'
+              }
+              className={`
+                flex h-10 w-10
+                items-center justify-center
+                rounded-lg border
+                transition
+                ${buttonStyle}
+              `}
             >
-              {dark ? <Sun size={17} /> : <Moon size={17} />}
+
+              {dark
+                ? <Sun size={17} />
+                : <Moon size={17} />}
+
             </button>
 
-            <div style={{ position: 'relative' }}>
+
+            {/* NOTIFICATION */}
+
+            <div className="relative">
+
               <button
                 type="button"
-                className="icon-btn"
                 aria-label="通知"
+                className={`
+                  relative
+                  flex h-10 w-10
+                  items-center justify-center
+                  rounded-lg border
+                  transition
+                  ${buttonStyle}
+                `}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setBellOpen((v) => !v);
+                  setBellOpen(
+                    (value) => !value,
+                  );
                 }}
               >
+
                 <Bell size={17} />
+
+
                 {reminders.length > 0 && (
-                  <span className="badge-dot">
-                    {reminders.length > 9 ? '9+' : reminders.length}
+
+                  <span className="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-blue-600 px-1 text-[10px] font-semibold text-white">
+
+                    {reminders.length > 9
+                      ? '9+'
+                      : reminders.length}
+
                   </span>
+
                 )}
+
               </button>
 
+
+              {/* DROPDOWN */}
+
               {bellOpen && (
-                <div className="bell-dropdown" onClick={(e) => e.stopPropagation()}>
-                  <div className="bell-dropdown-title">近期提醒</div>
-                  <div className="flex max-h-64 flex-col gap-0.5 overflow-y-auto">
-                    {reminders.length === 0 ? (
-                      <div className="empty-row">目前沒有待處理提醒</div>
-                    ) : (
-                      reminders.slice(0, 6).map((r, i) => (
-                        <div key={i} className="bell-item">
-                          <b>{r.customerName}</b> · {r.text}
-                        </div>
-                      ))
-                    )}
+
+                <div
+                  className={`
+                    absolute right-0 top-12
+                    w-80 overflow-hidden
+                    rounded-xl border
+                    shadow-xl
+                    ${
+                      dark
+                        ? 'border-slate-700 bg-slate-900'
+                        : 'border-slate-200 bg-white'
+                    }
+                  `}
+                  onClick={(e) =>
+                    e.stopPropagation()
+                  }
+                >
+
+                  <div
+                    className={`
+                      border-b px-4 py-3
+                      ${
+                        dark
+                          ? 'border-slate-800'
+                          : 'border-slate-100'
+                      }
+                    `}
+                  >
+
+                    <p
+                      className={`
+                        m-0 text-sm font-semibold
+                        ${titleColor}
+                      `}
+                    >
+                      近期提醒
+                    </p>
+
                   </div>
-                  <a href="/reminders" className="bell-more block">
+
+
+                  <div className="max-h-72 overflow-y-auto p-2">
+
+                    {reminders.length === 0 ? (
+
+                      <div
+                        className={`
+                          px-3 py-6
+                          text-center text-sm
+                          ${subtleText}
+                        `}
+                      >
+                        目前沒有待處理提醒
+                      </div>
+
+                    ) : (
+
+                      reminders
+                        .slice(0, 6)
+                        .map((reminder, index) => (
+
+                          <div
+                            key={index}
+                            className={`
+                              rounded-lg
+                              px-3 py-3
+                              text-sm
+                              transition
+                              ${
+                                dark
+                                  ? 'text-slate-400 hover:bg-slate-800'
+                                  : 'text-slate-600 hover:bg-slate-50'
+                              }
+                            `}
+                          >
+
+                            <span
+                              className={`
+                                font-medium
+                                ${titleColor}
+                              `}
+                            >
+                              {reminder.customerName}
+                            </span>
+
+                            <span className={secondaryText}>
+                              {' '}·{' '}
+                            </span>
+
+                            {reminder.text}
+
+                          </div>
+
+                        ))
+
+                    )}
+
+                  </div>
+
+
+                  <a
+                    href="/reminders"
+                    className={`
+                      block border-t
+                      px-4 py-3
+                      text-center text-xs
+                      font-medium text-blue-500
+                      ${
+                        dark
+                          ? 'border-slate-800 hover:bg-slate-800'
+                          : 'border-slate-100 hover:bg-slate-50'
+                      }
+                    `}
+                  >
                     查看全部提醒 →
                   </a>
+
                 </div>
+
               )}
+
             </div>
 
-            <div className="avatar-me" title={advisor.name || advisor.email}>
-              {(advisor.name || advisor.email).slice(0, 1)}
+
+            {/* USER */}
+
+            <div
+              className={`
+                ml-2 flex items-center gap-3
+                border-l pl-5
+                ${
+                  dark
+                    ? 'border-slate-800'
+                    : 'border-slate-200'
+                }
+              `}
+            >
+
+              <div
+                className={`
+                  flex h-10 w-10
+                  items-center justify-center
+                  rounded-full
+                  text-sm font-semibold
+                  ${
+                    dark
+                      ? 'bg-slate-800 text-white'
+                      : 'bg-slate-900 text-white'
+                  }
+                `}
+              >
+                {(advisor.name || advisor.email)
+                  .slice(0, 1)
+                  .toUpperCase()}
+              </div>
+
+
+              <div className="hidden sm:block">
+
+                <p
+                  className={`
+                    m-0 max-w-32 truncate
+                    text-sm font-semibold
+                    ${titleColor}
+                  `}
+                >
+                  {advisor.name ||
+                    'Portfolio Demo'}
+                </p>
+
+
+                <p
+                  className={`
+                    m-0 max-w-32 truncate
+                    text-xs
+                    ${subtleText}
+                  `}
+                >
+                  Relationship Manager
+                </p>
+
+              </div>
+
             </div>
 
-            <button type="button" className="icon-btn" onClick={logout} title="登出">
-              <X size={17} />
+
+            {/* LOGOUT */}
+
+            <button
+              type="button"
+              onClick={logout}
+              title="登出"
+              className={`
+                ml-1 flex h-10 w-10
+                items-center justify-center
+                rounded-lg
+                transition
+                ${
+                  dark
+                    ? 'text-slate-500 hover:bg-red-500/10 hover:text-red-400'
+                    : 'text-slate-400 hover:bg-red-50 hover:text-red-500'
+                }
+              `}
+            >
+              <LogOut size={17} />
             </button>
+
           </div>
+
         </header>
 
-        <main className="app-main">{children}</main>
+
+        {/* ======================================================
+         * PAGE CONTENT
+         * ====================================================== */}
+
+        <main
+          className={`
+            mx-auto min-h-[calc(100vh-80px)]
+            w-full max-w-[1600px]
+            p-8
+            transition-colors duration-200
+            ${
+              dark
+                ? 'bg-slate-950'
+                : 'bg-slate-50'
+            }
+          `}
+        >
+          {children}
+        </main>
+
       </div>
+
     </div>
   );
 }

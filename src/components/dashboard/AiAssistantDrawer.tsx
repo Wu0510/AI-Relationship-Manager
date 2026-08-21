@@ -5,32 +5,90 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type ReactNode,
 } from 'react';
-import { Loader2, MessageSquare, Send, Sparkles, X } from 'lucide-react';
+
+import {
+  DollarSign,
+  Globe2,
+  Loader2,
+  MessageSquare,
+  Newspaper,
+  Search,
+  Send,
+  Sparkles,
+  TrendingUp,
+  UserRound,
+  X,
+} from 'lucide-react';
+
+import { createClient } from '@/lib/supabase/client';
+
 
 /* ==========================================================================
- *  Context — 讓 server 端渲染的客戶卡片也能開啟這個 client 面板
- *  （server component 無法把 onClick 傳給 client，所以用 context + 小按鈕元件）
+ * Types
  * ========================================================================== */
+
+type AssistantMode =
+  | 'market'
+  | 'customer';
+
 
 interface PanelTarget {
   customerId: string | null;
   customerName: string;
 }
 
-const AiAssistantContext = createContext<{ open: (t: PanelTarget) => void } | null>(null);
+
+interface Message {
+  role: 'user' | 'model';
+  content: string;
+}
+
+
+interface CustomerOption {
+  id: string;
+  name: string;
+  age: number | null;
+  occupation: string | null;
+  aum_twd: number;
+  risk_level: string | null;
+}
+
+
+/* ==========================================================================
+ * Context
+ * ========================================================================== */
+
+const AiAssistantContext =
+  createContext<{
+    open: (
+      target: PanelTarget,
+    ) => void;
+  } | null>(null);
+
 
 function useAiAssistant() {
-  const ctx = useContext(AiAssistantContext);
-  if (!ctx) throw new Error('AskAiButton 必須放在 <AiAssistantProvider> 內');
+  const ctx =
+    useContext(
+      AiAssistantContext,
+    );
+
+  if (!ctx) {
+    throw new Error(
+      'AskAiButton 必須放在 <AiAssistantProvider> 內',
+    );
+  }
+
   return ctx;
 }
 
+
 /* ==========================================================================
- *  觸發按鈕 — 放在客戶卡片／列表列上
+ * Customer AI Button
  * ========================================================================== */
 
 export function AskAiButton({
@@ -44,268 +102,1654 @@ export function AskAiButton({
   className?: string;
   children?: ReactNode;
 }) {
-  const { open } = useAiAssistant();
+  const { open } =
+    useAiAssistant();
+
   return (
     <button
       type="button"
       onClick={(e) => {
-        // stopPropagation 擋掉祖先節點的 onClick（例如整列的展開／收合）。
-        // preventDefault 是為了萬一這顆按鈕被放進 <a> 或 <form> 裡 ——
-        // anchor 的導航屬於 activation behavior、不是 listener，
-        // 單靠 stopPropagation 是擋不住的，只有 preventDefault 有效。
-        // （目前的用法都把它與 Link 平行擺放，不會嵌套。）
         e.stopPropagation();
         e.preventDefault();
-        open({ customerId, customerName });
+
+        open({
+          customerId,
+          customerName,
+        });
       }}
-      className={className ?? 'badge badge-indigo'}
+      className={
+        className ??
+        'badge badge-indigo'
+      }
     >
       <Sparkles size={11} />
-      {children ?? 'AI 話術'}
+
+      {children ??
+        'AI 話術'}
     </button>
   );
 }
 
+
 /* ==========================================================================
- *  Provider + 面板本體（原型的 assistant-fab / assistant-panel）
+ * Quick Prompts
  * ========================================================================== */
 
-interface Message {
-  role: 'user' | 'model';
-  content: string;
-}
+const MARKET_PROMPTS = [
+  {
+    label:
+      '今日市場摘要',
 
-const QUICK_PROMPTS = [
-  '今天聯繫這位客戶，開場該說什麼？',
-  '目前的資產配置有什麼問題？',
-  '依風險屬性可以討論哪些商品方向？',
-  '有哪些待辦或逾期事項要處理？',
+    prompt:
+      '請整理最新市場摘要，包含台股與美股的重要行情、強弱比較與理專可關注事項。',
+
+    icon:
+      Newspaper,
+  },
+
+  {
+    label:
+      '台股重點',
+
+    prompt:
+      '請整理最新台股行情、主要產業指數表現與理專可關注事項。',
+
+    icon:
+      TrendingUp,
+  },
+
+  {
+    label:
+      '美股重點',
+
+    prompt:
+      '請整理最新美股重要行情，包含 S&P 500、Nasdaq、Dow Jones 與理專可關注事項。',
+
+    icon:
+      Globe2,
+  },
+
+  {
+    label:
+      '匯率與利率',
+
+    prompt:
+      '請整理目前系統可取得的匯率與利率市場資訊，並清楚標示尚未接入的資料來源。',
+
+    icon:
+      DollarSign,
+  },
 ];
 
-export function AiAssistantProvider({ children }: { children: ReactNode }) {
-  const [openState, setOpenState] = useState(false);
-  const [target, setTarget] = useState<PanelTarget>({ customerId: null, customerName: '' });
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
-  const [streaming, setStreaming] = useState(false);
-  const [error, setError] = useState('');
-  const sessionIdRef = useRef<string | null>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const abortRef = useRef<AbortController | null>(null);
 
-  const open = useCallback((t: PanelTarget) => {
-    setTarget((prev) => {
-      // 切換客戶時重置對話，避免把 A 客戶的脈絡帶到 B 客戶
-      if (prev.customerId !== t.customerId) {
-        setMessages([]);
-        setError('');
-        sessionIdRef.current = null;
-      }
-      return t;
+const CUSTOMER_PROMPTS = [
+  '今天適合跟這位客戶聊什麼？',
+  '幫我產生今天的 Call 客開場話術。',
+  '目前的資產配置有什麼值得注意？',
+  '有哪些待辦或逾期事項需要追蹤？',
+];
+
+
+/* ==========================================================================
+ * Helpers
+ * ========================================================================== */
+
+function formatAum(
+  value: number,
+) {
+  if (
+    value >= 100000000
+  ) {
+    return `NT$ ${(value / 100000000).toFixed(1)} 億`;
+  }
+
+  if (
+    value >= 10000
+  ) {
+    return `NT$ ${Math.round(value / 10000).toLocaleString('zh-TW')} 萬`;
+  }
+
+  return `NT$ ${value.toLocaleString('zh-TW')}`;
+}
+
+
+/* ==========================================================================
+ * Provider
+ * ========================================================================== */
+
+export function AiAssistantProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const [openState, setOpenState] =
+    useState(false);
+
+  const [mode, setMode] =
+    useState<AssistantMode>(
+      'market',
+    );
+
+  const [
+    target,
+    setTarget,
+  ] =
+    useState<PanelTarget>({
+      customerId: null,
+      customerName: '',
     });
-    setOpenState(true);
-  }, []);
 
-  const close = useCallback(() => {
-    abortRef.current?.abort();
-    setOpenState(false);
-    setStreaming(false);
-  }, []);
+
+  /* ------------------------------------------------------------------------
+   * Customer selector
+   * ---------------------------------------------------------------------- */
+
+  const [
+    customers,
+    setCustomers,
+  ] =
+    useState<
+      CustomerOption[]
+    >([]);
+
+  const [
+    customerSearch,
+    setCustomerSearch,
+  ] =
+    useState('');
+
+  const [
+    loadingCustomers,
+    setLoadingCustomers,
+  ] =
+    useState(false);
+
+  const [
+    customerLoadError,
+    setCustomerLoadError,
+  ] =
+    useState('');
+
+
+  /* ------------------------------------------------------------------------
+   * Chat
+   * ---------------------------------------------------------------------- */
+
+  const [
+    messages,
+    setMessages,
+  ] =
+    useState<Message[]>([]);
+
+  const [
+    input,
+    setInput,
+  ] =
+    useState('');
+
+  const [
+    streaming,
+    setStreaming,
+  ] =
+    useState(false);
+
+  const [
+    error,
+    setError,
+  ] =
+    useState('');
+
+
+  const sessionIdRef =
+    useRef<string | null>(
+      null,
+    );
+
+  const scrollRef =
+    useRef<HTMLDivElement>(
+      null,
+    );
+
+  const abortRef =
+    useRef<AbortController | null>(
+      null,
+    );
+
+
+  /* ==========================================================================
+   * Load Customers
+   * ========================================================================== */
+
+  const loadCustomers =
+    useCallback(
+      async () => {
+        setLoadingCustomers(
+          true,
+        );
+
+        setCustomerLoadError(
+          '',
+        );
+
+        try {
+          const supabase =
+            createClient();
+
+          const {
+            data,
+            error,
+          } =
+            await supabase
+              .from(
+                'customers',
+              )
+              .select(
+                'id, name, age, occupation, aum_twd, risk_level',
+              )
+              .eq(
+                'is_archived',
+                false,
+              )
+              .order(
+                'aum_twd',
+                {
+                  ascending:
+                    false,
+                },
+              )
+              .limit(50);
+
+
+          if (error) {
+            throw new Error(
+              error.message,
+            );
+          }
+
+
+          setCustomers(
+            (data ??
+              []) as CustomerOption[],
+          );
+        } catch (err) {
+          setCustomerLoadError(
+            err instanceof Error
+              ? err.message
+              : '客戶資料讀取失敗',
+          );
+        } finally {
+          setLoadingCustomers(
+            false,
+          );
+        }
+      },
+      [],
+    );
+
+
+  /* ==========================================================================
+   * Open customer from outside
+   * ========================================================================== */
+
+  const open =
+    useCallback(
+      (
+        selected:
+          PanelTarget,
+      ) => {
+        setMode(
+          'customer',
+        );
+
+        setTarget(
+          (previous) => {
+            if (
+              previous.customerId !==
+              selected.customerId
+            ) {
+              setMessages(
+                [],
+              );
+
+              setError('');
+
+              sessionIdRef.current =
+                null;
+            }
+
+            return selected;
+          },
+        );
+
+        setOpenState(
+          true,
+        );
+      },
+      [],
+    );
+
+
+  /* ==========================================================================
+   * Load customers when customer tab opens
+   * ========================================================================== */
 
   useEffect(() => {
-    if (!openState) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [openState, close]);
-
-  useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
-  }, [messages]);
-
-  async function send(text: string) {
-    const question = text.trim();
-    if (!question || streaming) return;
-
-    if (!target.customerId) {
-      setError('請先從客戶卡片點「AI 話術」，助理才知道要分析哪一位客戶。');
+    if (
+      !openState ||
+      mode !==
+        'customer'
+    ) {
       return;
     }
+
+    if (
+      customers.length === 0 &&
+      !loadingCustomers
+    ) {
+      loadCustomers();
+    }
+  }, [
+    openState,
+    mode,
+    customers.length,
+    loadingCustomers,
+    loadCustomers,
+  ]);
+
+
+  /* ==========================================================================
+   * Filter customers
+   * ========================================================================== */
+
+  const filteredCustomers =
+    useMemo(() => {
+      const keyword =
+        customerSearch
+          .trim()
+          .toLowerCase();
+
+      if (!keyword) {
+        return customers;
+      }
+
+      return customers.filter(
+        (customer) => {
+          return (
+            customer.name
+              .toLowerCase()
+              .includes(
+                keyword,
+              ) ||
+            (
+              customer.occupation ??
+              ''
+            )
+              .toLowerCase()
+              .includes(
+                keyword,
+              ) ||
+            (
+              customer.risk_level ??
+              ''
+            )
+              .toLowerCase()
+              .includes(
+                keyword,
+              )
+          );
+        },
+      );
+    }, [
+      customers,
+      customerSearch,
+    ]);
+
+
+  /* ==========================================================================
+   * Select Customer
+   * ========================================================================== */
+
+  function selectCustomer(
+    customer:
+      CustomerOption,
+  ) {
+    abortRef.current?.abort();
+
+    setTarget({
+      customerId:
+        customer.id,
+
+      customerName:
+        customer.name,
+    });
+
+    setMessages([]);
+    setInput('');
+    setError('');
+    setCustomerSearch('');
+    setStreaming(false);
+
+    sessionIdRef.current =
+      null;
+  }
+
+
+  function clearCustomer() {
+    abortRef.current?.abort();
+
+    setTarget({
+      customerId: null,
+      customerName: '',
+    });
+
+    setMessages([]);
+    setInput('');
+    setError('');
+    setStreaming(false);
+
+    sessionIdRef.current =
+      null;
+  }
+
+
+  /* ==========================================================================
+   * Close
+   * ========================================================================== */
+
+  const close =
+    useCallback(() => {
+      abortRef.current?.abort();
+
+      setOpenState(false);
+      setStreaming(false);
+    }, []);
+
+
+  /* ==========================================================================
+   * Switch Mode
+   * ========================================================================== */
+
+  function switchMode(
+    nextMode:
+      AssistantMode,
+  ) {
+    if (
+      nextMode === mode
+    ) {
+      return;
+    }
+
+    abortRef.current?.abort();
+
+    setMode(nextMode);
+
+    setMessages([]);
+    setInput('');
+    setError('');
+    setStreaming(false);
+
+    sessionIdRef.current =
+      null;
+  }
+
+
+  /* ==========================================================================
+   * ESC Close
+   * ========================================================================== */
+
+  useEffect(() => {
+    if (!openState) {
+      return;
+    }
+
+    const onKey = (
+      e: KeyboardEvent,
+    ) => {
+      if (
+        e.key ===
+        'Escape'
+      ) {
+        close();
+      }
+    };
+
+    window.addEventListener(
+      'keydown',
+      onKey,
+    );
+
+    return () =>
+      window.removeEventListener(
+        'keydown',
+        onKey,
+      );
+  }, [
+    openState,
+    close,
+  ]);
+
+
+  /* ==========================================================================
+   * Auto scroll
+   * ========================================================================== */
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({
+      top:
+        scrollRef.current
+          .scrollHeight,
+
+      behavior:
+        'smooth',
+    });
+  }, [messages]);
+
+
+  /* ==========================================================================
+   * Send
+   * ========================================================================== */
+
+  async function send(
+    text: string,
+  ) {
+    const question =
+      text.trim();
+
+    if (
+      !question ||
+      streaming
+    ) {
+      return;
+    }
+
+
+    if (
+      mode ===
+        'customer' &&
+      !target.customerId
+    ) {
+      setError(
+        '請先選擇一位客戶。',
+      );
+
+      return;
+    }
+
 
     setInput('');
     setError('');
     setStreaming(true);
-    setMessages((m) => [...m, { role: 'user', content: question }, { role: 'model', content: '' }]);
 
-    const controller = new AbortController();
-    abortRef.current = controller;
+
+    setMessages(
+      (current) => [
+        ...current,
+
+        {
+          role:
+            'user',
+
+          content:
+            question,
+        },
+
+        {
+          role:
+            'model',
+
+          content: '',
+        },
+      ],
+    );
+
+
+    const controller =
+      new AbortController();
+
+    abortRef.current =
+      controller;
+
 
     try {
-      const res = await fetch('/api/ai/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: controller.signal,
-        body: JSON.stringify({
-          customerId: target.customerId,
-          message: question,
-          ...(sessionIdRef.current ? { sessionId: sessionIdRef.current } : {}),
-        }),
-      });
+      const requestBody =
+        mode ===
+          'market'
+          ? {
+              mode:
+                'market',
 
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
-        throw new Error(body.error ?? `HTTP ${res.status}`);
+              message:
+                question,
+
+              ...(sessionIdRef.current
+                ? {
+                    sessionId:
+                      sessionIdRef.current,
+                  }
+                : {}),
+            }
+          : {
+              mode:
+                'customer',
+
+              customerId:
+                target.customerId,
+
+              message:
+                question,
+
+              ...(sessionIdRef.current
+                ? {
+                    sessionId:
+                      sessionIdRef.current,
+                  }
+                : {}),
+            };
+
+
+      const response =
+        await fetch(
+          '/api/ai/chat',
+          {
+            method:
+              'POST',
+
+            headers: {
+              'Content-Type':
+                'application/json',
+            },
+
+            signal:
+              controller.signal,
+
+            body:
+              JSON.stringify(
+                requestBody,
+              ),
+          },
+        );
+
+
+      if (
+        !response.ok
+      ) {
+        const body =
+          await response
+            .json()
+            .catch(() => ({
+              error:
+                `HTTP ${response.status}`,
+            }));
+
+        throw new Error(
+          body.error ??
+            `HTTP ${response.status}`,
+        );
       }
 
-      const sid = res.headers.get('X-Session-Id');
-      if (sid) sessionIdRef.current = sid;
-      if (!res.body) throw new Error('伺服器沒有回傳串流內容');
 
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
+      const sid =
+        response.headers.get(
+          'X-Session-Id',
+        );
+
+      if (sid) {
+        sessionIdRef.current =
+          sid;
+      }
+
+
+      if (
+        !response.body
+      ) {
+        throw new Error(
+          '伺服器沒有回傳串流內容',
+        );
+      }
+
+
+      const reader =
+        response.body
+          .getReader();
+
+      const decoder =
+        new TextDecoder();
+
 
       for (;;) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        setMessages((m) => {
-          const next = [...m];
-          next[next.length - 1] = {
-            role: 'model',
-            content: next[next.length - 1].content + chunk,
-          };
-          return next;
-        });
+        const {
+          done,
+          value,
+        } =
+          await reader.read();
+
+        if (done) {
+          break;
+        }
+
+
+        const chunk =
+          decoder.decode(
+            value,
+            {
+              stream:
+                true,
+            },
+          );
+
+
+        setMessages(
+          (current) => {
+            const next =
+              [
+                ...current,
+              ];
+
+            const last =
+              next.length -
+              1;
+
+            next[last] = {
+              role:
+                'model',
+
+              content:
+                next[last]
+                  .content +
+                chunk,
+            };
+
+            return next;
+          },
+        );
       }
     } catch (err) {
-      if ((err as Error).name === 'AbortError') return;
-      setError((err as Error).message);
-      setMessages((m) => (m[m.length - 1]?.content === '' ? m.slice(0, -1) : m));
+      if (
+        (
+          err as Error
+        ).name ===
+        'AbortError'
+      ) {
+        return;
+      }
+
+      setError(
+        (
+          err as Error
+        ).message,
+      );
+
+
+      setMessages(
+        (current) =>
+          current[
+            current.length -
+              1
+          ]?.content ===
+          ''
+            ? current.slice(
+                0,
+                -1,
+              )
+            : current,
+      );
     } finally {
       setStreaming(false);
-      abortRef.current = null;
+
+      abortRef.current =
+        null;
     }
   }
 
+
+  /* ==========================================================================
+   * UI
+   * ========================================================================== */
+
   return (
-    <AiAssistantContext.Provider value={{ open }}>
+    <AiAssistantContext.Provider
+      value={{ open }}
+    >
       {children}
 
-      {/* ── 浮動按鈕 ─────────────────────────────────────────────────── */}
+
+      {/* ================================================================
+       * Floating Button
+       * ================================================================ */}
+
       <button
         type="button"
         className="assistant-fab"
-        aria-label={openState ? '關閉 AI 助理' : '開啟 AI 助理'}
-        onClick={() => (openState ? close() : setOpenState(true))}
+        aria-label={
+          openState
+            ? '關閉 AI 助理'
+            : '開啟 AI 助理'
+        }
+        onClick={() => {
+          if (
+            openState
+          ) {
+            close();
+          } else {
+            setOpenState(
+              true,
+            );
+          }
+        }}
       >
-        {openState ? <X size={22} /> : <MessageSquare size={22} />}
+        {openState ? (
+          <X size={22} />
+        ) : (
+          <MessageSquare
+            size={22}
+          />
+        )}
       </button>
 
-      {/* ── 面板 ─────────────────────────────────────────────────────── */}
+
+      {/* ================================================================
+       * Panel
+       * ================================================================ */}
+
       {openState && (
-        <div className="assistant-panel" role="dialog" aria-label="AI 理專助理">
+        <div
+          className="assistant-panel"
+          role="dialog"
+          aria-label="AI 理專助理"
+        >
+
+          {/* Header */}
+
           <div className="assistant-head">
-            <Sparkles size={16} style={{ color: 'var(--accent)' }} />
+
+            <Sparkles
+              size={16}
+              style={{
+                color:
+                  'var(--accent)',
+              }}
+            />
+
             <span className="flex-1 truncate">
-              AI 助理
-              {target.customerName && (
-                <span style={{ color: 'var(--muted)', fontWeight: 400 }}>
-                  {' '}
-                  · {target.customerName}
-                </span>
-              )}
+              AI Assistant
             </span>
-            <button type="button" className="icon-btn" onClick={close} aria-label="關閉">
+
+            <span
+              className="rounded-full px-2 py-0.5 text-[10px] font-semibold"
+              style={{
+                color:
+                  'var(--accent)',
+
+                background:
+                  'var(--accent-light)',
+              }}
+            >
+              BETA
+            </span>
+
+            <button
+              type="button"
+              className="icon-btn"
+              onClick={close}
+              aria-label="關閉"
+            >
               <X size={16} />
             </button>
+
           </div>
 
-          <div ref={scrollRef} className="assistant-msgs">
-            {messages.length === 0 && (
-              <>
-                <p className="text-xs" style={{ color: 'var(--muted)', lineHeight: 1.7 }}>
-                  {target.customerId
-                    ? '已載入這位客戶的持有部位、通聯紀錄與今日市場動態。挑一個問題開始：'
-                    : '請先從客戶卡片點「AI 話術」，我才知道要分析哪一位客戶。'}
+
+          {/* ============================================================
+           * Tabs
+           * ============================================================ */}
+
+          <div
+            className="grid grid-cols-2"
+            style={{
+              borderBottom:
+                '1px solid var(--border)',
+            }}
+          >
+
+            <button
+              type="button"
+              onClick={() =>
+                switchMode(
+                  'market',
+                )
+              }
+              className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition"
+              style={{
+                color:
+                  mode ===
+                  'market'
+                    ? 'var(--accent)'
+                    : 'var(--muted)',
+
+                borderBottom:
+                  mode ===
+                  'market'
+                    ? '2px solid var(--accent)'
+                    : '2px solid transparent',
+              }}
+            >
+              <Globe2
+                size={15}
+              />
+
+              市場助理
+            </button>
+
+
+            <button
+              type="button"
+              onClick={() =>
+                switchMode(
+                  'customer',
+                )
+              }
+              className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition"
+              style={{
+                color:
+                  mode ===
+                  'customer'
+                    ? 'var(--accent)'
+                    : 'var(--muted)',
+
+                borderBottom:
+                  mode ===
+                  'customer'
+                    ? '2px solid var(--accent)'
+                    : '2px solid transparent',
+              }}
+            >
+              <UserRound
+                size={15}
+              />
+
+              客戶助理
+            </button>
+
+          </div>
+
+
+          {/* ============================================================
+           * Selected Customer Bar
+           * ============================================================ */}
+
+          {mode ===
+            'customer' &&
+            target.customerId && (
+
+            <div
+              className="flex items-center justify-between gap-3 px-4 py-3"
+              style={{
+                borderBottom:
+                  '1px solid var(--border)',
+              }}
+            >
+
+              <div className="min-w-0">
+
+                <p
+                  className="m-0 text-[10px] font-semibold uppercase tracking-wide"
+                  style={{
+                    color:
+                      'var(--muted)',
+                  }}
+                >
+                  Selected Customer
                 </p>
-                {target.customerId && (
-                  <div className="flex flex-col gap-1.5">
-                    {QUICK_PROMPTS.map((p) => (
-                      <button
-                        key={p}
-                        type="button"
-                        onClick={() => send(p)}
-                        className="row-btn text-xs"
-                        style={{ border: '1px solid var(--border)' }}
-                      >
-                        {p}
-                      </button>
-                    ))}
+
+                <p
+                  className="mb-0 mt-1 truncate text-sm font-semibold"
+                  style={{
+                    color:
+                      'var(--text)',
+                  }}
+                >
+                  {target.customerName}
+                </p>
+
+              </div>
+
+
+              <button
+                type="button"
+                onClick={
+                  clearCustomer
+                }
+                className="shrink-0 text-xs font-medium"
+                style={{
+                  color:
+                    'var(--accent)',
+                }}
+              >
+                更換客戶
+              </button>
+
+            </div>
+          )}
+
+
+          {/* ============================================================
+           * Main
+           * ============================================================ */}
+
+          <div
+            ref={scrollRef}
+            className="assistant-msgs"
+          >
+
+            {/* ==========================================================
+             * CUSTOMER SELECTOR
+             * ========================================================== */}
+
+            {mode ===
+              'customer' &&
+              !target.customerId &&
+              messages.length ===
+                0 && (
+
+              <div className="flex flex-col gap-4">
+
+                <div>
+
+                  <p
+                    className="m-0 text-sm font-semibold"
+                    style={{
+                      color:
+                        'var(--text)',
+                    }}
+                  >
+                    選擇客戶
+                  </p>
+
+                  <p
+                    className="mb-0 mt-1 text-xs"
+                    style={{
+                      color:
+                        'var(--muted)',
+
+                      lineHeight:
+                        1.6,
+                    }}
+                  >
+                    選擇客戶後，AI 會載入客戶資料、資產與通聯紀錄。
+                  </p>
+
+                </div>
+
+
+                {/* Search */}
+
+                <div className="relative">
+
+                  <Search
+                    size={15}
+                    className="absolute left-3 top-1/2 -translate-y-1/2"
+                    style={{
+                      color:
+                        'var(--muted)',
+                    }}
+                  />
+
+                  <input
+                    type="text"
+                    value={
+                      customerSearch
+                    }
+                    onChange={(e) =>
+                      setCustomerSearch(
+                        e.target
+                          .value,
+                      )
+                    }
+                    placeholder="搜尋姓名、職業、RR..."
+                    className="w-full rounded-lg py-2.5 pl-9 pr-3 text-sm outline-none"
+                    style={{
+                      border:
+                        '1px solid var(--border)',
+
+                      background:
+                        'var(--surface)',
+
+                      color:
+                        'var(--text)',
+                    }}
+                  />
+
+                </div>
+
+
+                {/* Loading */}
+
+                {loadingCustomers && (
+
+                  <div
+                    className="flex items-center justify-center gap-2 py-8 text-xs"
+                    style={{
+                      color:
+                        'var(--muted)',
+                    }}
+                  >
+                    <Loader2
+                      size={14}
+                      style={{
+                        animation:
+                          'spin 1s linear infinite',
+                      }}
+                    />
+
+                    載入客戶資料...
                   </div>
+
                 )}
-              </>
+
+
+                {/* Error */}
+
+                {customerLoadError && (
+
+                  <div className="badge badge-rose whitespace-normal">
+                    {customerLoadError}
+                  </div>
+
+                )}
+
+
+                {/* Customer list */}
+
+                {!loadingCustomers &&
+                  !customerLoadError && (
+
+                  <div className="flex max-h-[320px] flex-col gap-2 overflow-y-auto">
+
+                    {filteredCustomers.length ===
+                    0 ? (
+
+                      <div
+                        className="py-8 text-center text-xs"
+                        style={{
+                          color:
+                            'var(--muted)',
+                        }}
+                      >
+                        沒有符合條件的客戶
+                      </div>
+
+                    ) : (
+
+                      filteredCustomers.map(
+                        (
+                          customer,
+                        ) => (
+
+                          <button
+                            key={
+                              customer.id
+                            }
+                            type="button"
+                            onClick={() =>
+                              selectCustomer(
+                                customer,
+                              )
+                            }
+                            className="flex w-full items-center gap-3 rounded-xl p-3 text-left transition"
+                            style={{
+                              border:
+                                '1px solid var(--border)',
+
+                              background:
+                                'var(--surface)',
+                            }}
+                          >
+
+                            <div
+                              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
+                              style={{
+                                background:
+                                  'var(--accent)',
+                              }}
+                            >
+                              {customer.name.slice(
+                                0,
+                                1,
+                              )}
+                            </div>
+
+
+                            <div className="min-w-0 flex-1">
+
+                              <div className="flex items-center gap-2">
+
+                                <span
+                                  className="truncate text-sm font-semibold"
+                                  style={{
+                                    color:
+                                      'var(--text)',
+                                  }}
+                                >
+                                  {customer.name}
+                                </span>
+
+
+                                {customer.risk_level && (
+
+                                  <span
+                                    className="rounded-full px-2 py-0.5 text-[10px]"
+                                    style={{
+                                      color:
+                                        'var(--accent)',
+
+                                      background:
+                                        'var(--accent-light)',
+                                    }}
+                                  >
+                                    {
+                                      customer.risk_level
+                                    }
+                                  </span>
+
+                                )}
+
+                              </div>
+
+
+                              <p
+                                className="mb-0 mt-1 truncate text-xs"
+                                style={{
+                                  color:
+                                    'var(--muted)',
+                                }}
+                              >
+                                {[
+                                  customer.age
+                                    ? `${customer.age} 歲`
+                                    : null,
+
+                                  customer.occupation,
+
+                                  formatAum(
+                                    Number(
+                                      customer.aum_twd,
+                                    ),
+                                  ),
+                                ]
+                                  .filter(
+                                    Boolean,
+                                  )
+                                  .join(
+                                    ' · ',
+                                  )}
+                              </p>
+
+                            </div>
+
+                          </button>
+
+                        ),
+                      )
+
+                    )}
+
+                  </div>
+
+                )}
+
+              </div>
+
             )}
 
-            {messages.map((m, i) => (
-              <div key={i} className={`msg-row ${m.role === 'user' ? 'user' : ''}`}>
-                <div className={`msg-bubble ${m.role === 'user' ? 'user' : 'ai'}`}>
-                  {m.content ||
-                    (streaming && (
-                      <span
-                        className="inline-flex items-center gap-2"
-                        style={{ color: 'var(--muted)' }}
-                      >
-                        <Loader2 size={13} style={{ animation: 'spin 1s linear infinite' }} />
-                        正在組裝客戶上下文…
-                      </span>
-                    ))}
+
+            {/* ==========================================================
+             * EMPTY MARKET
+             * ========================================================== */}
+
+            {mode ===
+              'market' &&
+              messages.length ===
+                0 && (
+
+              <>
+
+                <div className="mb-4">
+
+                  <p
+                    className="m-0 text-sm font-semibold"
+                    style={{
+                      color:
+                        'var(--text)',
+                    }}
+                  >
+                    市場助理
+                  </p>
+
+                  <p
+                    className="mb-0 mt-1 text-xs"
+                    style={{
+                      color:
+                        'var(--muted)',
+
+                      lineHeight:
+                        1.7,
+                    }}
+                  >
+                    目前已接入台股 TWSE 與美股市場資料。
+                  </p>
+
                 </div>
-              </div>
-            ))}
+
+
+                <div className="grid grid-cols-2 gap-2">
+
+                  {MARKET_PROMPTS.map(
+                    ({
+                      label,
+                      prompt,
+                      icon:
+                        Icon,
+                    }) => (
+
+                      <button
+                        key={
+                          label
+                        }
+                        type="button"
+                        onClick={() =>
+                          send(
+                            prompt,
+                          )
+                        }
+                        className="rounded-xl p-3 text-left"
+                        style={{
+                          border:
+                            '1px solid var(--border)',
+
+                          background:
+                            'var(--surface)',
+                        }}
+                      >
+
+                        <Icon
+                          size={15}
+                          style={{
+                            color:
+                              'var(--accent)',
+                          }}
+                        />
+
+                        <p
+                          className="mb-0 mt-2 text-xs font-semibold"
+                          style={{
+                            color:
+                              'var(--text)',
+                          }}
+                        >
+                          {label}
+                        </p>
+
+                      </button>
+
+                    ),
+                  )}
+
+                </div>
+
+              </>
+
+            )}
+
+
+            {/* ==========================================================
+             * SELECTED CUSTOMER QUICK PROMPTS
+             * ========================================================== */}
+
+            {mode ===
+              'customer' &&
+              target.customerId &&
+              messages.length ===
+                0 && (
+
+              <>
+
+                <div className="mb-4">
+
+                  <p
+                    className="m-0 text-sm font-semibold"
+                    style={{
+                      color:
+                        'var(--text)',
+                    }}
+                  >
+                    {target.customerName}
+                  </p>
+
+                  <p
+                    className="mb-0 mt-1 text-xs"
+                    style={{
+                      color:
+                        'var(--muted)',
+
+                      lineHeight:
+                        1.7,
+                    }}
+                  >
+                    客戶 Context 已載入，選一個問題開始分析。
+                  </p>
+
+                </div>
+
+
+                <div className="flex flex-col gap-2">
+
+                  {CUSTOMER_PROMPTS.map(
+                    (
+                      prompt,
+                    ) => (
+
+                      <button
+                        key={
+                          prompt
+                        }
+                        type="button"
+                        onClick={() =>
+                          send(
+                            prompt,
+                          )
+                        }
+                        className="row-btn text-left text-xs"
+                        style={{
+                          border:
+                            '1px solid var(--border)',
+                        }}
+                      >
+                        {prompt}
+                      </button>
+
+                    ),
+                  )}
+
+                </div>
+
+              </>
+
+            )}
+
+
+            {/* ==========================================================
+             * Messages
+             * ========================================================== */}
+
+            {messages.map(
+              (
+                message,
+                index,
+              ) => (
+
+                <div
+                  key={index}
+                  className={`msg-row ${
+                    message.role ===
+                    'user'
+                      ? 'user'
+                      : ''
+                  }`}
+                >
+
+                  <div
+                    className={`msg-bubble ${
+                      message.role ===
+                      'user'
+                        ? 'user'
+                        : 'ai'
+                    }`}
+                  >
+                    {message.content ||
+
+                      (streaming && (
+
+                        <span
+                          className="inline-flex items-center gap-2"
+                          style={{
+                            color:
+                              'var(--muted)',
+                          }}
+                        >
+
+                          <Loader2
+                            size={13}
+                            style={{
+                              animation:
+                                'spin 1s linear infinite',
+                            }}
+                          />
+
+                          {mode ===
+                          'market'
+                            ? '正在整理市場資料…'
+                            : '正在分析客戶資料…'}
+
+                        </span>
+
+                      ))}
+
+                  </div>
+
+                </div>
+
+              ),
+            )}
+
 
             {error && (
-              <p className="badge badge-rose" style={{ whiteSpace: 'normal', lineHeight: 1.6 }}>
+
+              <p
+                className="badge badge-rose"
+                style={{
+                  whiteSpace:
+                    'normal',
+
+                  lineHeight:
+                    1.6,
+                }}
+              >
                 {error}
               </p>
+
             )}
+
           </div>
+
+
+          {/* ============================================================
+           * Input
+           * ============================================================ */}
 
           <form
             className="assistant-input-row"
             onSubmit={(e) => {
               e.preventDefault();
+
               send(input);
             }}
           >
+
             <textarea
               rows={1}
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) =>
+                setInput(
+                  e.target.value,
+                )
+              }
               onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
+                if (
+                  e.key ===
+                    'Enter' &&
+                  !e.shiftKey
+                ) {
                   e.preventDefault();
+
                   send(input);
                 }
               }}
-              placeholder="輸入問題…"
+              placeholder={
+                mode ===
+                'market'
+                  ? '問我任何市場問題…'
+
+                  : target.customerId
+                    ? `詢問 ${target.customerName}…`
+
+                    : '請先選擇客戶…'
+              }
+              disabled={
+                mode ===
+                  'customer' &&
+                !target.customerId
+              }
             />
+
+
             <button
               type="submit"
               className="send-btn"
-              disabled={streaming || !input.trim()}
+              disabled={
+                streaming ||
+                !input.trim() ||
+                (
+                  mode ===
+                    'customer' &&
+                  !target.customerId
+                )
+              }
               aria-label="送出"
             >
+
               {streaming ? (
-                <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} />
+
+                <Loader2
+                  size={15}
+                  style={{
+                    animation:
+                      'spin 1s linear infinite',
+                  }}
+                />
+
               ) : (
+
                 <Send size={15} />
+
               )}
+
             </button>
+
           </form>
+
         </div>
       )}
+
     </AiAssistantContext.Provider>
   );
 }
