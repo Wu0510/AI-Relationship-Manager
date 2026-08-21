@@ -177,20 +177,20 @@ function StatCard({
   }>;
 }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
+    <div className="rounded-xl border border-line bg-card p-5 shadow-sm transition hover:shadow-md">
       <div className="flex items-start justify-between">
 
         <div>
-          <p className="m-0 text-sm font-medium text-slate-500">
+          <p className="m-0 text-sm font-medium text-muted">
             {label}
           </p>
 
-          <p className="mb-0 mt-3 text-2xl font-semibold tracking-tight text-slate-900">
+          <p className="mb-0 mt-3 text-2xl font-semibold tracking-tight text-ink">
             {value}
           </p>
         </div>
 
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-hover text-accent">
           <Icon size={19} />
         </div>
 
@@ -834,11 +834,11 @@ export default async function DashboardPage() {
 
         <div className="mb-6">
 
-          <h1 className="m-0 text-2xl font-semibold tracking-tight text-slate-900">
+          <h1 className="m-0 text-2xl font-semibold tracking-tight text-ink">
             Dashboard
           </h1>
 
-          <p className="mb-0 mt-1 text-sm text-slate-500">
+          <p className="mb-0 mt-1 text-sm text-muted">
             今日客戶經營與關係管理總覽
           </p>
 
@@ -894,23 +894,23 @@ export default async function DashboardPage() {
          * TREND
          * ============================================================== */}
 
-        <div className="mt-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="mt-5 rounded-xl border border-line bg-card p-5 shadow-sm">
 
           <div className="mb-5 flex items-center justify-between">
 
             <div>
 
-              <p className="m-0 text-sm font-semibold text-slate-900">
+              <p className="m-0 text-sm font-semibold text-ink">
                 客戶成長趨勢
               </p>
 
-              <p className="mb-0 mt-1 text-xs text-slate-400">
+              <p className="mb-0 mt-1 text-xs text-faint">
                 近六個月累積客戶數
               </p>
 
             </div>
 
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-hover text-accent">
               <TrendingUp size={17} />
             </div>
 
@@ -928,11 +928,17 @@ export default async function DashboardPage() {
 
               <div
                 key={item.label}
-                className="flex flex-1 flex-col items-center gap-2"
+                className="flex flex-1 flex-col items-center"
               >
 
+                {/* 實際累積客戶數 */}
+                <span className="mb-2 text-xs font-semibold text-ink">
+                  {item.value} 位
+                </span>
+
+                {/* 長條 */}
                 <div
-                  className="w-full max-w-9 rounded-t-md bg-blue-500"
+                  className="w-full max-w-9 rounded-t-md bg-blue-500 transition-all duration-300"
                   style={{
                     height:
                       Math.max(
@@ -947,7 +953,8 @@ export default async function DashboardPage() {
                   title={`${item.label}：${item.value} 位`}
                 />
 
-                <span className="text-xs text-slate-400">
+                {/* 月份 */}
+                <span className="mt-2 text-xs text-faint">
                   {item.label}
                 </span>
 
@@ -971,11 +978,11 @@ export default async function DashboardPage() {
            * NEW AI PRIORITY INSIGHT
            * ============================================================ */}
 
-          <div className="overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-2xl border border-line bg-card shadow-sm">
 
             {/* AI Header */}
 
-            <div className="border-b border-blue-100 bg-blue-50/60 px-6 py-4">
+            <div className="border-b border-line bg-hover px-6 py-4">
 
               <div className="flex items-center justify-between gap-4">
 
@@ -987,11 +994,11 @@ export default async function DashboardPage() {
 
                   <div>
 
-                    <p className="m-0 text-sm font-semibold text-slate-900">
+                    <p className="m-0 text-sm font-semibold text-ink">
                       AI Priority Insight
                     </p>
 
-                    <p className="mb-0 mt-0.5 text-xs text-slate-500">
+                    <p className="mb-0 mt-0.5 text-xs text-muted">
                       今日客戶經營建議
                     </p>
 
@@ -1000,7 +1007,7 @@ export default async function DashboardPage() {
                 </div>
 
 
-                <span className="rounded-full border border-blue-200 bg-white px-3 py-1 text-xs font-medium text-blue-600">
+                <span className="rounded-full border border-line bg-card px-3 py-1 text-xs font-medium text-accent">
                   AI Generated
                 </span>
 
@@ -1013,7 +1020,7 @@ export default async function DashboardPage() {
 
             <div className="p-6">
 
-              <p className="m-0 text-sm leading-7 text-slate-600">
+              <p className="m-0 text-sm leading-7 text-muted">
                 {brief}
               </p>
 
@@ -1021,14 +1028,14 @@ export default async function DashboardPage() {
               {suggestions.length > 0 && (
                 <>
 
-                  <div className="my-5 border-t border-slate-100" />
+                  <div className="my-5 border-t border-line" />
 
 
                   <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
 
                     <div className="min-w-0">
 
-                      <p className="m-0 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                      <p className="m-0 text-[11px] font-semibold uppercase tracking-wider text-faint">
                         Top Priority
                       </p>
 
@@ -1044,14 +1051,14 @@ export default async function DashboardPage() {
 
                         <div className="min-w-0">
 
-                          <p className="m-0 truncate text-sm font-semibold text-slate-900">
+                          <p className="m-0 truncate text-sm font-semibold text-ink">
                             {
                               suggestions[0]
                                 .c.name
                             }
                           </p>
 
-                          <p className="mb-0 mt-1 text-xs text-slate-500">
+                          <p className="mb-0 mt-1 text-xs text-muted">
                             {
                               suggestions[0]
                                 .reasons[0]
@@ -1091,23 +1098,23 @@ export default async function DashboardPage() {
            * TODAY TASKS
            * ============================================================ */}
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-line bg-card p-6 shadow-sm">
 
             <div className="mb-5 flex items-center justify-between">
 
               <div>
 
-                <p className="m-0 text-sm font-semibold text-slate-900">
+                <p className="m-0 text-sm font-semibold text-ink">
                   今日待辦
                 </p>
 
-                <p className="mb-0 mt-1 text-xs text-slate-400">
+                <p className="mb-0 mt-1 text-xs text-faint">
                   {doneCount}/{tasks.length} 已完成
                 </p>
 
               </div>
 
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-hover text-muted">
                 <CheckCircle2 size={17} />
               </div>
 
@@ -1118,7 +1125,7 @@ export default async function DashboardPage() {
 
               {tasks.length === 0 ? (
 
-                <div className="rounded-lg bg-slate-50 px-4 py-6 text-center text-sm text-slate-400">
+                <div className="rounded-lg bg-hover px-4 py-6 text-center text-sm text-faint">
                   今天沒有排定的行程
                 </div>
 
@@ -1137,7 +1144,7 @@ export default async function DashboardPage() {
 
                     <div
                       key={task.id}
-                      className="flex items-center gap-3 rounded-lg px-3 py-3 transition hover:bg-slate-50"
+                      className="flex items-center gap-3 rounded-lg px-3 py-3 transition hover:bg-hover"
                     >
 
                       {task.is_done ? (
@@ -1151,7 +1158,7 @@ export default async function DashboardPage() {
 
                         <Circle
                           size={18}
-                          className="shrink-0 text-slate-300"
+                          className="shrink-0 text-faint"
                         />
 
                       )}
@@ -1160,8 +1167,8 @@ export default async function DashboardPage() {
                       <span
                         className={`min-w-0 flex-1 truncate text-sm ${
                           task.is_done
-                            ? 'text-slate-400 line-through'
-                            : 'font-medium text-slate-700'
+                            ? 'text-faint line-through'
+                            : 'font-medium text-ink'
                         }`}
                       >
                         {customer?.name ??
@@ -1169,7 +1176,7 @@ export default async function DashboardPage() {
                       </span>
 
 
-                      <span className="shrink-0 text-xs font-medium text-slate-400">
+                      <span className="shrink-0 text-xs font-medium text-faint">
                         {task.starts_at.slice(
                           11,
                           16,
@@ -1678,7 +1685,7 @@ export default async function DashboardPage() {
          * CUSTOMER OVERVIEW
          * ============================================================== */}
 
-        <div className="mt-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="mt-5 rounded-xl border border-line bg-card p-5 shadow-sm">
 
           <div className="mb-4 flex items-center justify-between">
 
@@ -1688,23 +1695,23 @@ export default async function DashboardPage() {
 
                 <LayoutDashboard
                   size={17}
-                  className="text-blue-600"
+                  className="text-accent"
                 />
 
-                <h3 className="m-0 text-sm font-semibold text-slate-900">
+                <h3 className="m-0 text-sm font-semibold text-ink">
                   客戶總覽
                 </h3>
 
               </div>
 
-              <p className="mb-0 mt-1 text-xs text-slate-400">
+              <p className="mb-0 mt-1 text-xs text-faint">
                 依 AUM 由高至低排序
               </p>
 
             </div>
 
 
-            <span className="text-xs font-medium text-slate-400">
+            <span className="text-xs font-medium text-faint">
               共 {customers.length} 位
             </span>
 
@@ -1714,7 +1721,7 @@ export default async function DashboardPage() {
           {customers.length === 0 &&
           !dbError ? (
 
-            <div className="rounded-lg bg-slate-50 px-4 py-8 text-center text-sm text-slate-400">
+            <div className="rounded-lg bg-hover px-4 py-8 text-center text-sm text-faint">
               目前沒有客戶資料，請執行
               supabase/seed.sql
             </div>
@@ -1734,7 +1741,7 @@ export default async function DashboardPage() {
 
                   <div
                     key={customer.id}
-                    className="flex items-center gap-3 rounded-xl px-3 py-3 transition hover:bg-slate-50"
+                    className="flex items-center gap-3 rounded-xl px-3 py-3 transition hover:bg-hover"
                   >
 
                     <Link
@@ -1752,7 +1759,7 @@ export default async function DashboardPage() {
 
                         <div className="flex items-center gap-2">
 
-                          <p className="m-0 text-sm font-semibold text-slate-800">
+                          <p className="m-0 text-sm font-semibold text-ink">
                             {customer.name}
                           </p>
 
@@ -1780,7 +1787,7 @@ export default async function DashboardPage() {
                         </div>
 
 
-                        <p className="mb-0 mt-1 truncate text-xs text-slate-400">
+                        <p className="mb-0 mt-1 truncate text-xs text-faint">
 
                           {[
                             customer.age
@@ -1806,7 +1813,7 @@ export default async function DashboardPage() {
 
                       <div className="hidden shrink-0 text-right sm:block">
 
-                        <p className="m-0 text-sm font-semibold text-slate-900">
+                        <p className="m-0 text-sm font-semibold text-ink">
                           {formatTwd(
                             Number(
                               customer.aum_twd,
@@ -1814,7 +1821,7 @@ export default async function DashboardPage() {
                           )}
                         </p>
 
-                        <p className="mb-0 mt-1 text-xs text-slate-400">
+                        <p className="mb-0 mt-1 text-xs text-faint">
                           最後聯繫{' '}
                           {customer.last_contact_at ??
                             '—'}
@@ -1850,7 +1857,7 @@ export default async function DashboardPage() {
          * DISCLAIMER
          * ============================================================== */}
 
-        <p className="mt-5 flex items-center gap-1.5 text-xs text-slate-400">
+        <p className="mt-5 flex items-center gap-1.5 text-xs text-faint">
 
           <Bell size={12} />
 

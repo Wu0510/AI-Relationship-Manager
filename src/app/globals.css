@@ -944,3 +944,229 @@ textarea {
   color: var(--badge-emerald-text);
   border-color: var(--badge-emerald-border);
 }
+/* ==========================================================================
+ * Dashboard Dark Mode — 強制版
+ * 只在深色模式生效
+ * ========================================================================== */
+
+/* 整體背景 */
+.dark body,
+.dark .app-shell,
+.dark .main-col,
+.dark .app-main {
+  background: #020617 !important;
+  color: #f8fafc !important;
+}
+
+
+/* ==========================================================================
+ * Dashboard 標題
+ * ========================================================================== */
+
+.dark .app-main h1,
+.dark .app-main h2,
+.dark .app-main h3,
+.dark .app-main h4,
+.dark .app-main h5,
+.dark .app-main strong {
+  color: #f8fafc !important;
+}
+
+
+/* ==========================================================================
+ * KPI 六張卡
+ * ========================================================================== */
+
+.dark .stats-grid > * {
+  background: #0f172a !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+
+/* ==========================================================================
+ * Dashboard 主要 Grid 卡片
+ * AI Priority / 今日待辦
+ * ========================================================================== */
+
+.dark .dash-grid > * {
+  background: #0f172a !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+
+/* ==========================================================================
+ * Dashboard 下方 Cards Grid
+ * ========================================================================== */
+
+.dark .cards-grid > * {
+  background: #0f172a !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+
+/* ==========================================================================
+ * 抓所有 Dashboard 裡含 bg-white 的 Tailwind class
+ *
+ * 包含：
+ * bg-white
+ * bg-white/80
+ * bg-white/90
+ * bg-white/95
+ * ========================================================================== */
+
+.dark .app-main [class*="bg-white"] {
+  background-color: #0f172a !important;
+}
+
+
+/* ==========================================================================
+ * 客戶成長趨勢那種大型白卡
+ *
+ * 抓有 border + rounded 的主要容器
+ * ========================================================================== */
+
+.dark .app-main [class*="rounded-"][class*="border"] {
+  border-color: #1e293b !important;
+}
+
+
+/* ==========================================================================
+ * Slate 淺背景 → 深灰
+ * ========================================================================== */
+
+.dark .app-main [class*="bg-slate-50"],
+.dark .app-main [class*="bg-slate-100"] {
+  background-color: #1e293b !important;
+}
+
+
+/* ==========================================================================
+ * AI 淺藍背景
+ * ========================================================================== */
+
+.dark .app-main [class*="bg-blue-50"] {
+  background-color: #111c35 !important;
+}
+
+.dark .app-main [class*="bg-indigo-50"] {
+  background-color: #1e1b4b !important;
+}
+
+
+/* ==========================================================================
+ * 文字顏色
+ * ========================================================================== */
+
+.dark .app-main [class*="text-slate-900"],
+.dark .app-main [class*="text-slate-800"],
+.dark .app-main [class*="text-slate-700"] {
+  color: #f8fafc !important;
+}
+
+.dark .app-main [class*="text-slate-600"],
+.dark .app-main [class*="text-slate-500"] {
+  color: #94a3b8 !important;
+}
+
+.dark .app-main [class*="text-slate-400"],
+.dark .app-main [class*="text-slate-300"] {
+  color: #64748b !important;
+}
+
+
+/* ==========================================================================
+ * Dashboard 普通文字 fallback
+ * ========================================================================== */
+
+.dark .app-main p,
+.dark .app-main span,
+.dark .app-main label {
+  border-color: #1e293b;
+}
+
+
+/* ==========================================================================
+ * Border
+ * ========================================================================== */
+
+.dark .app-main [class*="border-slate"],
+.dark .app-main [class*="border-blue"],
+.dark .app-main [class*="border-indigo"] {
+  border-color: #1e293b !important;
+}
+
+
+/* ==========================================================================
+ * Input / Select
+ * ========================================================================== */
+
+.dark .app-main input,
+.dark .app-main select,
+.dark .app-main textarea {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+.dark .app-main input::placeholder,
+.dark .app-main textarea::placeholder {
+  color: #64748b !important;
+}
+
+
+/* ==========================================================================
+ * 特殊 Dashboard 白卡 fallback
+ *
+ * 這段是保險：
+ * app-main 裡大尺寸 rounded 卡片如果 background 是純白，
+ * dark mode 強制轉深。
+ * ========================================================================== */
+
+.dark .app-main div[style*="background: white"],
+.dark .app-main div[style*="background:#fff"],
+.dark .app-main div[style*="background: #fff"],
+.dark .app-main div[style*="background-color: white"],
+.dark .app-main div[style*="background-color:#fff"] {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+
+/* ==========================================================================
+ * Chart / empty 區塊
+ * ========================================================================== */
+
+.dark .app-main .empty-row {
+  color: #64748b !important;
+}
+
+
+/* ==========================================================================
+ * 卡片陰影
+ * ========================================================================== */
+
+.dark .app-main [class*="shadow"] {
+  --tw-shadow-color: rgba(0, 0, 0, 0.45);
+}
+
+
+/* ==========================================================================
+ * 保留品牌色
+ * ========================================================================== */
+
+.dark .app-main .text-blue-600,
+.dark .app-main .text-blue-500 {
+  color: #60a5fa !important;
+}
+
+.dark .app-main .text-indigo-600,
+.dark .app-main .text-indigo-500 {
+  color: #a5b4fc !important;
+}
+
+.dark .app-main .text-white {
+  color: #ffffff !important;
+}
