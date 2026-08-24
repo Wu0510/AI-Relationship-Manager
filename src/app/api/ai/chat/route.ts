@@ -1,4 +1,8 @@
-import { NextResponse, type NextRequest } from 'next/server';
+import {
+  NextResponse,
+  type NextRequest,
+} from 'next/server';
+
 import { z } from 'zod';
 
 import {
@@ -25,7 +29,7 @@ export const maxDuration = 60;
 
 
 /* ==========================================================================
- *  History Settings
+ * History Settings
  * ========================================================================== */
 
 const HISTORY_LIMIT = 20;
@@ -33,78 +37,103 @@ const KEEP_RECENT = 6;
 
 
 /* ==========================================================================
- *  Request Schema
+ * Request Schema
  *
- *  market:
- *  {
- *    mode: "market",
- *    message: "今天市場摘要"
- *  }
+ * market:
+ * {
+ *   mode: "market",
+ *   message: "今天市場摘要"
+ * }
  *
- *  customer:
- *  {
- *    mode: "customer",
- *    customerId: "...",
- *    message: "今天怎麼跟這位客戶開場？"
- *  }
+ * customer:
+ * {
+ *   mode: "customer",
+ *   customerId: "...",
+ *   message: "今天怎麼跟這位客戶開場？"
+ * }
  * ========================================================================== */
 
-const BodySchema = z.discriminatedUnion(
-  'mode',
-  [
-    z.object({
-      mode: z.literal('market'),
+const BodySchema =
+  z.discriminatedUnion(
+    'mode',
+    [
+      z.object({
+        mode:
+          z.literal(
+            'market',
+          ),
 
-      message: z
-        .string()
-        .trim()
-        .min(1, '訊息不可為空')
-        .max(4000),
+        message:
+          z
+            .string()
+            .trim()
+            .min(
+              1,
+              '訊息不可為空',
+            )
+            .max(
+              4000,
+            ),
 
-      sessionId:
-        z.uuid().optional(),
-    }),
+        sessionId:
+          z
+            .uuid()
+            .optional(),
+      }),
 
-    z.object({
-      mode: z.literal('customer'),
+      z.object({
+        mode:
+          z.literal(
+            'customer',
+          ),
 
-      customerId:
-        z.uuid(),
+        customerId:
+          z.uuid(),
 
-      message: z
-        .string()
-        .trim()
-        .min(1, '訊息不可為空')
-        .max(4000),
+        message:
+          z
+            .string()
+            .trim()
+            .min(
+              1,
+              '訊息不可為空',
+            )
+            .max(
+              4000,
+            ),
 
-      sessionId:
-        z.uuid().optional(),
-    }),
-  ],
-);
+        sessionId:
+          z
+            .uuid()
+            .optional(),
+      }),
+    ],
+  );
 
 
 /* ==========================================================================
- *  POST /api/ai/chat
+ * POST /api/ai/chat
  * ========================================================================== */
 
 export async function POST(
   request: NextRequest,
 ) {
   try {
+
     /* ======================================================================
-     *  1. Auth
+     * 1. Auth
      * ====================================================================== */
 
     const advisorId =
       await requireAdvisorId();
+
 
     const supabase =
       await createClient();
 
 
     /* ======================================================================
-     *  2. Parse Request
+     * 2. Parse Request
      * ====================================================================== */
 
     const parsed =
@@ -113,7 +142,9 @@ export async function POST(
       );
 
 
-    if (!parsed.success) {
+    if (
+      !parsed.success
+    ) {
       return badRequest(
         z.prettifyError(
           parsed.error,
@@ -122,28 +153,35 @@ export async function POST(
     }
 
 
-    const body = parsed.data;
+    const body =
+      parsed.data;
+
 
     const mode =
       body.mode;
 
+
     const message =
       body.message;
+
 
     let sessionId =
       body.sessionId;
 
 
     /* ======================================================================
-     *  3. Customer Context
+     * 3. Customer Context
      *
-     *  market mode 不需要客戶資料
+     * market mode 不需要客戶資料
      * ====================================================================== */
 
-    let customerContext = null;
+    let customerContext =
+      null;
+
 
     if (
-      mode === 'customer'
+      mode ===
+      'customer'
     ) {
       customerContext =
         await loadCustomerContext(
@@ -154,36 +192,48 @@ export async function POST(
 
 
     /* ======================================================================
-     *  4. Session
+     * 4. Session
      * ====================================================================== */
 
     let historySummary:
-      string | null = null;
+      string | null =
+      null;
 
 
-    if (sessionId) {
+    if (
+      sessionId
+    ) {
+
       const {
-        data: session,
-      } = await supabase
-        .from('chat_sessions')
-        .select(
-          'id, summary, customer_id',
-        )
-        .eq(
-          'id',
-          sessionId,
-        )
-        .single();
+        data:
+          session,
+      } =
+        await supabase
+          .from(
+            'chat_sessions',
+          )
+          .select(
+            'id, summary, customer_id',
+          )
+          .eq(
+            'id',
+            sessionId,
+          )
+          .single();
 
 
-      if (!session) {
+      if (
+        !session
+      ) {
         const err =
           new Error(
             'SESSION_NOT_FOUND',
           );
 
+
         err.name =
           'NotFoundError';
+
 
         throw err;
       }
@@ -191,34 +241,45 @@ export async function POST(
 
       historySummary =
         session.summary;
+
     } else {
+
       /* ====================================================================
-       *  Create New Session
+       * Create New Session
        * ==================================================================== */
 
       if (
-        mode === 'customer'
+        mode ===
+        'customer'
       ) {
+
         const {
           data,
           error,
-        } = await supabase
-          .from('chat_sessions')
-          .insert({
-            advisor_id:
-              advisorId,
+        } =
+          await supabase
+            .from(
+              'chat_sessions',
+            )
+            .insert({
+              advisor_id:
+                advisorId,
 
-            customer_id:
-              body.customerId,
+              customer_id:
+                body.customerId,
 
-            title:
-              `與 ${customerContext!.customer.name} 相關的討論`,
-          })
-          .select('id')
-          .single();
+              title:
+                `與 ${customerContext!.customer.name} 相關的討論`,
+            })
+            .select(
+              'id',
+            )
+            .single();
 
 
-        if (error) {
+        if (
+          error
+        ) {
           throw new Error(
             `建立對話失敗：${error.message}`,
           );
@@ -227,38 +288,43 @@ export async function POST(
 
         sessionId =
           data.id as string;
+
       } else {
+
         /*
          * 市場模式沒有 customerId。
          *
-         * 前提：
-         * chat_sessions.customer_id 必須允許 NULL。
-         *
-         * 如果你的 Supabase 欄位目前是 NOT NULL，
-         * 等一下測試時會看到 DB error，
-         * 我們再改 schema。
+         * chat_sessions.customer_id
+         * 必須允許 NULL。
          */
 
         const {
           data,
           error,
-        } = await supabase
-          .from('chat_sessions')
-          .insert({
-            advisor_id:
-              advisorId,
+        } =
+          await supabase
+            .from(
+              'chat_sessions',
+            )
+            .insert({
+              advisor_id:
+                advisorId,
 
-            customer_id:
-              null,
+              customer_id:
+                null,
 
-            title:
-              '市場助理',
-          })
-          .select('id')
-          .single();
+              title:
+                '市場助理',
+            })
+            .select(
+              'id',
+            )
+            .single();
 
 
-        if (error) {
+        if (
+          error
+        ) {
           throw new Error(
             `建立市場對話失敗：${error.message}`,
           );
@@ -272,40 +338,49 @@ export async function POST(
 
 
     /* ======================================================================
-     *  5. Read History
+     * 5. Read History
      * ====================================================================== */
 
     const {
-      data: rows,
-    } = await supabase
-      .from('chat_messages')
-      .select(
-        'role, content',
-      )
-      .eq(
-        'session_id',
-        sessionId,
-      )
-      .order(
-        'created_at',
-        {
-          ascending: true,
-        },
-      );
+      data:
+        rows,
+    } =
+      await supabase
+        .from(
+          'chat_messages',
+        )
+        .select(
+          'role, content',
+        )
+        .eq(
+          'session_id',
+          sessionId,
+        )
+        .order(
+          'created_at',
+          {
+            ascending:
+              true,
+          },
+        );
 
 
     let history =
-      (rows ?? []) as ChatTurn[];
+      (
+        rows ??
+        []
+      ) as ChatTurn[];
 
 
     /* ======================================================================
-     *  6. Compress Long History
+     * 6. Compress Long History
      * ====================================================================== */
 
     if (
       history.length >
       HISTORY_LIMIT
     ) {
+
       const older =
         history.slice(
           0,
@@ -326,7 +401,9 @@ export async function POST(
 
 
       await supabase
-        .from('chat_sessions')
+        .from(
+          'chat_sessions',
+        )
         .update({
           summary:
             historySummary,
@@ -339,28 +416,35 @@ export async function POST(
 
 
     /* ======================================================================
-     *  7. Save User Message
+     * 7. Save User Message
      * ====================================================================== */
 
     const {
-      error: userMessageError,
-    } = await supabase
-      .from('chat_messages')
-      .insert({
-        session_id:
-          sessionId,
+      error:
+        userMessageError,
+    } =
+      await supabase
+        .from(
+          'chat_messages',
+        )
+        .insert({
+          session_id:
+            sessionId,
 
-        advisor_id:
-          advisorId,
+          advisor_id:
+            advisorId,
 
-        role: 'user',
+          role:
+            'user',
 
-        content:
-          message,
-      });
+          content:
+            message,
+        });
 
 
-    if (userMessageError) {
+    if (
+      userMessageError
+    ) {
       throw new Error(
         `儲存訊息失敗：${userMessageError.message}`,
       );
@@ -368,11 +452,13 @@ export async function POST(
 
 
     /* ======================================================================
-     *  8. Choose AI
+     * 8. Choose AI
      * ====================================================================== */
 
     const generator =
-      mode === 'market'
+      mode ===
+      'market'
+
         ? await streamMarketChat({
             question:
               message,
@@ -381,6 +467,7 @@ export async function POST(
 
             historySummary,
           })
+
         : await streamAdvisorChat({
             ctx:
               customerContext!,
@@ -395,96 +482,288 @@ export async function POST(
 
 
     /* ======================================================================
-     *  9. Streaming Response
+     * 9. Streaming Response
+     *
+     * 防止：
+     *
+     * ERR_INVALID_STATE
+     * Controller is already closed
+     *
+     * 瀏覽器中止連線或 stream 已關閉時，
+     * 不再重複 enqueue / close。
      * ====================================================================== */
 
     const encoder =
       new TextEncoder();
+
 
     const finalSessionId =
       sessionId;
 
 
     const stream =
-      new ReadableStream<Uint8Array>({
+      new ReadableStream<
+        Uint8Array
+      >({
+
         async start(
           controller,
         ) {
-          let full = '';
+
+          let full =
+            '';
+
+
+          let closed =
+            false;
+
+
+          /*
+           * 安全送出 chunk。
+           *
+           * 如果 client 已經離開、
+           * controller 已 close，
+           * 就停止 enqueue。
+           */
+          const safeEnqueue =
+            (
+              text: string,
+            ) => {
+
+              if (
+                closed
+              ) {
+                return false;
+              }
+
+
+              try {
+
+                controller.enqueue(
+                  encoder.encode(
+                    text,
+                  ),
+                );
+
+
+                return true;
+
+              } catch (
+                error
+              ) {
+
+                closed =
+                  true;
+
+
+                console.warn(
+                  '[ai/chat] stream enqueue skipped because controller is closed',
+                  error,
+                );
+
+
+                return false;
+              }
+            };
+
+
+          /*
+           * 安全關閉 stream。
+           *
+           * 避免同一個 controller
+           * 被 close 兩次。
+           */
+          const safeClose =
+            () => {
+
+              if (
+                closed
+              ) {
+                return;
+              }
+
+
+              try {
+
+                controller.close();
+
+              } catch (
+                error
+              ) {
+
+                console.warn(
+                  '[ai/chat] stream close skipped',
+                  error,
+                );
+
+              } finally {
+
+                closed =
+                  true;
+
+              }
+            };
 
 
           try {
+
             for await (
               const chunk
               of generator
             ) {
+
+              /*
+               * 即使前端突然關閉聊天室，
+               * Gemini 可能仍會繼續吐 chunk。
+               *
+               * 如果 stream 已失效，
+               * 就停止繼續 enqueue。
+               */
+              if (
+                closed
+              ) {
+                break;
+              }
+
+
               full +=
                 chunk;
 
-              controller.enqueue(
-                encoder.encode(
+
+              const sent =
+                safeEnqueue(
                   chunk,
-                ),
-              );
+                );
+
+
+              if (
+                !sent
+              ) {
+                break;
+              }
             }
-          } catch (error) {
+
+          } catch (
+            error
+          ) {
+
             console.error(
               '[ai/chat] stream error',
               error,
             );
 
 
-            controller.enqueue(
-              encoder.encode(
-                '\n\n⚠️ 產生回覆時發生錯誤，請重試。',
-              ),
+            /*
+             * 只有 stream 尚未關閉時，
+             * 才嘗試把錯誤訊息送到前端。
+             */
+            safeEnqueue(
+              '\n\n⚠️ 產生回覆時發生錯誤，請重試。',
             );
+
           } finally {
-            controller.close();
+
+            /*
+             * 先安全結束 HTTP Stream。
+             */
+            safeClose();
 
 
             /* ==============================================================
              * Save Gemini Response
              * ============================================================== */
 
-            if (full) {
-              await supabase
-                .from(
-                  'chat_messages',
-                )
-                .insert({
-                  session_id:
-                    finalSessionId,
+            if (
+              full
+            ) {
 
-                  advisor_id:
-                    advisorId,
+              try {
 
-                  role:
-                    'model',
+                const {
+                  error:
+                    messageSaveError,
+                } =
+                  await supabase
+                    .from(
+                      'chat_messages',
+                    )
+                    .insert({
+                      session_id:
+                        finalSessionId,
 
-                  content:
-                    full,
+                      advisor_id:
+                        advisorId,
 
-                  model:
-                    process.env
-                      .GEMINI_MODEL ??
-                    'gemini-3.6-flash',
-                });
+                      role:
+                        'model',
+
+                      content:
+                        full,
+
+                      model:
+                        process
+                          .env
+                          .GEMINI_MODEL ??
+                        'gemini-3.6-flash',
+                    });
 
 
-              await supabase
-                .from(
-                  'chat_sessions',
-                )
-                .update({
-                  updated_at:
-                    new Date()
-                      .toISOString(),
-                })
-                .eq(
-                  'id',
-                  finalSessionId,
+                if (
+                  messageSaveError
+                ) {
+
+                  console.error(
+                    '[ai/chat] failed to save model message',
+                    messageSaveError,
+                  );
+
+                }
+
+
+                const {
+                  error:
+                    sessionUpdateError,
+                } =
+                  await supabase
+                    .from(
+                      'chat_sessions',
+                    )
+                    .update({
+                      updated_at:
+                        new Date()
+                          .toISOString(),
+                    })
+                    .eq(
+                      'id',
+                      finalSessionId,
+                    );
+
+
+                if (
+                  sessionUpdateError
+                ) {
+
+                  console.error(
+                    '[ai/chat] failed to update session',
+                    sessionUpdateError,
+                  );
+
+                }
+
+              } catch (
+                saveError
+              ) {
+
+                /*
+                 * DB 儲存失敗不能再讓
+                 * Stream lifecycle 爆掉。
+                 */
+                console.error(
+                  '[ai/chat] save response error',
+                  saveError,
                 );
+
+              }
             }
           }
         },
@@ -492,13 +771,14 @@ export async function POST(
 
 
     /* ======================================================================
-     *  10. Return Stream
+     * 10. Return Stream
      * ====================================================================== */
 
     return new Response(
       stream,
       {
         headers: {
+
           'Content-Type':
             'text/plain; charset=utf-8',
 
@@ -510,100 +790,14 @@ export async function POST(
         },
       },
     );
-  } catch (error) {
+
+  } catch (
+    error
+  ) {
+
     return toErrorResponse(
       error,
     );
-  }
-}
 
-
-/* ==========================================================================
- *  GET /api/ai/chat
- *
- *  目前保留原本用途：
- *  取得指定客戶最近一次對話
- * ========================================================================== */
-
-export async function GET(
-  request: NextRequest,
-) {
-  try {
-    await requireAdvisorId();
-
-    const supabase =
-      await createClient();
-
-
-    const customerId =
-      request.nextUrl.searchParams.get(
-        'customerId',
-      );
-
-
-    if (!customerId) {
-      return badRequest(
-        '缺少 customerId',
-      );
-    }
-
-
-    const {
-      data: session,
-    } = await supabase
-      .from('chat_sessions')
-      .select(
-        'id, title, summary, updated_at',
-      )
-      .eq(
-        'customer_id',
-        customerId,
-      )
-      .order(
-        'updated_at',
-        {
-          ascending: false,
-        },
-      )
-      .limit(1)
-      .maybeSingle();
-
-
-    if (!session) {
-      return NextResponse.json({
-        session: null,
-        messages: [],
-      });
-    }
-
-
-    const {
-      data: messages,
-    } = await supabase
-      .from('chat_messages')
-      .select(
-        'id, role, content, created_at',
-      )
-      .eq(
-        'session_id',
-        session.id,
-      )
-      .order(
-        'created_at',
-        {
-          ascending: true,
-        },
-      );
-
-
-    return NextResponse.json({
-      session,
-      messages:
-        messages ?? [],
-    });
-  } catch (error) {
-    return toErrorResponse(
-      error,
-    );
   }
 }

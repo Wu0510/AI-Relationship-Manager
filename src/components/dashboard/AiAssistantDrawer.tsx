@@ -15,7 +15,9 @@ import {
   DollarSign,
   Globe2,
   Loader2,
+  Maximize2,
   MessageSquare,
+  Minimize2,
   Newspaper,
   Search,
   Send,
@@ -223,6 +225,9 @@ export function AiAssistantProvider({
   children: ReactNode;
 }) {
   const [openState, setOpenState] =
+    useState(false);
+
+  const [maximized, setMaximized] =
     useState(false);
 
   const [mode, setMode] =
@@ -953,7 +958,11 @@ export function AiAssistantProvider({
 
       {openState && (
         <div
-          className="assistant-panel"
+          className={`assistant-panel ${
+            maximized
+              ? 'assistant-panel-maximized'
+              : ''
+          }`}
           role="dialog"
           aria-label="AI 理專助理"
         >
@@ -986,6 +995,34 @@ export function AiAssistantProvider({
             >
               BETA
             </span>
+
+            <button
+              type="button"
+              className="icon-btn"
+              onClick={() =>
+                setMaximized(
+                  (value) =>
+                    !value,
+                )
+              }
+              aria-label={
+                maximized
+                  ? '縮小 AI 助理'
+                  : '放大 AI 助理'
+              }
+              title={
+                maximized
+                  ? '縮小'
+                  : '放大'
+              }
+            >
+              {maximized ? (
+                <Minimize2 size={16} />
+              ) : (
+                <Maximize2 size={16} />
+              )}
+            </button>
+
 
             <button
               type="button"
