@@ -990,7 +990,7 @@ export function AiAssistantProvider({
                   'var(--accent)',
 
                 background:
-                  'var(--accent-light)',
+                  'var(--active-bg)',
               }}
             >
               BETA
@@ -1249,7 +1249,7 @@ export function AiAssistantProvider({
                         '1px solid var(--border)',
 
                       background:
-                        'var(--surface)',
+                        'var(--input-bg)',
 
                       color:
                         'var(--text)',
@@ -1338,7 +1338,7 @@ export function AiAssistantProvider({
                                 '1px solid var(--border)',
 
                               background:
-                                'var(--surface)',
+                                'var(--hover)',
                             }}
                           >
 
@@ -1380,7 +1380,7 @@ export function AiAssistantProvider({
                                         'var(--accent)',
 
                                       background:
-                                        'var(--accent-light)',
+                                        'var(--active-bg)',
                                     }}
                                   >
                                     {
@@ -1504,7 +1504,7 @@ export function AiAssistantProvider({
                             '1px solid var(--border)',
 
                           background:
-                            'var(--surface)',
+                            'var(--hover)',
                         }}
                       >
 
@@ -1599,6 +1599,12 @@ export function AiAssistantProvider({
                         style={{
                           border:
                             '1px solid var(--border)',
+
+                          background:
+                            'var(--hover)',
+
+                          color:
+                            'var(--text)',
                         }}
                       >
                         {prompt}
