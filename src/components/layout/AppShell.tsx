@@ -8,11 +8,13 @@ import {
   CalendarDays,
   LayoutDashboard,
   LogOut,
+  Menu,
   Moon,
   Settings,
   Sparkles,
   Sun,
   Users,
+  X,
 } from 'lucide-react';
 
 import { createClient } from '@/lib/supabase/client';
@@ -57,6 +59,7 @@ export function AppShell({
 
   const [dark, setDark] = useState(false);
   const [bellOpen, setBellOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
 
   useEffect(() => {
@@ -99,6 +102,27 @@ export function AppShell({
     return () =>
       window.removeEventListener('click', close);
   }, [bellOpen]);
+
+
+  // 切換頁面後自動收起手機側欄
+  useEffect(() => {
+    setMobileNavOpen(false);
+  }, [pathname]);
+
+
+  // 手機側欄打開時鎖住背景捲動
+  useEffect(() => {
+    if (!mobileNavOpen) {
+      document.body.style.overflow = '';
+      return;
+    }
+
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileNavOpen]);
 
 
   async function logout() {
@@ -153,15 +177,41 @@ export function AppShell({
        * SIDEBAR
        * ======================================================== */}
 
+      {/* 手機側欄背景遮罩；桌機完全不影響 */}
+      {mobileNavOpen && (
+        <button
+          type="button"
+          aria-label="關閉側邊選單"
+          className="fixed inset-0 z-30 bg-slate-950/45 backdrop-blur-[1px] md:hidden"
+          onClick={() => setMobileNavOpen(false)}
+        />
+      )}
+
       <aside
         className={`
           fixed left-0 top-0 z-40
           flex h-screen w-64 flex-col
           border-r
-          transition-colors duration-200
+          transform transition-all duration-200
+          ${mobileNavOpen ? 'translate-x-0' : '-translate-x-full'}
+          md:translate-x-0
           ${sidebarBg}
         `}
       >
+
+        <button
+          type="button"
+          aria-label="關閉選單"
+          onClick={() => setMobileNavOpen(false)}
+          className={`
+            absolute right-3 top-3 z-10
+            flex h-9 w-9 items-center justify-center
+            rounded-lg border md:hidden
+            ${buttonStyle}
+          `}
+        >
+          <X size={18} />
+        </button>
 
         {/* LOGO */}
 
@@ -325,7 +375,7 @@ export function AppShell({
        * MAIN
        * ======================================================== */}
 
-      <div className="ml-64 min-h-screen">
+      <div className="min-h-screen md:ml-64">
 
         {/* ======================================================
          * TOP BAR
@@ -334,8 +384,9 @@ export function AppShell({
         <header
           className={`
             sticky top-0 z-30
-            flex h-20 items-center justify-between
-            border-b px-8
+            flex min-h-16 items-center justify-between
+            border-b px-3 py-2
+            md:h-20 md:px-8 md:py-0
             backdrop-blur
             transition-colors duration-200
             ${topbarBg}
@@ -344,7 +395,22 @@ export function AppShell({
 
           {/* GREETING */}
 
-          <div>
+          <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+
+            <button
+              type="button"
+              aria-label="開啟選單"
+              onClick={() => setMobileNavOpen(true)}
+              className={`
+                flex h-10 w-10 shrink-0 items-center justify-center
+                rounded-lg border md:hidden
+                ${buttonStyle}
+              `}
+            >
+              <Menu size={19} />
+            </button>
+
+            <div className="min-w-0">
 
             <p
               className={`
@@ -365,12 +431,14 @@ export function AppShell({
               {todayLabel}
             </p>
 
+            </div>
+
           </div>
 
 
           {/* ACTIONS */}
 
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-1 sm:gap-2 md:gap-3">
 
             {/* DARK MODE */}
 
@@ -570,8 +638,8 @@ export function AppShell({
 
             <div
               className={`
-                ml-2 flex items-center gap-3
-                border-l pl-5
+                ml-1 flex items-center gap-2
+                border-l pl-2 sm:ml-2 sm:gap-3 sm:pl-5
                 ${
                   dark
                     ? 'border-slate-800'
@@ -662,7 +730,7 @@ export function AppShell({
           className={`
             mx-auto min-h-[calc(100vh-80px)]
             w-full max-w-[1600px]
-            p-8
+            p-4 sm:p-5 md:p-8
             transition-colors duration-200
             ${
               dark
