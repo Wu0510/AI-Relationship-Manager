@@ -177,7 +177,7 @@ function StatCard({
   }>;
 }) {
   return (
-    <div className="rounded-xl border border-line bg-card p-5 shadow-sm transition hover:shadow-md">
+    <div className="studio-stat">
       <div className="flex items-start justify-between">
 
         <div>
@@ -832,10 +832,10 @@ export default async function DashboardPage() {
          * PAGE INTRO
          * ============================================================== */}
 
-        <div className="mb-6">
+        <div className="studio-heading mb-6">
 
           <h1 className="m-0 text-2xl font-semibold tracking-tight text-ink">
-            Dashboard
+            你的客戶工作室。
           </h1>
 
           <p className="mb-0 mt-1 text-sm text-muted">
@@ -849,136 +849,8 @@ export default async function DashboardPage() {
          * NEW KPI
          * ============================================================== */}
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
-
-          <StatCard
-            label="客戶數"
-            value={customers.length}
-            icon={Users}
-          />
-
-          <StatCard
-            label="總資產 AUM"
-            value={formatTwd(totalAum)}
-            icon={Wallet}
-          />
-
-          <StatCard
-            label="今日待辦"
-            value={`${doneCount}/${tasks.length}`}
-            icon={CheckCircle2}
-          />
-
-          <StatCard
-            label="今日生日"
-            value={todayBirthdays}
-            icon={Cake}
-          />
-
-          <StatCard
-            label="本月新增客戶"
-            value={monthlyNew}
-            icon={TrendingUp}
-          />
-
-          <StatCard
-            label="Call客完成率"
-            value={`${callRate}%`}
-            icon={Clock}
-          />
-
-        </div>
-
-
-        {/* ==============================================================
-         * TREND
-         * ============================================================== */}
-
-        <div className="mt-5 rounded-xl border border-line bg-card p-5 shadow-sm">
-
-          <div className="mb-5 flex items-center justify-between">
-
-            <div>
-
-              <p className="m-0 text-sm font-semibold text-ink">
-                客戶成長趨勢
-              </p>
-
-              <p className="mb-0 mt-1 text-xs text-faint">
-                近六個月累積客戶數
-              </p>
-
-            </div>
-
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-hover text-accent">
-              <TrendingUp size={17} />
-            </div>
-
-          </div>
-
-
-          <div
-            className="flex items-end gap-3"
-            style={{
-              height: 110,
-            }}
-          >
-
-            {trend.map((item) => (
-
-              <div
-                key={item.label}
-                className="flex flex-1 flex-col items-center"
-              >
-
-                {/* 實際累積客戶數 */}
-                <span className="mb-2 text-xs font-semibold text-ink">
-                  {item.value} 位
-                </span>
-
-                {/* 長條 */}
-                <div
-                  className="w-full max-w-9 rounded-t-md bg-blue-500 transition-all duration-300"
-                  style={{
-                    height:
-                      Math.max(
-                        Math.round(
-                          (item.value /
-                            trendMax) *
-                            90,
-                        ),
-                        4,
-                      ),
-                  }}
-                  title={`${item.label}：${item.value} 位`}
-                />
-
-                {/* 月份 */}
-                <span className="mt-2 text-xs text-faint">
-                  {item.label}
-                </span>
-
-              </div>
-
-            ))}
-
-          </div>
-
-        </div>
-
-
-        {/* ==============================================================
-         * AI INSIGHT + TODAY TASKS
-         * ============================================================== */}
-
-        <div className="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-[1.4fr_1fr]">
-
-
-          {/* ============================================================
-           * NEW AI PRIORITY INSIGHT
-           * ============================================================ */}
-
-          <div className="overflow-hidden rounded-2xl border border-line bg-card shadow-sm">
+        <div className="studio-overview">
+          <div className="studio-spotlight overflow-hidden rounded-2xl border border-line bg-card shadow-sm">
 
             {/* AI Header */}
 
@@ -995,7 +867,7 @@ export default async function DashboardPage() {
                   <div>
 
                     <p className="m-0 text-sm font-semibold text-ink">
-                      AI Priority Insight
+                      下一位優先聯繫
                     </p>
 
                     <p className="mb-0 mt-0.5 text-xs text-muted">
@@ -1008,7 +880,7 @@ export default async function DashboardPage() {
 
 
                 <span className="rounded-full border border-line bg-card px-3 py-1 text-xs font-medium text-accent">
-                  AI Generated
+                  聯繫重點
                 </span>
 
               </div>
@@ -1036,7 +908,7 @@ export default async function DashboardPage() {
                     <div className="min-w-0">
 
                       <p className="m-0 text-[11px] font-semibold uppercase tracking-wider text-faint">
-                        Top Priority
+                        NEXT CONVERSATION
                       </p>
 
                       <div className="mt-2 flex items-center gap-3">
@@ -1094,11 +966,124 @@ export default async function DashboardPage() {
           </div>
 
 
-          {/* ============================================================
-           * TODAY TASKS
-           * ============================================================ */}
+        <div className="studio-metrics">
 
-          <div className="rounded-2xl border border-line bg-card p-6 shadow-sm">
+          <StatCard
+            label="客戶數"
+            value={customers.length}
+            icon={Users}
+          />
+
+          <StatCard
+            label="總資產 AUM"
+            value={formatTwd(totalAum)}
+            icon={Wallet}
+          />
+
+          <StatCard
+            label="今日待辦"
+            value={`${doneCount}/${tasks.length}`}
+            icon={CheckCircle2}
+          />
+
+          <StatCard
+            label="今日生日"
+            value={todayBirthdays}
+            icon={Cake}
+          />
+
+          <StatCard
+            label="本月新增客戶"
+            value={monthlyNew}
+            icon={TrendingUp}
+          />
+
+          <StatCard
+            label="Call客完成率"
+            value={`${callRate}%`}
+            icon={Clock}
+          />
+
+        </div>
+        </div>
+        <div className="studio-desk">
+<div className="studio-contacts">          <SectionCard
+            title="今日建議聯絡客戶"
+            icon={Users}
+          >
+
+            {suggestions.length === 0 ? (
+
+              <EmptyRow>
+                今天沒有特別建議的客戶
+              </EmptyRow>
+
+            ) : (
+
+              suggestions
+                .slice(0, 4)
+                .map((suggestion) => (
+
+                  <div
+                    key={suggestion.c.id}
+                    className="row-btn"
+                  >
+
+                    <Link
+                      href={`/customers/${suggestion.c.id}`}
+                      className="flex min-w-0 flex-1 items-center gap-3"
+                    >
+
+                      <Avatar
+                        name={
+                          suggestion.c.name
+                        }
+                      />
+
+                      <div className="min-w-0 flex-1">
+
+                        <p className="m-0 text-sm font-medium">
+                          {suggestion.c.name}
+                        </p>
+
+                        <p
+                          className="m-0 truncate text-xs"
+                          style={{
+                            color:
+                              'var(--muted)',
+                          }}
+                        >
+                          {
+                            suggestion
+                              .reasons[0]
+                          }
+                        </p>
+
+                      </div>
+
+                    </Link>
+
+
+                    <AskAiButton
+                      customerId={
+                        suggestion.c.id
+                      }
+                      customerName={
+                        suggestion.c.name
+                      }
+                    />
+
+                  </div>
+
+                ))
+
+            )}
+
+          </SectionCard>
+
+
+</div>
+          <div className="studio-agenda rounded-2xl border border-line bg-card p-6 shadow-sm">
 
             <div className="mb-5 flex items-center justify-between">
 
@@ -1194,92 +1179,9 @@ export default async function DashboardPage() {
 
           </div>
 
+
         </div>
-
-
-        {/* ==============================================================
-         * REMINDER CARDS
-         * ============================================================== */}
-
-        <div className="cards-grid">
-
-          {/* Suggested Customers */}
-
-          <SectionCard
-            title="今日建議聯絡客戶"
-            icon={Users}
-          >
-
-            {suggestions.length === 0 ? (
-
-              <EmptyRow>
-                今天沒有特別建議的客戶
-              </EmptyRow>
-
-            ) : (
-
-              suggestions
-                .slice(0, 4)
-                .map((suggestion) => (
-
-                  <div
-                    key={suggestion.c.id}
-                    className="row-btn"
-                  >
-
-                    <Link
-                      href={`/customers/${suggestion.c.id}`}
-                      className="flex min-w-0 flex-1 items-center gap-3"
-                    >
-
-                      <Avatar
-                        name={
-                          suggestion.c.name
-                        }
-                      />
-
-                      <div className="min-w-0 flex-1">
-
-                        <p className="m-0 text-sm font-medium">
-                          {suggestion.c.name}
-                        </p>
-
-                        <p
-                          className="m-0 truncate text-xs"
-                          style={{
-                            color:
-                              'var(--muted)',
-                          }}
-                        >
-                          {
-                            suggestion
-                              .reasons[0]
-                          }
-                        </p>
-
-                      </div>
-
-                    </Link>
-
-
-                    <AskAiButton
-                      customerId={
-                        suggestion.c.id
-                      }
-                      customerName={
-                        suggestion.c.name
-                      }
-                    />
-
-                  </div>
-
-                ))
-
-            )}
-
-          </SectionCard>
-
-
+        <div className="studio-reminders cards-grid">
           {/* Birthday */}
 
           <SectionCard
@@ -1677,6 +1579,78 @@ export default async function DashboardPage() {
             )}
 
           </SectionCard>
+
+
+        </div>
+        <div className="mt-5 rounded-xl border border-line bg-card p-5 shadow-sm">
+
+          <div className="mb-5 flex items-center justify-between">
+
+            <div>
+
+              <p className="m-0 text-sm font-semibold text-ink">
+                客戶成長趨勢
+              </p>
+
+              <p className="mb-0 mt-1 text-xs text-faint">
+                近六個月累積客戶數
+              </p>
+
+            </div>
+
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-hover text-accent">
+              <TrendingUp size={17} />
+            </div>
+
+          </div>
+
+
+          <div
+            className="flex items-end gap-3"
+            style={{
+              height: 110,
+            }}
+          >
+
+            {trend.map((item) => (
+
+              <div
+                key={item.label}
+                className="flex flex-1 flex-col items-center"
+              >
+
+                {/* 實際累積客戶數 */}
+                <span className="mb-2 text-xs font-semibold text-ink">
+                  {item.value} 位
+                </span>
+
+                {/* 長條 */}
+                <div
+                  className="w-full max-w-9 rounded-t-md bg-accent transition-all duration-300"
+                  style={{
+                    height:
+                      Math.max(
+                        Math.round(
+                          (item.value /
+                            trendMax) *
+                            90,
+                        ),
+                        4,
+                      ),
+                  }}
+                  title={`${item.label}：${item.value} 位`}
+                />
+
+                {/* 月份 */}
+                <span className="mt-2 text-xs text-faint">
+                  {item.label}
+                </span>
+
+              </div>
+
+            ))}
+
+          </div>
 
         </div>
 

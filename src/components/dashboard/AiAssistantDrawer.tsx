@@ -980,7 +980,7 @@ export function AiAssistantProvider({
             />
 
             <span className="flex-1 truncate">
-              AI Assistant
+              理專助理
             </span>
 
             <span

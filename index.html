@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AI Relationship Manager Assistant</title>
-<<<<<<< Updated upstream
+<title>Relationship Manager · Studio 03</title>
 <style>
   :root{
     --bg-app:#f8fafc; --bg-card:#ffffff; --border:#e2e8f0; --border-hover:#cbd5e1;
@@ -51,7 +50,7 @@
   .sidebar-brand{display:flex; align-items:center; gap:10px; padding:0 6px; margin-bottom:32px;}
   .brand-icon{
     width:32px; height:32px; border-radius:10px; flex-shrink:0;
-    background:linear-gradient(135deg,#6366f1,#7c3aed);
+    background:linear-gradient(135deg,#315c45,#67816b);
     display:flex; align-items:center; justify-content:center;
   }
   .brand-icon svg{color:#fff;}
@@ -88,7 +87,7 @@
     background:#f43f5e; color:#fff; font-size:10px; font-weight:600; display:flex; align-items:center; justify-content:center;
   }
   .avatar-me{
-    width:36px; height:36px; border-radius:999px; background:linear-gradient(135deg,#6366f1,#7c3aed);
+    width:36px; height:36px; border-radius:999px; background:linear-gradient(135deg,#315c45,#67816b);
     color:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; margin-left:4px;
   }
   .bell-dropdown{
@@ -312,7 +311,7 @@
   /* assistant */
   .assistant-fab{
     position:fixed; bottom:24px; right:24px; width:56px; height:56px; border-radius:999px; z-index:40;
-    background:linear-gradient(135deg,#6366f1,#7c3aed); color:#fff; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg,#315c45,#67816b); color:#fff; display:flex; align-items:center; justify-content:center;
     box-shadow:0 16px 32px rgba(79,70,229,.35); transition:transform .15s;
   }
   .assistant-fab:hover{ transform:scale(1.06); }
@@ -398,7 +397,7 @@
   .call-actions{display:flex; gap:10px; justify-content:center; margin-top:22px;}
   .call-pulse{
     width:88px; height:88px; border-radius:999px; margin:0 auto 14px; display:flex; align-items:center; justify-content:center;
-    background:linear-gradient(135deg,#6366f1,#7c3aed); color:#fff; animation:pulse 1.6s ease-in-out infinite;
+    background:linear-gradient(135deg,#315c45,#67816b); color:#fff; animation:pulse 1.6s ease-in-out infinite;
   }
   @keyframes pulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(99,102,241,.45); } 50%{ box-shadow:0 0 0 14px rgba(99,102,241,0); } }
 
@@ -452,14 +451,168 @@
   .out-actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:14px;}
   .out-actions .btn{ background:rgba(255,255,255,.16); color:#fff; font-size:13px; padding:8px 14px; }
   .out-actions .btn:hover{ background:rgba(255,255,255,.28); }
+
+/* Forest & Ivory — shared visual direction for the public prototype and app. */
+:root {
+ --bg-app:#f7f6f1; --bg-card:#fffefa; --border:#dedfd5; --border-hover:#b8c4b6;
+ --text:#263c32; --muted:#617267; --faint:#728075; --hover:#edf0e7;
+ --active-bg:#dfe8db; --active-text:#254e3b; --input-bg:#fffefa;
+ --accent:#315c45; --accent-2:#67816b; --accent-hover:#234532;
+ --badge-indigo-bg:#e7eee2; --badge-indigo-text:#315c45; --badge-indigo-border:#cfdcc9;
+ --badge-slate-bg:#f0f0e9; --badge-slate-text:#617267; --badge-slate-border:#dedfd5;
+ --sidebar-surface:#edf0e7; --hero-surface:#e5ecdf;
+}
+body.dark {
+ --bg-app:#18231e; --bg-card:#202e26; --border:#394b3e; --border-hover:#6e8772;
+ --text:#eef0e7; --muted:#b4c1b3; --faint:#9aaa9b; --hover:#2b3e30;
+ --active-bg:#344d3b; --active-text:#d4e5cb; --input-bg:#202e26;
+ --accent:#87ac8b; --accent-hover:#749879; --accent-2:#adc5a4;
+ --badge-indigo-bg:#344d3b; --badge-indigo-text:#d4e5cb; --badge-indigo-border:#4a6550;
+ --sidebar-surface:#1d2b22; --hero-surface:#293d2e;
+}
+body{background:var(--bg-app);color:var(--text);font-family:Inter,"Noto Sans CJK TC",-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.6;}
+.sidebar{background:var(--sidebar-surface);position:sticky;top:0;height:100dvh;padding-top:28px;}
+.sidebar-brand{margin-bottom:40px;}
+.brand-icon,.avatar-me,.assistant-fab{background:var(--accent);border-radius:10px;box-shadow:none;}
+.brand-label{font-size:15px;letter-spacing:.02em;}
+.nav{gap:8px;}
+.nav-item{border-radius:7px;padding:12px;}
+.nav-item.active{font-weight:650;box-shadow:inset 3px 0 var(--accent);}
+.sidebar-foot{border-top:1px solid var(--border);padding-top:20px;}
+.topbar{height:80px;background:var(--bg-card);padding:0 32px;}
+.topbar-greeting{font-size:16px;}
+main,.app-main{padding:30px 32px;}
+.workspace-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px;}
+.workspace-heading h1{font-size:28px;letter-spacing:.02em;margin:0 0 4px;font-weight:600;}
+.workspace-heading p{margin:0;color:var(--muted);font-size:13px;}
+.workspace-eyebrow{font-size:10px;letter-spacing:.16em;color:var(--muted);margin-bottom:6px;}
+.card{border-radius:10px;box-shadow:0 2px 4px rgba(35,58,39,.025);}
+.stats-grid{gap:0;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.stats-grid .card{border:0;border-right:1px solid var(--border);border-radius:0;box-shadow:none;padding:20px!important;}
+.stats-grid .card:last-child{border-right:0;}
+.stats-grid .text-lg{font-size:25px;font-variant-numeric:tabular-nums;}
+.hero-card{background:var(--hero-surface);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:26px;}
+.hero-card .hero-tag{color:var(--accent);font-size:12px;}
+.hero-card p{font-size:17px;font-weight:500;line-height:1.85;}
+.hero-card .out-actions .btn{background:var(--accent);color:var(--bg-card);border-radius:6px;}
+.hero-card .out-actions .btn:first-child{background:var(--bg-card);color:var(--text);border:1px solid var(--border);}
+.section-title{padding-bottom:12px;border-bottom:1px solid var(--border);}
+.section-title h3{font-size:14px;letter-spacing:.02em;}
+.row-btn{border-radius:6px;padding:11px 8px;}
+.btn,input[type=text],input[type=date],input[type=search],input[type=time],input[type=number],input[type=email],input[type=tel],input[type=password],select,textarea,.search-box{border-radius:6px;}
+.btn-primary{box-shadow:0 2px 3px rgba(35,58,39,.08);}
+button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+input:focus,textarea:focus,select:focus{box-shadow:0 0 0 3px var(--active-bg);}
+th{background:var(--sidebar-surface);font-size:12px;color:var(--muted);padding:14px 16px;}
+td{padding:16px;border-bottom:1px solid var(--border);}
+.badge{border-radius:5px;}
+.avatar{filter:saturate(.45);}
+.assistant-fab{box-shadow:0 6px 20px rgba(35,58,39,.16);}
+.assistant-panel,.modal-box{border-radius:12px;box-shadow:0 20px 60px rgba(23,43,29,.18);}
+.login-brand{background:#31513e;}
+.login-brand-dots{opacity:.07;background-size:36px 36px;}
+@media(min-width:768px){.sidebar{width:232px;padding-left:18px;padding-right:18px;}}
+@media(max-width:767px){main,.app-main{padding:18px 12px;}.topbar{padding:0 16px;height:70px;}.workspace-heading{align-items:flex-start;flex-direction:column;}.workspace-heading h1{font-size:23px;}.sidebar{padding-left:6px;padding-right:6px;}.nav-item{padding:12px 10px;}.stats-grid .card{padding:14px!important;}.hero-card{padding:20px;}.search-box{min-width:0;width:100%;}.toolbar{gap:8px;}.bell-dropdown{right:8px;width:min(320px,calc(100vw - 88px));}.assistant-panel{right:12px;width:min(380px,calc(100vw - 24px));}.two-col{grid-template-columns:1fr;}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;}}
+
+
+/* Advisor Desk v2: editorial typography, working lists and a compact agenda. */
+:root{--desk-panel:#eeeee6;--accent-ink:#ffffff;--rail-bg:#243c30;--rail-ink:#edf1e6;}
+body.dark{color-scheme:dark;--bg-app:#121b17;--bg-card:#1c2821;--text:#edf0e6;--muted:#b5c1b5;--faint:#9caa9e;--border:#35473b;--border-hover:#78917b;--input-bg:#1c2821;--hover:#293c2f;--active-bg:#344d3b;--active-text:#dcebcf;--accent:#bbd5a3;--accent-hover:#d0e4bc;--accent-ink:#17271d;--desk-panel:#1a2920;--sidebar-surface:#18281e;--hero-surface:#24382a;--rail-bg:#0d1510;--rail-ink:#e6eddf;}
+body:not(.dark){color-scheme:light;}
+.sidebar{background:var(--rail-bg);border:0;color:var(--rail-ink);}
+.sidebar .brand-label{font-size:12px;letter-spacing:0;}.sidebar .brand-icon{background:#cadbb9;color:#243c30;}.sidebar .brand-icon svg{color:#243c30;}
+.sidebar .nav-item{color:#b6c4b7;border-radius:3px;}.sidebar .nav-item:hover{background:#344d3d;color:#fff;}.sidebar .nav-item.active{background:#d8e3c9;color:#203628;box-shadow:none;}.sidebar-foot{color:#afbeb0;border-color:#4a5d4e;}
+.topbar{height:64px;background:var(--bg-app);}.workspace-heading{margin:16px 0 30px;}.workspace-heading h1{font-family:"Noto Serif TC","Songti TC",Georgia,serif;font-size:38px;letter-spacing:-.025em;}.workspace-eyebrow{font-size:10px;letter-spacing:.13em;}.workspace-heading p{font-size:12px;margin-top:9px;}
+.stats-grid{background:transparent;border:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);border-radius:0;}.stats-grid .card{background:transparent;padding:18px 14px!important;}.stats-grid .text-lg{font-size:22px;}
+.btn,.card,.modal-box,.assistant-panel{border-radius:4px;}.btn-primary,.send-btn,.assistant-fab,.avatar-me{color:var(--accent-ink);}.avatar{border-radius:4px;}
+.desk-layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(270px,1fr);gap:36px;margin-top:36px;}.desk-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px;}.desk-title h2,.brief-strip h2{font-size:19px;font-weight:600;margin:5px 0 0;}.contact-line{display:flex;align-items:center;width:100%;gap:14px;text-align:left;padding:20px 0;border-top:1px solid var(--border);}.contact-line:hover{background:var(--hover);}.contact-number{font:12px ui-monospace,monospace;color:var(--faint);}.contact-person{flex:1;min-width:0;}.contact-person strong{font-size:14px;font-weight:600;}.contact-person small{display:block;color:var(--muted);font-size:12px;margin-top:4px;}.contact-action{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:12px;}.desk-note{border-top:1px solid var(--border);padding:16px 0;color:var(--muted);font-size:11px;}.desk-note button{color:var(--accent);margin-left:12px;}.agenda-desk{background:var(--desk-panel);padding:24px;}.agenda-count{font:24px Georgia,serif;color:var(--muted);}.agenda-desk .todo-list{max-height:350px;}.agenda-desk .todo-item{padding:14px 0;border-bottom:1px solid var(--border);border-radius:0;}.agenda-link{display:flex;align-items:center;justify-content:space-between;width:100%;border-top:1px solid var(--border);padding-top:20px;margin-top:24px;font-size:12px;color:var(--accent);}.brief-strip{display:grid;grid-template-columns:1fr 1.5fr auto;align-items:center;gap:24px;padding:26px 0;margin:32px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}.brief-strip p{font-size:13px;line-height:1.9;color:var(--muted);margin:0;}.reminder-columns{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;}.reminder-columns section{min-width:0;border-top:2px solid var(--border);}.reminder-columns h3{font-size:12px;font-weight:500;color:var(--muted);padding:10px 0;}.reminder-columns .row-btn{padding:9px 0;}.reminder-columns .empty-row{font-size:12px;text-align:left;}.theme-switch{width:auto;padding:0 10px;gap:6px;border:1px solid var(--border);border-radius:4px;font-size:12px;}
+@media(max-width:1100px){.desk-layout{gap:20px;grid-template-columns:minmax(0,1.4fr) minmax(240px,1fr);}.brief-strip{grid-template-columns:1fr;gap:12px;}.brief-strip .btn{justify-self:start;}.reminder-columns{grid-template-columns:repeat(2,minmax(0,1fr));}.contact-action{font-size:0;}}
+@media(max-width:767px){.workspace-heading h1{font-size:28px;}.desk-layout{grid-template-columns:1fr;gap:24px;}.agenda-desk{padding:18px;}.contact-line{gap:8px;}.reminder-columns{grid-template-columns:1fr;}.stats-grid .text-lg{font-size:18px;}.theme-switch span{display:none;}.workspace-heading{margin-top:0;}}
+
+
+/* Studio 03: warm editorial workspace with contrast, not a tile dashboard. */
+:root{--bg-app:#f3f2ed;--bg-card:#ffffff;--text:#26342f;--muted:#66746c;--border:#d9ddd6;--accent:#2e5a45;--rail-bg:#e7ebe2;--rail-ink:#304638;--desk-panel:#e9e9df;--holding-0:#d3df9f;--holding-1:#81a99a;--holding-2:#f2e9d0;}
+html[data-theme="dark"] body,body.dark{--bg-app:#121916;--bg-card:#1b2520;--text:#f0f1e9;--muted:#b0bdb3;--faint:#94a69a;--border:#36483b;--hover:#2a3b30;--input-bg:#1b2520;--desk-panel:#253025;--rail-bg:#0c120f;--rail-ink:#e5eadd;--accent:#bfd69d;--accent-ink:#18271e;color-scheme:dark;}
+body{background:var(--bg-app)!important;color:var(--text);transition:none;}
+.sidebar{width:210px;padding:30px 16px;background:var(--rail-bg);color:var(--rail-ink);border-right:1px solid var(--border);}.brand-icon{display:none;}.sidebar .brand-label{font-size:28px;font-weight:700;letter-spacing:-1.3px;line-height:1.1;}.brand-sub{display:block;font-size:8px;letter-spacing:1.2px;font-weight:500;margin-top:9px;}.sidebar-brand{margin-bottom:48px;}.sidebar .nav-item{color:var(--muted);font-size:13px;}.sidebar .nav-item.active{background:#355541;color:#f4f4e9;}.sidebar .nav-item:hover{background:var(--hover);color:var(--text);}.sidebar-foot{color:var(--muted);border-color:var(--border);font-size:10px;}
+.topbar{background:var(--bg-app);height:68px;}.topbar-greeting{font-size:13px;}.theme-control{display:flex;gap:2px;padding:3px;border:1px solid var(--border);border-radius:30px;background:var(--bg-card);}.theme-control button{display:flex;align-items:center;gap:5px;border-radius:24px;padding:6px 10px;font-size:11px;color:var(--muted);}.theme-control button[aria-pressed="true"]{background:var(--text);color:var(--bg-card);}
+main{max-width:1640px;width:100%;margin:auto;padding:26px 36px 60px;}.workspace-heading{margin:6px 0 26px;}.workspace-heading h1{font-family:inherit;font-size:30px;letter-spacing:-1px;font-weight:500;}.title-period{color:#bb6947;font-size:42px;line-height:0;}.workspace-eyebrow{font-size:9px;letter-spacing:1.4px;}.workspace-heading p{font-size:11px;}.btn{font-size:12px;padding:10px 14px;border-radius:6px;box-shadow:none;}
+.overview-layout{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(245px,1fr);gap:24px;}.spotlight{display:grid;grid-template-columns:1.1fr 1fr;background:#2d493a;color:#f5f2e6;border-radius:12px;overflow:hidden;}.spotlight-main{padding:26px;}.spotlight .workspace-eyebrow{color:#becab1;}.spotlight-person{display:flex;align-items:center;gap:14px;margin:22px 0 12px;}.spotlight-person h2{font-size:26px;font-weight:500;margin:0;}.spotlight-person span{font-size:11px;color:#c7d1c2;}.spotlight .avatar{background:#dfe4cf!important;color:#334d3b;font-size:23px;border-radius:50%;filter:none;}.spotlight p{font-size:12px;color:#d9e1ce;}.spotlight-btn{margin-top:16px;background:#e0e7c4;color:#2b4233;}.spotlight-detail{border-left:1px solid #526957;padding:29px 24px;display:flex;flex-direction:column;justify-content:center;}.spotlight-detail>span,.spotlight-detail small{color:#c3cdbb;font-size:10px;}.spotlight-detail strong{font-size:26px;letter-spacing:-.8px;font-weight:500;margin:6px 0 14px;}.holding-track{display:flex;gap:3px;height:8px;margin:0 0 22px;border-radius:2px;overflow:hidden;}.spotlight-products{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;font-size:10px;}.spotlight-products span{padding:4px 7px;border:1px solid #61745e;border-radius:3px;}
+.overview-layout .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr));border:0;gap:0;}.overview-layout .stats-grid .card{border:0;border-bottom:1px solid var(--border);padding:14px 10px!important;}.stats-grid .text-lg{font-size:23px;letter-spacing:-.6px;font-weight:500;}.stats-grid .card:nth-child(2) .text-lg{font-size:18px;}.stats-grid .text-xs{font-size:10px;}.stats-grid .icon{display:none;}
+.desk-layout{grid-template-columns:minmax(0,1.8fr) minmax(280px,1fr);gap:26px;margin-top:32px;}.contact-desk{background:var(--bg-card);padding:24px;border-radius:10px;}.desk-title{margin-bottom:16px;}.desk-title h2{font-size:17px;font-weight:500;}.contact-line{padding:13px 0;}.contact-number{font-size:10px;}.contact-person strong{font-size:13px;}.contact-person small{font-size:11px;}.contact-action{font-size:10px;}.contact-line .avatar{border-radius:50%;}.desk-note{padding-bottom:0;font-size:10px;}.agenda-desk{border-radius:10px;background:var(--desk-panel);padding:24px;}.agenda-desk .todo-item{padding:17px 0;}.todo-name{font-size:12px;}.agenda-count{width:48px;height:48px;border-radius:50%;border:3px solid #96ab87;font:15px inherit;display:flex;align-items:center;justify-content:center;}.agenda-link{font-size:11px;}
+.brief-strip{background:var(--bg-card);border:0;border-left:3px solid #bd805e;border-radius:0 8px 8px 0;padding:22px 24px;margin:26px 0;}.brief-strip h2{font-size:16px;}.brief-strip p{font-size:12px;}.reminder-columns{gap:18px;}.reminder-columns section{background:var(--bg-card);border-top:3px solid #b5c7a8;padding:12px 16px;border-radius:3px 3px 8px 8px;}.reminder-columns section:nth-child(2){border-color:#c99f7e;}.reminder-columns section:nth-child(3){border-color:#89a9a7;}.reminder-columns section:nth-child(4){border-color:#b5a6bf;}.reminder-columns .text-sm{font-size:12px;}.reminder-columns .avatar{display:none;}.reminder-columns .badge{font-size:10px;}
+body.dark .spotlight{background:#294333;}body.dark .theme-control button[aria-pressed="true"]{background:#d6e1c1;color:#17241b;}
+@media(max-width:1150px){.overview-layout{grid-template-columns:1fr;}.overview-layout .stats-grid{grid-template-columns:repeat(3,minmax(0,1fr));}.desk-layout{grid-template-columns:minmax(0,1.5fr) minmax(250px,1fr);}.contact-action{font-size:0;}}
+@media(max-width:767px){.sidebar{width:56px;padding:24px 5px;}.sidebar-brand{padding:0;margin-bottom:26px;}.sidebar-brand:before{content:'R.';font-weight:700;font-size:23px;display:block;margin:auto;}.sidebar .brand-label{display:none;}.sidebar .nav-item{padding:12px;}.topbar{padding:0 12px;}.topbar-greeting{font-size:11px;}.topbar-date{font-size:10px;}.topbar-actions{gap:3px;}.theme-control button{padding:7px;font-size:10px;}.theme-control svg{display:none;}.avatar-me{width:28px;height:28px;margin:0;}main{padding:18px 12px 36px;}.workspace-heading h1{font-size:24px;}.spotlight{grid-template-columns:1fr;}.spotlight-main{padding:20px;}.spotlight-detail{border-left:0;border-top:1px solid #526957;padding:20px;}.spotlight-detail strong{font-size:25px;}.desk-layout{grid-template-columns:1fr;gap:18px;}.contact-desk,.agenda-desk{padding:18px;}.overview-layout{gap:14px;}.stats-grid .text-lg{font-size:20px;}.stats-grid .card:nth-child(2) .text-lg{font-size:14px;}.brief-strip{padding:18px;}.reminder-columns{grid-template-columns:1fr;}.workspace-heading>.btn{align-self:flex-start;}}
+
+
+/* White lettering on forest surfaces; pale controls keep dark lettering. */
+.spotlight,.spotlight .workspace-eyebrow,.spotlight-person h2,
+.spotlight-person span,.spotlight p,.spotlight-detail>span,
+.spotlight-detail strong,.spotlight-detail small,.spotlight-products span,
+.sidebar .nav-item.active,.sidebar .nav-item.active:hover{color:#fff;}
+.login-brand,.login-brand p{color:#fff!important;}
+body:not(.dark) .btn-primary,body:not(.dark) .send-btn,
+body:not(.dark) .assistant-fab,body:not(.dark) .avatar-me,
+body:not(.dark) .theme-control button[aria-pressed="true"]{color:#fff;}
+html[data-theme="dark"] body,body.dark{
+  --text:#fff;--muted:#fff;--faint:#fff;--rail-ink:#fff;--active-text:#fff;
+}
+body.dark .spotlight .avatar{color:#334d3b;}
+
+
+/* Shared contrast rules for every route, customer tab and dialog. */
+:root{--solid-green:#2e5a45;--solid-green-hover:#234532;--on-solid-green:#fff;}
+.btn-primary,.chip.active,.cal-day-num.today,.msg-bubble.user,
+.send-btn,.assistant-fab,.avatar-me{
+ background:var(--solid-green);color:var(--on-solid-green)!important;
+}
+.btn-primary:hover,.send-btn:hover{background:var(--solid-green-hover);}
+body.dark :where(#app *, .modal-overlay *, .assistant-panel *, .bell-dropdown *, .user-menu *){
+ color:#fff!important;
+}
+body.dark{--badge-indigo-text:#fff;--badge-emerald-text:#fff;}
+body.dark input::placeholder,body.dark textarea::placeholder{color:#fff;opacity:1;}
+/* Light inset surfaces use dark ink, including their nested icons. */
+body.dark .spotlight-btn,body.dark .spotlight-btn *,
+body.dark .spotlight .avatar,
+body.dark .theme-control button[aria-pressed="true"],
+body.dark .theme-control button[aria-pressed="true"] *{color:#203628!important;}
+.hero-card .out-actions .btn:not(:first-child){background:var(--solid-green);color:#fff!important;}
+.sidebar .nav-item.active:hover{background:#355541;}
+
+
+/* Uniform forest controls: explicit foreground and background travel together. */
+.search-box,select,thead th,
+input[type=text],input[type=search],input[type=email],input[type=password],
+input[type=tel],input[type=number],input[type=date],input[type=time],textarea{
+ background:#203b2d!important;color:#fff!important;color-scheme:dark;
+}
+.search-box input,.assistant-input-row input,.assistant-input-row textarea{background:transparent!important;}
+.search-box svg,select option,select optgroup{color:#fff!important;}
+select option,select optgroup{background:#203b2d!important;}
+input::placeholder,textarea::placeholder{color:#fff!important;opacity:1;}
+.assistant-panel{width:min(420px,calc(100vw - 24px));height:min(620px,calc(100dvh - 110px));border:1px solid var(--border);border-radius:14px;box-shadow:0 20px 60px #12251c30;background:var(--bg-card);}
+.assistant-head{padding:18px 20px;background:#2d493a;color:#fff;gap:10px;}
+.assistant-head *{color:#fff!important;}
+.assistant-head .icon-btn:hover{background:#3c5c49;}
+.assistant-head [style*="background"]{background:#355541!important;}
+.assistant-msgs{padding:20px;gap:18px;min-height:0;}
+.msg-bubble{max-width:90%;padding:13px 16px;border-radius:12px;line-height:1.8;font-size:14px;}
+.msg-bubble.user{background:#2e5a45!important;color:#fff!important;border-bottom-right-radius:3px;}
+.msg-bubble.ai{background:var(--hover);color:var(--text);border:1px solid var(--border);border-bottom-left-radius:3px;}
+.quick-chips{padding:12px 16px;gap:7px;border-top:1px solid var(--border);}
+.quick-chip{border-radius:6px;padding:7px 10px;font-size:11px;}
+.assistant-input-row{padding:14px;background:#203b2d;color:#fff;}
+.assistant-input-row *{color:#fff!important;}
+.assistant-input-row .send-btn{background:#355541;border-radius:8px;}
+.assistant-panel-maximized{width:min(980px,calc(100vw - 32px));height:calc(100dvh - 64px);}
+
 </style>
-=======
-<link rel="stylesheet" href="styles.css">
->>>>>>> Stashed changes
 </head>
 <body><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <div id="app"></div>
-<<<<<<< Updated upstream
 
 <script>
 /* ================================================================== */
@@ -1178,7 +1331,7 @@ function renderToast(){
 /* ================================================================== */
 
 const NAV_ITEMS = [
-  { key:"dashboard", label:"首頁", icon:"dashboard" },
+  { key:"dashboard", label:"今日工作", icon:"dashboard" },
   { key:"customers", label:"客戶管理", icon:"users" },
   { key:"calendar", label:"行事曆", icon:"calendar" },
   { key:"ai", label:"AI 助理", icon:"sparkles" },
@@ -1194,11 +1347,11 @@ function renderSidebar(){
   return `
     <aside class="sidebar">
       <div class="sidebar-brand">
-        <div class="brand-icon">${icon("sparkles",16)}</div>
-        <span class="brand-label">理專助理 AI</span>
+        <div class="brand-icon">${icon("landmark",16)}</div>
+        <span class="brand-label">RELATE<span class="brand-sub">RELATIONSHIP MANAGER</span></span>
       </div>
       <nav class="nav">${items}</nav>
-      <div class="sidebar-foot">作品集原型 · 資料為模擬情境，僅供展示流程使用。</div>
+      <div class="sidebar-foot">STUDIO 03 · 介面預覽<br>示範資料，僅供展示流程</div>
     </aside>`;
 }
 
@@ -1246,7 +1399,7 @@ function renderTopBar(){
         <p class="topbar-date">${fmtDateCN(todayStr())}</p>
       </div>
       <div class="topbar-actions">
-        <button class="icon-btn" title="切換深色模式" onclick="toggleDark()">${icon(state.dark?"sun":"moon",17)}</button>
+        ${renderThemeControl()}
         <div style="position:relative;">
           <button class="icon-btn" title="提醒" onclick="event.stopPropagation();toggleBell()">
             ${icon("bell",17)}
@@ -1283,12 +1436,12 @@ function renderLogin(){
       </div>
       <div style="flex:1;display:flex;flex-direction:column;">
         <div style="display:flex;justify-content:flex-end;padding:24px;">
-          <button class="icon-btn" onclick="toggleDark()">${icon(state.dark?"sun":"moon",17)}</button>
+          ${renderThemeControl()}
         </div>
         <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:24px 24px 64px;">
           <div style="width:100%;max-width:360px;">
             <div class="login-brand-mobile">
-              <div style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#7c3aed);display:flex;align-items:center;justify-content:center;">${icon("sparkles",16,"color:#fff")}</div>
+              <div style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#315c45,#67816b);display:flex;align-items:center;justify-content:center;">${icon("sparkles",16,"color:#fff")}</div>
               <span style="font-weight:600;">AI Relationship Manager</span>
             </div>
             <div style="margin-bottom:24px;">
@@ -1322,7 +1475,7 @@ function renderLogin(){
               ${icon("sparkles",15)}一鍵使用示範帳號登入
             </button>
             <p style="text-align:center;font-size:12px;color:var(--faint);margin-top:16px;">測試帳號：rm@bank.com ・ 密碼：password123</p>
-            <p style="text-align:center;font-size:11px;color:var(--faint);margin-top:8px;">＊此為 Artifacts 預覽環境，登入狀態不一定能跨次重新整理保留；下載後在瀏覽器直接開啟即可正常保留登入狀態。</p>
+            <p style="text-align:center;font-size:11px;color:var(--faint);margin-top:8px;">作品集示範版本 · 使用模擬資料體驗客戶聯繫流程。</p>
           </div>
         </div>
       </div>
@@ -1360,19 +1513,6 @@ function renderDashboard(){
     <div class="card" style="padding:16px;">
       <div class="flex items-center gap-2 mb-2">${icon(s.icon,15,"color:var(--accent)")}<span class="text-xs muted">${s.label}</span></div>
       <p class="text-lg font-semibold" style="margin:0;">${s.value}</p>
-    </div>`).join("");
-
-  /* 近 6 個月客戶累積數：以目前客戶數回推（示範資料無完整歷史）*/
-  const total = state.customers.length;
-  const chartData = [5,4,3,2,1,0].map((back,i) => {
-    const d = new Date(TODAY.getFullYear(), TODAY.getMonth() - back, 1);
-    return { m:`${d.getMonth()+1}月`, v: Math.max(1, total - (5-i)) };
-  });
-  const chartMax = Math.max(...chartData.map(d=>d.v));
-  const chartBars = chartData.map(d => `
-    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;">
-      <div style="width:100%;max-width:36px;height:${Math.round(d.v/chartMax*90)}px;border-radius:8px 8px 0 0;background:linear-gradient(180deg,#818cf8,#4f46e5);"></div>
-      <span class="text-xs faint">${d.m}</span>
     </div>`).join("");
 
   const sortedTodos = [...state.todos].sort((a,b) => String(a.time).localeCompare(String(b.time)));
@@ -1438,40 +1578,18 @@ function renderDashboard(){
         </div>
       </button>`).join("");
 
+  const contactRows = suggestions.slice(0,6).map((s,i)=>`<button class="contact-line" onclick="openCustomer(${s.customer.id})"><span class="contact-number">${String(i+1).padStart(2,'0')}</span>${avatarHTML(s.customer.name,"sm")}<span class="contact-person"><strong>${esc(s.customer.name)}</strong><small>${esc(s.reasons[0])}</small></span><span class="contact-action">準備聯繫 ${icon("chevronRight",15)}</span></button>`).join("");
+  const next = suggestions[0];
+  const spotlight = next ? `<section class="spotlight"><div class="spotlight-main"><div class="workspace-eyebrow">NEXT CONVERSATION / 下一位聯繫</div><div class="spotlight-person">${avatarHTML(next.customer.name,"lg")}<div><h2>${esc(next.customer.name)}</h2><span>${esc(next.customer.occupation||'客戶')} · ${esc(next.customer.risk||'尚未設定')}風險屬性</span></div></div><p>${esc(next.reasons[0])}</p><button class="btn spotlight-btn" onclick="openCustomer(${next.customer.id})">查看客戶與準備話題 ${icon('chevronRight',16)}</button></div><div class="spotlight-detail"><span>客戶資產</span><strong>${fmtMoney(next.customer.asset)}</strong><div class="holding-track">${next.customer.products.slice(0,5).map((p,i)=>`<span style="flex:${Math.max(1,p.amount||1)};background:var(--holding-${i%3})"></span>`).join('')}</div><small>持有商品</small><div class="spotlight-products">${next.customer.products.slice(0,3).map(p=>`<span>${esc(p.name)}</span>`).join('')||'尚無商品紀錄'}</div></div></section>` : '';
   return `
-    <div class="stats-grid">${statCards}</div>
-    <div class="card mb-4" style="margin-top:16px;">
-      <div class="section-title"><div class="section-title-left">${icon("trending",16)}<h3>近 6 個月新增客戶趨勢</h3></div></div>
-      <div style="display:flex;align-items:flex-end;gap:12px;height:110px;">${chartBars}</div>
+    <div class="workspace-heading"><div><div class="workspace-eyebrow">ADVISOR DESK / 今日工作</div><h1>你的客戶工作室<span class="title-period">.</span></h1><p>${state.customers.length} 位客戶 · ${state.todos.filter(t=>!t.done).length} 件待辦 · 示範情境</p></div><button class="btn btn-primary" onclick="openDialog({type:'todo'})">${icon("plus",16)}新增待辦</button></div>
+    <div class="overview-layout">${spotlight}<div class="stats-grid">${statCards}</div></div>
+    <div class="desk-layout">
+      <section class="contact-desk"><div class="desk-title"><div><span class="workspace-eyebrow">01 / RELATIONSHIPS</span><h2>優先聯繫</h2></div><button class="btn btn-ghost" onclick="setView('customers')">全部客戶 ↗</button></div><div>${contactRows||'<div class="empty-row">目前沒有優先聯繫事項</div>'}</div><div class="desk-note">依近期互動、商品到期與追蹤事項整理。<button onclick="openDialog({type:'suggestions'})">查看排序原因 →</button></div></section>
+      <aside class="agenda-desk"><div class="desk-title"><div><span class="workspace-eyebrow">02 / SCHEDULE</span><h2>今日安排</h2></div><span class="agenda-count">${doneCount}/${state.todos.length}</span></div><div class="todo-list">${todoRows}</div><button class="agenda-link" onclick="setView('calendar')">打開行事曆 ${icon("arrowRight",16)}</button></aside>
     </div>
-    <div class="dash-grid">
-      <div class="hero-card">
-        <div class="hero-tag">${icon("sparkles",18)}<span>AI 每日建議</span></div>
-        <p>${esc(brief)}</p>
-        <div class="out-actions">
-          <button class="btn" onclick="openDialog({type:'suggestions'})">${icon("list",15)}查看詳細原因</button>
-          <button class="btn" onclick="generateTodosFromAI()">${icon("bolt",15)}一鍵排入今日待辦</button>
-        </div>
-      </div>
-      <div class="card">
-        <div class="section-title">
-          <div class="section-title-left">${icon("checkCircle",16)}<h3>今日待辦 (${doneCount}/${state.todos.length})</h3></div>
-          <div class="row-actions">
-            ${state.todos.some(t=>t.done) ? `<button class="btn btn-ghost btn-xs" onclick="clearDoneTodos()">清除已完成</button>` : ""}
-            <button class="btn btn-outline btn-xs" onclick="openDialog({type:'todo'})">${icon("plus",13)}新增</button>
-          </div>
-        </div>
-        <div class="todo-list">${todoRows}</div>
-      </div>
-    </div>
-    <div class="cards-grid">
-      <div class="card"><div class="section-title"><div class="section-title-left">${icon("users",16)}<h3>今日建議聯絡客戶</h3></div></div><div class="flex-col gap-1">${suggestionRows}</div></div>
-      <div class="card"><div class="section-title"><div class="section-title-left">${icon("cake",16)}<h3>生日提醒</h3></div></div><div class="flex-col gap-1">${birthdayRows}</div></div>
-      <div class="card"><div class="section-title"><div class="section-title-left">${icon("landmark",16)}<h3>定存到期</h3></div></div><div class="flex-col gap-1">${cdRows}</div></div>
-      <div class="card"><div class="section-title"><div class="section-title-left">${icon("wallet",16)}<h3>基金到期</h3></div></div><div class="flex-col gap-1">${fundRows}</div></div>
-      <div class="card"><div class="section-title"><div class="section-title-left">${icon("trending",16)}<h3>ETF 追蹤</h3></div></div><div class="flex-col gap-1">${etfRows}</div></div>
-      <div class="card"><div class="section-title"><div class="section-title-left">${icon("clock",16)}<h3>Follow Up 提醒</h3></div></div><div class="flex-col gap-1">${fuRows}</div></div>
-    </div>`;
+    <section class="brief-strip"><div><span class="workspace-eyebrow">DAILY BRIEF</span><h2>今日聯繫摘要</h2></div><p>${esc(brief)}</p><button class="btn btn-outline" onclick="generateTodosFromAI()">排入今日待辦 ↗</button></section>
+    <div class="desk-reminders"><div class="desk-title"><div><span class="workspace-eyebrow">03 / FOLLOW THROUGH</span><h2>接下來要留意</h2></div><button class="btn btn-ghost" onclick="setView('reminders')">提醒中心 ↗</button></div><div class="reminder-columns"><section><h3>生日關心</h3>${birthdayRows}</section><section><h3>商品到期</h3>${cdRows}${fundRows}</section><section><h3>後續追蹤</h3>${fuRows}</section><section><h3>ETF 動態</h3>${etfRows}</section></div></div>`;
 }
 
 /* ================================================================== */
@@ -2962,7 +3080,7 @@ function renderAssistant(){
   return fab + `
     <div class="assistant-panel">
       <div class="assistant-head">
-        ${icon("sparkles",16,"color:var(--accent)")}<span class="flex-1">AI 助理</span>
+        ${icon("sparkles",16,"color:var(--accent)")}<span class="flex-1">理專助理 · 示範對話</span>
         <button class="icon-btn" style="width:28px;height:28px;" title="清除對話"
           onclick="openDialog({type:'confirm',title:'清除對話',message:'確定要清除與 AI 助理的對話紀錄嗎？',confirmLabel:'清除',action:'clearChat'})">${icon("trash",14)}</button>
       </div>
@@ -3123,7 +3241,18 @@ function openCustomer(id){
   detailTab = "basic";
   render();
 }
-function toggleDark(){ state.dark = !state.dark; document.body.classList.toggle("dark", state.dark); saveData(); render(); }
+function setTheme(mode){
+  state.dark = mode === 'dark';
+  document.documentElement.dataset.theme = mode;
+  document.body.classList.toggle('dark', state.dark);
+  try { localStorage.setItem('arm_theme', mode); } catch {}
+  saveData(); render();
+}
+function toggleDark(){ setTheme(state.dark ? 'light' : 'dark'); }
+function renderThemeControl(){
+  return `<div class="theme-control" role="group" aria-label="色彩模式"><button type="button" aria-pressed="${!state.dark}" onclick="setTheme('light')">${icon('sun',14)}淺色</button><button type="button" aria-pressed="${state.dark}" onclick="setTheme('dark')">${icon('moon',14)}深色</button></div>`;
+}
+
 function toggleBell(){ state.bellOpen = !state.bellOpen; state.menuOpen = null; render(); }
 function toggleMenu(id){ state.menuOpen = state.menuOpen === id ? null : id; state.bellOpen = false; render(); }
 function toggleTodo(id){
@@ -3177,6 +3306,7 @@ function renderMainOnly(){
 
 function render(){
   document.body.classList.toggle("dark", state.dark);
+  document.documentElement.dataset.theme = state.dark ? "dark" : "light";
 
   // 未登入：只渲染登入頁與登入相關對話框，不掛載 Sidebar / TopBar / 任何受保護內容
   if(!state.authUser){
@@ -3223,11 +3353,8 @@ toastDiv.id = "toastWrap";
 document.body.appendChild(toastDiv);
 
 loadData();
+try { const theme = localStorage.getItem("arm_theme"); if(theme === "dark" || theme === "light") state.dark = theme === "dark"; } catch {}
 render();
 </script>
-=======
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="app.js"></script>
->>>>>>> Stashed changes
 </body>
 </html>

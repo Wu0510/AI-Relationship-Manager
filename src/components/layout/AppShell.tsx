@@ -21,12 +21,12 @@ import { createClient } from '@/lib/supabase/client';
 
 
 const NAV_ITEMS = [
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/customers', label: 'Customers', icon: Users },
-  { href: '/calendar', label: 'Calendar', icon: CalendarDays },
-  { href: '/assistant', label: 'AI Insight', icon: Sparkles },
-  { href: '/reminders', label: 'Reminders', icon: Bell },
-  { href: '/settings', label: 'Settings', icon: Settings },
+  { href: '/', label: '今日工作', icon: LayoutDashboard },
+  { href: '/customers', label: '客戶管理', icon: Users },
+  { href: '/calendar', label: '行事曆', icon: CalendarDays },
+  { href: '/assistant', label: 'AI 助理', icon: Sparkles },
+  { href: '/reminders', label: '提醒中心', icon: Bell },
+  { href: '/settings', label: '設定', icon: Settings },
 ] as const;
 
 
@@ -171,7 +171,7 @@ export function AppShell({
 
 
   return (
-    <div className={`min-h-screen ${shellBg}`}>
+    <div className={`studio-shell min-h-screen ${shellBg}`}>
 
       {/* ========================================================
        * SIDEBAR
@@ -189,7 +189,7 @@ export function AppShell({
 
       <aside
         className={`
-          fixed left-0 top-0 z-40
+          studio-sidebar fixed left-0 top-0 z-40
           flex h-screen w-64 flex-col
           border-r
           transform transition-all duration-200
@@ -217,7 +217,7 @@ export function AppShell({
 
         <div
           className={`
-            flex h-20 items-center
+            studio-brand flex h-20 items-center
             border-b px-6
             ${logoBorder}
           `}
@@ -236,13 +236,13 @@ export function AppShell({
                 ${titleColor}
               `}
             >
-              AI Relationship
+              RELATE
             </div>
 
             <div
               className={`text-xs ${subtleText}`}
             >
-              Manager
+              RELATIONSHIP MANAGER
             </div>
 
           </div>
@@ -279,9 +279,7 @@ export function AppShell({
                 : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900';
 
 
-              const activeStyle = dark
-                ? 'bg-blue-500/10 text-blue-400'
-                : 'bg-blue-50 text-blue-700';
+              const activeStyle = 'studio-nav-active';
 
 
               return (
@@ -375,13 +373,14 @@ export function AppShell({
        * MAIN
        * ======================================================== */}
 
-      <div className="min-h-screen md:ml-64">
+      <div className="studio-main-col min-h-screen md:ml-64">
 
         {/* ======================================================
          * TOP BAR
          * ====================================================== */}
 
         <header
+          data-studio="topbar"
           className={`
             sticky top-0 z-30
             flex min-h-16 items-center justify-between
